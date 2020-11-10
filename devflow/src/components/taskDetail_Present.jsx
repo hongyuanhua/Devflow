@@ -1,0 +1,134 @@
+import React from "react";
+import NavBar from "./navBar";
+import { Link } from "react-router-dom";
+import { getTasks, getTaskById } from "../services/fakeTaskService";
+import {
+  getMembers,
+  getMemberById,
+  members,
+} from "../services/fakeMemberService";
+import "./taskDetail_Present.css";
+
+class taskDetail_Present extends React.Component {
+  state = {
+    data: {
+      _id: "",
+      companyId: "",
+      name: "",
+      estimatedTime: 0,
+      usedTime: 0,
+      assignedToId: "",
+      assignedById: "",
+      createdById: "",
+      taskDetail: "",
+    },
+    members: [],
+  };
+
+  componentWillMount() {
+    const new_members = getMembers();
+    // console.log(new_members);
+    this.setState({ members: new_members });
+    // console.log(this.state.members);
+
+    const taskId = this.props.match.params.id;
+    if (taskId === "new") return;
+    // console.log(taskId);
+
+    const task = getTaskById(taskId);
+    if (!task) return this.props.history.replace("/not-found");
+
+    this.setState({ data: this.mapToViewModel(task) });
+  }
+
+  mapToViewModel(task) {
+    return {
+      _id: task._id,
+      companyId: task.companyId,
+      name: task.name,
+      estimatedTime: task.estimatedTime,
+      usedTime: task.usedTime,
+      assignedToId: task.assignedToId,
+      assignedById: task.assignedById,
+      createdById: task.createdById,
+      taskDetail: task.taskDetail,
+    };
+  }
+  filterID(id) {
+    // console.log(members);
+    // console.log(id);
+    const member = this.state.members.filter((member) => member._id == id);
+    return member[0].firstName;
+  }
+  render() {
+    return (
+      <React.Fragment>
+        <NavBar />
+        <div className="container">
+          <label htmlFor="taskName">Task Name:</label>
+          <p>{this.state.data.name}</p>
+          {/* for taskName */}
+
+          <div className="row">
+            <div className="col">
+              <div className="row">
+                <div className="col">
+                  <label htmlFor="assignedTo">Assigned to:</label>
+                  <p>{this.filterID(this.state.data.assignedToId)}</p>
+                  {/* for assignedTo */}
+                </div>
+                <div className="col">
+                  <label htmlFor="assignedBy">Assigned by:</label>
+                  <p>{this.filterID(this.state.data.assignedById)}</p>
+                  {/* for assignedBy */}
+                </div>
+                <div className="col">
+                  <label htmlFor="createdBy">Created by:</label>
+                  <p>{this.filterID(this.state.data.createdById)}</p>
+                  {/* for createdBy */}
+                </div>
+              </div>
+              <label htmlFor="taskDetail">Task Description:</label>
+              <p>{this.state.data.taskDetail}</p>
+              {/* for taskDetail */}
+            </div>
+
+            <div className="col-1"></div>
+
+            <div className="col-3">
+              <div className="row"></div>
+              <div className="row">
+                <label htmlFor="estimatedTime">Estimated Time:</label>
+                <p>{this.state.data.estimatedTime}</p>
+                {/* for estimatedTime */}
+              </div>
+              <div className="row"></div>
+              <div className="row">
+                <label htmlFor="usedTime">Used Time:</label>
+                <p>{this.state.data.usedTime}</p>
+                {/* for usedTime */}
+              </div>
+              <div className="row">
+                <Link to="/taskList">
+                  <button type="button" className="btn btn-primary">
+                    Back
+                  </button>
+                </Link>
+              </div>
+              <br></br>
+              <div className="row">
+                <Link to={`/taskDetail/${this.state.data._id}`}>
+                  <button type="button" className="btn btn-primary">
+                    Edit
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
+
+export default taskDetail_Present;
