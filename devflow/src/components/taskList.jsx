@@ -3,8 +3,7 @@ import { getTasks } from "../services/fakeTaskService";
 import { getMemberById, getMembers } from "../services/fakeMemberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./navBar";
-import NavBar from "./navBar";
+import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 class taskList extends Component {
   state = {
@@ -17,7 +16,7 @@ class taskList extends Component {
     var tasks = this.state.tasks.filter((m) => m._id !== task._id);
     const newTask = {
       _id: task._id,
-      groupId: task.groupId,
+      teamId: task.teamId,
       companyId: task.companyId,
       name: task.name,
       estimatedTime: task.estimatedTime,
@@ -35,6 +34,7 @@ class taskList extends Component {
     if (getMemberById(id) == null) {
       return "";
     } else {
+      console.log(getMemberById(id))
       return getMemberById(id).firstName;
     }
   };
@@ -43,11 +43,11 @@ class taskList extends Component {
     var input, i;
     input = this.state.tasks;
     for (i = 0; i < input.length; i++) {
-      if (input[i].createdById == id) {
+      if (input[i].createdById === id) {
         return this.getMemberFirstName(input[i].createdById);
-      } else if (input[i].assignedToId == id) {
+      } else if (input[i].assignedToId === id) {
         return this.getMemberFirstName(input[i].assignedToId);
-      } else if (input[i].assignedById == id) {
+      } else if (input[i].assignedById === id) {
         return this.getMemberFirstName(input[i].assignedById);
       }
     }
@@ -58,7 +58,7 @@ class taskList extends Component {
     c = 0;
     input = this.state.tasks;
     for (i = 0; i < input.length; i++) {
-      if (input[i].assignedToId == id) {
+      if (input[i].assignedToId === id) {
         c += 1;
       }
     }
@@ -82,10 +82,10 @@ class taskList extends Component {
 
   modifyName = (name) => {
     if (name.length > 18) {
-      name = name.slice(0, 15) + "..."
+      name = name.slice(0, 15) + "...";
     }
-    return name
-  }
+    return name;
+  };
 
   newTask(name, created, assigned, eTime) {
     const k = {
@@ -105,16 +105,17 @@ class taskList extends Component {
 
   sortCategory = (path) => {
     const taskss = this.state.tasks.sort(function (a, b) {
-      if (path == "usedTime") {
+      if (path === "usedTime") {
         return a.usedTime - b.usedTime;
-      } else if (path == "name") {
+      } else if (path === "name") {
         return ("" + a.name).localeCompare(b.name);
-      } else if (path == "id") {
+      } else if (path === "id") {
         return ("" + a.assignedToId).localeCompare(b.assignedToId);
       } else if (path == "Group ID") {
-        return ("" + a.groupId).localeCompare(b.groupId);
+        return ("" + a.teamId).localeCompare(b.teamId);
       } else if (path == "Estimated Time") {
         return a.estimatedTime - b.estimatedTime;
+
       }
     });
     const task = taskss.reverse();
@@ -122,33 +123,36 @@ class taskList extends Component {
   };
   print = (event, hi) => {
     var k;
-    var filter, item, a, i, txtValue;
+    var filter, item, a, i, txtValue, fil, abyValue, assValue, creValue;
     item = document.getElementsByClassName("col-sm-4");
+    filter = document.getElementsByClassName("filters");
+    abyValue = this.getMemberFirstName(filter[0].value);
+    assValue = this.getMemberFirstName(filter[1].value);
+    creValue = this.getMemberFirstName(filter[2].value);
     for (i = 0; i < item.length; i++) {
       a = item[i];
 
-      if (hi == "assigned_by") {
-        k = a.childNodes[3].textContent.replace("Assigned By: ", "");
-      } else if (hi == "assigned_to") {
-        k = a.childNodes[4].textContent.replace("Assigned To: ", "");
-      } else if (hi == "created_by") {
-        k = a.childNodes[2].textContent.replace("Created By: ", "");
-      }
-
-      if (k == this.getMemberFirstName(event.target.value)) {
+      var uAbyValue, uAssValue, uCreValue;
+      uAbyValue = a.childNodes[3].textContent.replace("Assigned By: ", "");
+      uAssValue = a.childNodes[4].textContent.replace("Assigned To: ", "");
+      uCreValue = a.childNodes[2].textContent.replace("Created By: ", "");
+      item[i].style.display = "none";
+      if (
+        (filter[0].value == "DEFAULT" || abyValue == uAbyValue) &&
+        (filter[1].value == "DEFAULT" || assValue == uAssValue) &&
+        (filter[2].value == "DEFAULT" || abyValue == uAssValue)
+      ) {
         item[i].style.display = "";
-      } else {
-        item[i].style.display = "none";
       }
     }
   };
   resetOptions() {
     var item = document.getElementsByClassName("filters");
     var appear = document.getElementsByClassName("col-sm-4");
-    for (var i = 0; i < item.length; i++) {
+    for (let i = 0; i < item.length; i++) {
       item[i].selectedIndex = 0;
     }
-    for (var i = 0; i < appear.length; i++) {
+    for (let i = 0; i < appear.length; i++) {
       appear[i].style.display = "";
     }
   }
@@ -222,13 +226,6 @@ class taskList extends Component {
                 </select>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={this.resetOptions}
-              className="btn btn-outline-success"
-            >
-              reset
-            </button>
           </div>
 
           <span>Sort by(DEC order): </span>
@@ -285,51 +282,40 @@ class taskList extends Component {
                     <h3 className="title">{this.modifyName(task.name)}</h3>
                   </button>
                 </Link>
-                <p className="mt-4">
-                  <span className="font-weight-bold">Group: </span>
-                  {task.groupId}
-                </p>
-                <p className="mt-4">
-                  <span className="font-weight-bold">Created By: </span>
-                  {task.createdById != "" && (
-                    <img
-                      src={
-                        "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
-                      }
-                      style={{ borderRadius: "50%", width: "20px" }}
-                    />
-                  )}
-                  <span style={{ marginLeft: "5px" }}>
-                    {this.getMemberFirstName(task.createdById)}
-                  </span>
-                </p>
+
+                <Link to={`/team/${task.teamId}`}>
+                  <p className="mt-4">
+                    <span className="font-weight-bold">Team: </span>
+                    {task.teamId}
+                  </p>
+                </Link>
                 <p className="mt-4">
                   <span className="font-weight-bold">Assigned By: </span>
-                  {task.assignedById != "" && (
-                    <img
-                      src={
-                        "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
-                      }
-                      style={{ borderRadius: "50%", width: "20px" }}
-                    />
-                  )}
-                  <span style={{ marginLeft: "5px" }}>
-                    {this.getMemberFirstName(task.assignedById)}
-                  </span>
+                  <Link to={`/personal/${task.assignedById}`}>
+                    {task.assignedById != "" && (
+                      <img
+                        src={getMemberById(task.assignedById).profilePic}
+                        style={{ borderRadius: "50%", width: "20px" }}
+                      />
+                    )}
+                    <span style={{ marginLeft: "5px" }}>
+                      {this.getMemberFirstName(task.assignedById)}
+                    </span>
+                  </Link>
                 </p>
                 <p className="mt-4">
                   <span className="font-weight-bold">Assigned To: </span>
-                  {task.assignedToId != "" && (
-                    <img
-                      src={
-                        "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png"
-                      }
-                      style={{ borderRadius: "50%", width: "20px" }}
-                    />
-                  )}
-                  <span style={{ marginLeft: "5px" }}>
-                    {this.getMemberFirstName(task.assignedToId)}
-                  </span>
+                  <Link to={`/personal/${task.assignedToId}`}>
+                    {task.assignedToId != "" && (
+                      <img
+                        src={getMemberById(task.assignedToId).profilePic}
+                        style={{ borderRadius: "50%", width: "20px" }}
+                      />
+                    )}
+                    <span style={{ marginLeft: "5px" }}>
+                      {this.getMemberFirstName(task.assignedToId)}
+                    </span>
+                  </Link>
                 </p>
                 <p className="font-weight-light">
                   Time spent: {task.usedTime} hrs
@@ -341,7 +327,7 @@ class taskList extends Component {
                   <button
                     onClick={() => this.handleJoin(task, "1")}
                     className="btn btn-danger text-center"
-                    disabled={!(task.assignedToId == "")}
+                    disabled={!(task.assignedToId === "")}
                   >
                     Join
                   </button>

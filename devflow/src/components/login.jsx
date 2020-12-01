@@ -2,7 +2,7 @@ import React from "react";
 import Joi from "joi-browser";
 
 import pic from "./logo.jpg";
-import Form from "./form.jsx";
+import Form from "./common/form.jsx";
 import Logo from "./logo.jsx";
 import TaskList from "./taskList.jsx";
 
@@ -27,7 +27,6 @@ class Login extends Form {
 
   doSubmit = () => {
     //call the server
-    console.log(this.state.data);
     if (
       this.state.data.company === "Apple" &&
       this.state.data.eid === "admin" &&

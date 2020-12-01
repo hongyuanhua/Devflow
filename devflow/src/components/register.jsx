@@ -2,7 +2,7 @@ import React from "react";
 import Joi, { flatten } from "joi-browser";
 
 import pic from "./logo.jpg";
-import Form from "./form.jsx";
+import Form from "./common/form.jsx";
 import Logo from "./logo.jsx";
 
 class Register extends Form {

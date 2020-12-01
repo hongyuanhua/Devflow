@@ -50,7 +50,7 @@ class Form extends React.Component {
 
   renderButton(type, label) {
     // function redirect(e) {
-    //   if (label == "Register") {
+    //   if (label === "Register") {
     //     console.log("yes");
     //   }
     // }
