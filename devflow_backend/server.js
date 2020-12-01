@@ -3,13 +3,19 @@ const express = require("express");
 const app = express();
 var cors = require("cors");
 app.use(cors());
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(bodyParser.json());
+
+// express-session for managing user sessions
 const session = require("express-session");
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const auth = require("./routes/auth");
 const member = require("./routes/member");
+const task = require("./routes/task");
 
 const { Company } = require("./models/Company");
 const { Member } = require("./models/Member");
@@ -52,12 +58,12 @@ const sessionChecker = (req, res, next) => {
 app.use(
   session({
     secret: "our hardcoded secret",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       expires: 600000,
-      httpOnly: true,
-      secure: false,
+      httpOnly: false,
+      // secure: false,
     },
   })
 );
@@ -66,7 +72,8 @@ app.use(
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 // Session checking
-app.use("/api", sessionChecker);
+// app.use("/api", sessionChecker);
 // Routing
 app.use("/auth", auth);
 app.use("/api/member", member);
+app.use("/api/task", task);

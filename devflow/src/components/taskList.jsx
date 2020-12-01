@@ -1,16 +1,30 @@
 import React, { Component, Fragment } from "react";
-import { getTasks } from "../services/fakeTaskService";
+import { getTasksByTeam } from "../services/taskService";
+import { checkSession } from "../services/authService";
+
 import { getMemberById, getMembers } from "../services/fakeMemberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 class taskList extends Component {
+
+  async componentWillMount() {
+    checkSession(this); // sees if a user is logged in.
+  }
+
   state = {
-    tasks: getTasks(),
+    curUserId: "",
+    tasks: [],
     show: false,
     members: getMembers(),
   };
+
+
+  async componentDidMount() {
+
+    // getTasksByTeam(teamId, memberId);
+  }
 
   handleJoin = (task, id) => {
     var tasks = this.state.tasks.filter((m) => m._id !== task._id);

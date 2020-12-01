@@ -9,9 +9,10 @@ var cors = require("cors");
 
 // localhost:5000/auth/check-session
 router.get("/check-session", async (req, res) => {
+    console.log("---in check-session---")
     console.log(req.session);
     if (req.session.memberId) {
-        res.status(200).send(req.session.memberId);
+        res.status(200).send({ curUserId: req.session.memberId });
     } else {
         res.status(401).send();
     }
@@ -19,6 +20,7 @@ router.get("/check-session", async (req, res) => {
 
 router.put("/register", async (req, res) => {
     console.log(req.body);
+    console.log(req.session.memberId);
     const { firstName, lastName, companyName, userName, password } = req.body;
     let member;
     try {
@@ -83,7 +85,7 @@ router.put("/register", async (req, res) => {
 // });
 
 router.post("/login", async (req, res) => {
-    console.log("Attempt login");
+    console.log("---Attempt login---");
     // console.log(req);
     console.log(req.body);
     const { userName, password } = req.body.data;
@@ -100,7 +102,9 @@ router.post("/login", async (req, res) => {
         return;
     }
     req.session.memberId = member._id;
-    await req.session.save();
+    console.log("req.session")
+    console.log(req.session)
+    // await req.session.save();
     console.log("Successful login");
     res.status(200).send(member);
 });
