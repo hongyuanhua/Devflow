@@ -9,7 +9,7 @@ class Register extends Form {
   state = {
     data: {
       company: "",
-      eid: "",
+      username: "",
       firstName: "",
       lastName: "",
       password: "",
@@ -21,7 +21,7 @@ class Register extends Form {
 
   schema = {
     company: Joi.string().required().label("Company"),
-    eid: Joi.string().required().label("Employee ID"),
+    Username: Joi.string().required().label("Username"),
     firstName: Joi.string().required().label("First Name"),
     lastName: Joi.string().required().label("Last Name"),
     password: Joi.string().required().label("Password"),
@@ -32,6 +32,7 @@ class Register extends Form {
     if (!(this.state.data.password === this.state.data.password2)) {
       console.log("Password does not match");
       this.state.bo = true;
+      return;
     } else {
       this.state.bo = false;
     }
@@ -50,7 +51,7 @@ class Register extends Form {
           <h1>Welcome to Devflow</h1>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("company", "Company", "text")}
-            {this.renderInput("eid", "Employee ID", "text")}
+            {this.renderInput("username", "Username", "text")}
             {this.renderInput("firstName", "First Name", "text")}
             {this.renderInput("lastName", "Last Name", "text")}
             {this.renderInput("password", "Password", "password")}
