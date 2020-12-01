@@ -12,7 +12,6 @@ import { Route } from "react-router-dom";
 class Login extends Form {
   state = {
     data: {
-      company: "",
       username: "",
       password: "",
     },
@@ -20,7 +19,6 @@ class Login extends Form {
   };
 
   schema = {
-    company: Joi.string().required().label("Company"),
     username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
   };
@@ -28,7 +26,6 @@ class Login extends Form {
   doSubmit = () => {
     //call the server
     if (
-      this.state.data.company === "Apple" &&
       this.state.data.eid === "admin" &&
       this.state.data.password === "admin"
     ) {
@@ -47,7 +44,6 @@ class Login extends Form {
         <div className="col-5">
           <h1>Welcome to Devflow</h1>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("company", "Company", "text")}
             {this.renderInput("username", "Username", "text")}
             {this.renderInput("password", "Password", "password")}
             <br></br>
