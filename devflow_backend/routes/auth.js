@@ -29,6 +29,9 @@ router.put("/register", async (req, res) => {
             return;
         }
 
+        let previousMember = await Member.findOne({ userName: userName });
+        if (previousMember) { return res.status(400).send("Duplicated username") }
+
         // Check companyId is actually a company in the database
         const company = await Company.findById(companyId);
         if (!company) return res.status(400).send("No such companyId");
