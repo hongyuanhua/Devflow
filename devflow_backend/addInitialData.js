@@ -4,7 +4,7 @@ async function createMembers() {
             _id: "1",
             firstName: "Tim",
             lastName: "a",
-            userName: "timaaaa",
+            userName: "user",
             rank: 1,
             companyId: "1",
             teamId: "",
