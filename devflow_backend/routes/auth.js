@@ -19,22 +19,26 @@ router.get("/check-session", async (req, res) => {
 
 router.put("/register", async (req, res) => {
     console.log(req.body);
-    const { firstName, lastName, companyId, userName, password } = req.body;
+    const { firstName, lastName, companyName, userName, password } = req.body;
     let member;
     try {
         // if does not exist
-        if (!firstName || !lastName || !companyId || !userName || !password) {
+        if (!firstName || !lastName || !companyName || !userName || !password) {
             res.status(400).send("Missing signup fields");
-            console.log(firstName, lastName, companyId, userName, password);
+            console.log(firstName, lastName, companyName, userName, password);
             return;
         }
 
         let previousMember = await Member.findOne({ userName: userName });
         if (previousMember) { return res.status(400).send("Duplicated username") }
 
-        // Check companyId is actually a company in the database
-        const company = await Company.findById(companyId);
-        if (!company) return res.status(400).send("No such companyId");
+        let targetCompany = await Company.findOne({ name: companyName });
+        if (!targetCompany) { return res.status(400).send("Company not found with the given company name") }
+        const companyId = targetCompany._id
+
+        // Check companyName is actually a company in the database
+        // const company = await Company.findById(companyName);
+        // if (!company) return res.status(400).send("No such companyName");
         member = await new Member({
             firstName: firstName,
             lastName: lastName,

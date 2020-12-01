@@ -1,4 +1,4 @@
-async function createMembers() new Member({
+async function createMembers() {
     const members = [
         new Member({
             _id: "1",
@@ -131,7 +131,7 @@ async function createMembers() new Member({
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png",
         }),
     ];
-    for(m of members) {
+    for (m of members) {
         let result = await m.save();
         console.log(result)
     }
