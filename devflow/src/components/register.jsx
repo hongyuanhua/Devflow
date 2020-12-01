@@ -4,12 +4,13 @@ import Joi, { flatten } from "joi-browser";
 import pic from "./logo.jpg";
 import Form from "./common/form.jsx";
 import Logo from "./logo.jsx";
+import { register, checkSession } from "../services/authService";
 
 class Register extends Form {
   state = {
     data: {
-      company: "",
-      username: "",
+      companyName: "",
+      userName: "",
       firstName: "",
       lastName: "",
       password: "",
@@ -20,15 +21,16 @@ class Register extends Form {
   };
 
   schema = {
-    company: Joi.string().required().label("Company"),
-    Username: Joi.string().required().label("Username"),
+    companyName: Joi.string().required().label("Company"),
+    userName: Joi.string().required().label("Username"),
     firstName: Joi.string().required().label("First Name"),
     lastName: Joi.string().required().label("Last Name"),
     password: Joi.string().required().label("Password"),
     password2: Joi.string().required().label("Password"),
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
+    console.log(this.state.data);
     if (!(this.state.data.password === this.state.data.password2)) {
       console.log("Password does not match");
       this.state.bo = true;
@@ -38,6 +40,13 @@ class Register extends Form {
     }
     //call the server
     console.log(this.state.data);
+    try {
+      console.log("do submit");
+      await register(this.state.data);
+      this.props.history.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   render() {
@@ -50,8 +59,8 @@ class Register extends Form {
         <div className="col-5">
           <h1>Welcome to Devflow</h1>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("company", "Company", "text")}
-            {this.renderInput("username", "Username", "text")}
+            {this.renderInput("companyName", "Company", "text")}
+            {this.renderInput("userName", "Username", "text")}
             {this.renderInput("firstName", "First Name", "text")}
             {this.renderInput("lastName", "Last Name", "text")}
             {this.renderInput("password", "Password", "password")}
