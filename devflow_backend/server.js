@@ -10,6 +10,7 @@ const session = require("express-session");
 
 const auth = require("./routes/auth");
 const member = require("./routes/member");
+const admin = require("./routes/admin");
 
 const { Company } = require("./models/Company");
 const { Member } = require("./models/Member");
@@ -70,3 +71,4 @@ app.use("/api", sessionChecker);
 // Routing
 app.use("/auth", auth);
 app.use("/api/member", member);
+app.use("/admin", admin);
