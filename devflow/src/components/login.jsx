@@ -8,6 +8,8 @@ import TaskList from "./taskList.jsx";
 
 import "./login.css";
 import { Route } from "react-router-dom";
+import { login, checkSession } from "../services/authService";
+
 
 class Login extends Form {
   state = {
@@ -23,14 +25,15 @@ class Login extends Form {
     password: Joi.string().required().label("Password"),
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
     //call the server
-    if (
-      this.state.data.eid === "admin" &&
-      this.state.data.password === "admin"
-    ) {
-      const taskList = "./taskList";
-      this.props.history.push(taskList);
+    // await 
+    try {
+      console.log("do submit")
+      await login(this.state.data.username, this.state.data.password)
+      this.props.history.push("/taskList")
+    } catch (error) {
+      console.log(error)
     }
   };
 
@@ -54,7 +57,7 @@ class Login extends Form {
           <a
             href="./register"
             className="btn btn-primary btn-lg "
-            tabindex="-1"
+            tabIndex="-1"
             role="button"
             aria-disabled="false"
           >
