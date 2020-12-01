@@ -33,6 +33,10 @@ const Member = mongoose.model('Member', {
     profilePic: {
         type: String,
         default: ""
+    },
+    isApproved: {
+        type: Boolean,
+        default: false
     }
 })
 
