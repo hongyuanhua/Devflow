@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import logo from './logo.svg';
-import NavBar from "./navBar";
-import Form from "./form";
+import NavBar from "./common/navBar";
+import Form from "./common/form";
 import Joi from "joi-browser";
 import {
   getTasks,
@@ -11,7 +11,7 @@ import {
 } from "../services/fakeTaskService";
 import { getMembers, getMemberById } from "../services/fakeMemberService";
 import { Link } from "react-router-dom";
-import Textarea from "./textarea.jsx";
+import Textarea from "./common/textarea.jsx";
 
 class TaskDetail extends Form {
   state = {
@@ -100,7 +100,7 @@ class TaskDetail extends Form {
                         <option
                           key={member._id}
                           value={member._id}
-                          selected={this.state.data.assignedToId == member._id}
+                          selected={this.state.data.assignedToId === member._id}
                         >
                           {member.firstName}
                         </option>
@@ -119,7 +119,7 @@ class TaskDetail extends Form {
                         <option
                           key={member._id}
                           value={member._id}
-                          selected={this.state.data.assignedById == member._id}
+                          selected={this.state.data.assignedById === member._id}
                         >
                           {member.firstName}
                         </option>
@@ -138,7 +138,7 @@ class TaskDetail extends Form {
                         <option
                           key={member._id}
                           value={member._id}
-                          selected={this.state.data.createdById == member._id}
+                          selected={this.state.data.createdById === member._id}
                         >
                           {member.firstName}
                         </option>

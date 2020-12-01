@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./navBar";
+import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import { getTasks, getTaskById } from "../services/fakeTaskService";
 import {
@@ -57,7 +57,11 @@ class taskDetail_Present extends React.Component {
   filterID(id) {
     // console.log(members);
     // console.log(id);
-    const member = this.state.members.filter((member) => member._id == id);
+    const member = this.state.members.filter((member) => member._id === id);
+    console.log(member);
+    if (member.length === 0) {
+      return "";
+    }
     return member[0].firstName;
   }
   render() {
