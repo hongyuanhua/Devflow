@@ -13,7 +13,7 @@ class Login extends Form {
   state = {
     data: {
       company: "",
-      eid: "",
+      username: "",
       password: "",
     },
     errors: {},
@@ -21,7 +21,7 @@ class Login extends Form {
 
   schema = {
     company: Joi.string().required().label("Company"),
-    eid: Joi.string().required().label("Employee ID"),
+    username: Joi.string().required().label("Username"),
     password: Joi.string().required().label("Password"),
   };
 
@@ -48,7 +48,7 @@ class Login extends Form {
           <h1>Welcome to Devflow</h1>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("company", "Company", "text")}
-            {this.renderInput("eid", "Employee ID", "text")}
+            {this.renderInput("username", "Username", "text")}
             {this.renderInput("password", "Password", "password")}
             <br></br>
             {this.renderButton("submit", "Login")}{" "}
