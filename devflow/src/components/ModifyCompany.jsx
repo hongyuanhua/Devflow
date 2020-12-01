@@ -16,6 +16,8 @@ import {
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
+import { addCompany } from "../services/adminService";
+
 class ModifyCompany extends Form {
   state = {
     data: {
@@ -57,9 +59,18 @@ class ModifyCompany extends Form {
       companyPic: company.companyPic,
     };
   }
-  handleSave = () => {
-    saveCompany(this.state.data);
+  doSubmit = async () => {
+    //call the server
+    // await
+    try {
+      console.log("do submit");
+      await addCompany(this.state.data);
+      // this.props.history.push("/admin");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   render() {
     return (
       <React.Fragment>
@@ -74,6 +85,7 @@ class ModifyCompany extends Form {
               {this.renderInput("bossId", "Boss ID", "text")}
               {this.renderInput("companyPic", "Company picture", "text")}
               <br></br>
+              {/* {this.renderButton("submit", "Submit")}{" "} */}
             </form>
             <br></br>
             <a
@@ -82,7 +94,7 @@ class ModifyCompany extends Form {
               tabindex="-1"
               role="button"
               aria-disabled="false"
-              onClick={this.handleSave}
+              onClick={this.doSubmit}
             >
               Submit
             </a>

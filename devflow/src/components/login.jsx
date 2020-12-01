@@ -10,7 +10,6 @@ import "./login.css";
 import { Route } from "react-router-dom";
 import { login, checkSession } from "../services/authService";
 
-
 class Login extends Form {
   state = {
     data: {
@@ -40,7 +39,7 @@ class Login extends Form {
       }
       checkSession()
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 

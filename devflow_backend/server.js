@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const auth = require("./routes/auth");
 const member = require("./routes/member");
 const task = require("./routes/task");
+const admin = require("./routes/admin");
 
 const { Company } = require("./models/Company");
 const { Member } = require("./models/Member");
@@ -77,3 +78,4 @@ app.use(
 app.use("/auth", auth);
 app.use("/api/member", member);
 app.use("/api/task", task);
+app.use("/admin", admin);
