@@ -10,7 +10,6 @@ import "./login.css";
 import { Route } from "react-router-dom";
 import { login, checkSession } from "../services/authService";
 
-
 class Login extends Form {
   state = {
     data: {
@@ -27,13 +26,13 @@ class Login extends Form {
 
   doSubmit = async () => {
     //call the server
-    // await 
+    // await
     try {
-      console.log("do submit")
-      await login(this.state.data.username, this.state.data.password)
-      this.props.history.push("/taskList")
+      console.log("do submit");
+      await login(this.state.data.username, this.state.data.password);
+      this.props.history.push("/taskList");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
