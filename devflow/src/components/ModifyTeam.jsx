@@ -16,13 +16,14 @@ import { getTeamById, saveTeam } from "../services/fakeTeamService";
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
+import { addTeam } from "../services/adminService";
 class ModifyTeam extends Form {
   state = {
     data: {
       _id: "",
       companyId: "",
       teamName: "",
-      teamName: "",
+      leader: "",
       quote: "",
       teamPic: "",
       tasks: [],
@@ -66,8 +67,16 @@ class ModifyTeam extends Form {
       quote: team.quote,
     };
   }
-  handleSave = () => {
-    saveTeam(this.state.data);
+  doSubmit = async () => {
+    //call the server
+    // await
+    try {
+      console.log("do submit");
+      await addTeam(this.state.data);
+      // this.props.history.push("/admin");
+    } catch (error) {
+      console.log(error);
+    }
   };
   render() {
     return (
@@ -78,7 +87,7 @@ class ModifyTeam extends Form {
           <div className="col-5">
             <h1>{this.state.text}</h1>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("_id", "Company ID", "text")}
+              {this.renderInput("_id", "ID", "text")}
               {this.renderInput("companyId", "Company Id", "text")}
               {this.renderInput("teamName", "Team Name", "text")}
               {this.renderInput("leader", "Leader", "text")}
@@ -93,7 +102,7 @@ class ModifyTeam extends Form {
               tabindex="-1"
               role="button"
               aria-disabled="false"
-              onClick={this.handleSave}
+              onClick={this.doSubmit}
             >
               Submit
             </a>

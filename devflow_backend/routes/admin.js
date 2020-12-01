@@ -15,7 +15,6 @@ router.put("/addCompany", async (req, res) => {
     // if does not exist
     if (!_id || !name || !bossId || !companyPic) {
       res.status(400).send("Missing signup fields");
-      console.log(firstName, lastName, companyName, userName, password);
       return;
     }
 
@@ -28,17 +27,6 @@ router.put("/addCompany", async (req, res) => {
     if (previousCompany) {
       return res.status(400).send("Duplicated Company ID");
     }
-    // let targetCompany = await Company.findOne({ name: companyName });
-    // if (!targetCompany) {
-    //   return res
-    //     .status(400)
-    //     .send("Company not found with the given company name");
-    // }
-    // const companyId = targetCompany._id;
-
-    // Check companyName is actually a company in the database
-    // const company = await Company.findById(companyName);
-    // if (!company) return res.status(400).send("No such companyName");
     company = await new Company({
       _id: _id,
       name: name,
@@ -48,7 +36,7 @@ router.put("/addCompany", async (req, res) => {
     console.log(company);
   } catch (err) {
     console.log(err);
-    console.log("sign up failed!");
+    console.log("Company added failed!");
     res.status(400).send();
     return;
   }
@@ -58,4 +46,51 @@ router.put("/addCompany", async (req, res) => {
   return res.status(200).send("Company successfully added.");
 });
 
+router.put("/addTeam", async (req, res) => {
+  console.log(req.body);
+  const { _id, companyId, teamName, leader, teamPic, quote } = req.body;
+  let team;
+  try {
+    // if does not exist
+    if (!_id || !companyId || !teamName || !leader || !teamPic || !quote) {
+      res.status(400).send("Missing signup fields");
+      return;
+    }
+
+    let previousTeam = await Team.findOne({ _id: _id });
+    if (previousTeam) {
+      return res.status(400).send("Duplicated Team id");
+    }
+
+    let company = await Company.findOne({ _id: companyId });
+    if (!company) {
+      return res.status(400).send("The company does not exsit!");
+    }
+
+    let currentleader = await Member.findOne({ _id: leader });
+    if (!currentleader) {
+      return res.status(400).send("The leader does not exsit!");
+    }
+    //add Team to company list
+
+    team = await new Team({
+      _id: _id,
+      companyId: companyId,
+      teamName: teamName,
+      leader: leader,
+      teamPic: teamPic,
+      quote: quote,
+    }).save();
+    console.log(team);
+  } catch (err) {
+    console.log(err);
+    console.log("Team added failed!");
+    res.status(400).send();
+    return;
+  }
+  // req.session.memberId = member._id;
+  // console.log(req.session);
+  // await req.session.save();
+  return res.status(200).send("Team successfully added.");
+});
 module.exports = router;
