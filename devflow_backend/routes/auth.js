@@ -6,6 +6,7 @@ const { Member } = require("../models/Member");
 const { Company } = require("../models/Company");
 
 var cors = require("cors");
+require('isomorphic-fetch');
 
 // localhost:5000/auth/check-session
 router.get("/check-session", async (req, res) => {
@@ -102,10 +103,19 @@ router.post("/login", async (req, res) => {
         return;
     }
     req.session.memberId = member._id;
+    await req.session.save();
     console.log("req.session")
     console.log(req.session)
     // await req.session.save();
     console.log("Successful login");
+    // test code
+    // try {
+    //     const response = await fetch("http://localhost:5000/auth/check-session");
+    //     console.log(response);
+    // } catch (err) {
+    //     console.log(err);
+    // }
+
     res.send(member);
 });
 
