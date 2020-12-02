@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import { readAllNotificationsById } from "../services/fakeNotificationServices";
 import { getNameById } from "../services/fakeMemberService";
+import { getMemberById } from "../services/memberService";
 import { Link } from "react-router-dom";
 import Comment from "./common/comment.jsx";
 import ListGroup from "./common/listGroup.jsx";
 import { getNotificationByToId } from "./../services/notificationService";
 import { notifications } from "./../services/fakeNotificationServices";
+import { members } from "./../services/fakeMemberService";
 
 class Notification extends Component {
   state = {
@@ -37,6 +39,16 @@ class Notification extends Component {
         return g;
       });
       notifications.sort((a, b) => a.time.getTime() - b.time.getTime());
+
+      console.log(notifications);
+      for (let i in notifications) {
+        // console.log(i);
+        const m = await getMemberById(notifications[i].from);
+        if (m.status == 200) {
+          let member = await m.json();
+          notifications[i].from = member.firstName + " " + member.lastName;
+        }
+      }
 
       this.setState({ data: notifications });
     }
