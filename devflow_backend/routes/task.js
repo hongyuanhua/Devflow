@@ -27,7 +27,7 @@ router.get("/team/:teamId/:memberId", async (req, res) => {
         .catch(err => res.status(500).send("Server err"))
 });
 
-router.get("/member/:memberId", async (req, res) => {
+router.get("/toMember/:memberId", async (req, res) => {
     console.log("--In get task by member id--")
     const memberId = req.params.memberId;
 
@@ -38,6 +38,7 @@ router.get("/member/:memberId", async (req, res) => {
     // they are from same company and able to see the tasks fo the group
     Task.find({ assignedToId: memberId })
         .then(tasks => {
+            console.log(tasks)
             res.status(200).send(tasks);
         })
         .catch(err => res.status(500).send("Server err"))

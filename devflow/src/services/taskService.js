@@ -19,3 +19,9 @@ export const getTasksByTeam = async (teamId, memberId) => {
     //     console.log(error);
     // });
 };
+
+export const getTasksByAssignedTo = async (memberId) => {
+    console.log("---at get tasks by team---")
+    const tasks = await fetch(host + port + "/api/task/toMember/" + memberId)
+    return tasks
+};
