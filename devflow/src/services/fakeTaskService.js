@@ -67,6 +67,9 @@ export function saveTask(task) {
 export function getTaskByTeamId(teamId) {
   return tasks.filter((t) => t.teamId === teamId);
 }
+export function getTaskByMemberId(memberId) {
+  return tasks.filter((t) => t.assignedToId === memberId);
+}
 export function deleteTasks(id) {
   let tasksInDb = tasks.find((m) => m._id === id);
   tasks.splice(tasks.indexOf(tasksInDb), 1);
