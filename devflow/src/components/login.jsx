@@ -42,6 +42,7 @@ class Login extends Form {
         localStorage.setItem("memberId", member._id);
         localStorage.setItem("teamId", member.teamId);
         localStorage.setItem("companyId", member.companyId);
+        localStorage.setItem("rank", member.rank);
         this.props.history.push("/taskList");
       }
       checkSession();
@@ -50,7 +51,7 @@ class Login extends Form {
     }
   };
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   render() {
     return (
