@@ -17,6 +17,7 @@ import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
 import { getTeamById } from "../services/teamService";
 import TeamTable from "./teamTable";
+import Textarea from "./common/textarea.jsx";
 class team extends Component {
   state = {
     data: {
@@ -30,6 +31,7 @@ class team extends Component {
     },
     tasks: [],
     sortColumn: { path: "name", order: "asc" },
+    notification: "",
   };
   modifyName = (name) => {
     if (name.length > 28) {
@@ -75,6 +77,17 @@ class team extends Component {
     this.setState({ tasks });
 
     deleteTasks(task._id);
+  };
+
+  handleChange = ({ currentTarget: input }) => {
+    this.state.notification = input.value;
+    // console.log(this.state.notification);
+    // this.setState({ state });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(this.state.notification);
   };
   render() {
     const organizedTaskData = _.orderBy(
@@ -153,6 +166,22 @@ class team extends Component {
                     </p>
                   ))}
                 </div>
+                <Textarea
+                  name="notification"
+                  label="Send Notification"
+                  onChange={this.handleChange}
+                  rows="4"
+                />
+                <br></br>
+                <a
+                  className="btn btn-primary btn-lg "
+                  tabindex="-1"
+                  role="button"
+                  aria-disabled="false"
+                  onClick={this.handleSubmit}
+                >
+                  Send
+                </a>
               </div>
             </div>
             <div className="col-8 form-group">
