@@ -20,6 +20,20 @@ class adminCompanyTable extends Component {
       label: "bossId",
     },
     {
+      key: "Modify",
+      content: (company) => (
+        <a
+          href={"/mc/" + company._id}
+          className="btn btn-primary btn-sm "
+          tabindex="-1"
+          role="button"
+          aria-disabled="false"
+        >
+          Modify
+        </a>
+      ),
+    },
+    {
       key: "delete",
       content: (company) => (
         <button
@@ -28,20 +42,6 @@ class adminCompanyTable extends Component {
         >
           Delete
         </button>
-      ),
-    },
-    {
-      key: "Modify",
-      content: (company) => (
-        <a
-          href={"./mc/" + company._id}
-          className="btn btn-primary btn-sm "
-          tabindex="-1"
-          role="button"
-          aria-disabled="false"
-        >
-          Modify
-        </a>
       ),
     },
   ];
