@@ -72,8 +72,10 @@ app.use(
 // // Express middleware
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
+
 // Session checking
 // app.use("/api", sessionChecker);
+
 // Routing
 app.use("/auth", auth);
 app.use("/api/member", member);

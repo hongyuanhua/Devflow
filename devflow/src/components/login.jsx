@@ -33,6 +33,8 @@ class Login extends Form {
       let res = await login(this.state.data.username, this.state.data.password)
       console.log("res: ", res)
       console.log(res.status == 200)
+      console.log("res: ", res.body)
+
       if (res.status == 200) {
         localStorage.setItem("memberId", "1")
         this.props.history.push("/taskList")
