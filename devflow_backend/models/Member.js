@@ -4,7 +4,7 @@ const { nanoid } = require('nanoid')
 const Member = mongoose.model('Member', {
     _id: {
         type: String,
-        default: nanoid()
+        required: true,
     },
     firstName: {
         type: String,

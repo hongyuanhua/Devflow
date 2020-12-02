@@ -4,6 +4,7 @@ const app = express();
 
 const { Member } = require("../models/Member");
 const { Company } = require("../models/Company");
+const { nanoid } = require('nanoid')
 
 var cors = require("cors");
 require('isomorphic-fetch');
@@ -20,6 +21,7 @@ router.get("/check-session", async (req, res) => {
 });
 
 router.put("/register", async (req, res) => {
+    const id = nanoid()
     console.log(req.body);
     console.log(req.session.memberId);
     const { firstName, lastName, companyName, userName, password } = req.body;
@@ -43,6 +45,7 @@ router.put("/register", async (req, res) => {
         // const company = await Company.findById(companyName);
         // if (!company) return res.status(400).send("No such companyName");
         member = await new Member({
+            _id: id,
             firstName: firstName,
             lastName: lastName,
             companyId: companyId,
