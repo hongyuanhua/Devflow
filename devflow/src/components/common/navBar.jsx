@@ -1,54 +1,147 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { getAllNotificaitons, getNotificaitons } from "../../services/fakeNotificationServices"
+import { getCompanyById } from "./../../services/companyService";
+import { getMemberById } from "./../../services/memberService";
+import { getNotificationByToId } from "./../../services/notificationService";
+import { getTeamById } from "./../../services/teamService";
+import { logout } from "./../../services/authService";
 
 class NavBar extends Component {
-    state = {
-        data: []
+  state = {
+    data: [],
+    memberId: "",
+    companyId: "",
+    teamId: "",
+    memberName: "",
+    companyName: "",
+    teamName: "",
+    rank: null,
+  };
+
+  async componentWillMount() {
+    let memberId = localStorage.memberId;
+    let companyId = localStorage.companyId;
+    let teamId = localStorage.teamId;
+    this.setState({ memberId, companyId, teamId });
+
+    const member = await getMemberById(memberId);
+    if (member.status == 200) {
+      let members = await member.json();
+      this.setState({ memberName: members.firstName + " " + members.lastName });
+      this.setState({ rank: member.rank });
     }
 
-    componentWillMount() {
-        let notifications = getAllNotificaitons();
-        notifications = notifications.filter(g => {
-            g.time = new Date(g.time)
-            return g
-        });
-        notifications.sort((a, b) => a.time.getTime() - b.time.getTime());
-
-        this.setState({ data: notifications });
+    const company = await getCompanyById(companyId);
+    if (company.status == 200) {
+      let companys = await company.json();
+      this.setState({ companyName: companys.name });
     }
 
-    getUnread = () => {
-        let filtered = this.state.data.filter((n) => {
-            return n.isUnread
-        })
-
-        return filtered
+    if (teamId != "") {
+      const team = await getTeamById(teamId);
+      if (team.status == 200) {
+        let teams = await team.json();
+        this.setState({ teamName: teams.teamName });
+      }
     }
 
-    render() {
-        let unreadNotifications = this.getUnread();
-        let numberOfUnreadNotifications = unreadNotifications.length;
-        return (
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a className="navbar-brand" href="/taskList">DevFlow</a>
+    const notification = await getNotificationByToId(memberId);
 
-                <ul className="navbar-nav mr-auto"></ul>
+    if (notification.status == 200) {
+      let notifications = await notification.json();
+      notifications = notifications.filter((g) => {
+        g.time = new Date(g.time);
+        return g;
+      });
+      notifications.sort((a, b) => a.time.getTime() - b.time.getTime());
 
-                {this.props.atPage != "notification" &&
-                    <form className="form-inline my-2 my-lg-0">
-                        {
-                            numberOfUnreadNotifications > 0 && <Link to="/notification/1/Unread"><button className="btn btn-outline-warning" type="button">Unread Notifications: {numberOfUnreadNotifications}</button></Link>
-                        }
-                        {
-                            numberOfUnreadNotifications == 0 && <Link to="/notification/1"><button className="btn btn-sm btn-outline-success" type="button">Notifications</button></Link>
-                        }
-                    </form>
-                }
-            </nav>
-
-        );
+      this.setState({ data: notifications });
     }
+  }
+
+  getUnread = () => {
+    let filtered = this.state.data.filter((n) => {
+      return n.isUnread;
+    });
+
+    return filtered;
+  };
+
+  logout = async () => {
+    localStorage.clear();
+    await logout();
+  };
+
+  render() {
+    let unreadNotifications = this.getUnread();
+    let numberOfUnreadNotifications = unreadNotifications.length;
+    return (
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a className="navbar-brand" href="/taskList">
+          DevFlow
+        </a>
+        <Link to={"/company/" + this.state.companyId}>
+          <button className="btn btn-sm btn-outline-primary" type="button">
+            {this.state.companyName}
+          </button>
+        </Link>
+        {this.state.teamId != "" && (
+          <Link to={"/team/" + this.state.teamId}>
+            <button className="btn btn-sm btn-outline-secondary" type="button">
+              {this.state.teamName}
+            </button>
+          </Link>
+        )}
+        <Link to={"/personal/" + this.state.memberId}>
+          <button className="btn btn-sm btn-outline-success" type="button">
+            {this.state.memberName}
+          </button>
+        </Link>
+
+        {this.state.rank === 1 && (
+          <Link to={"/ceo/" + this.state.companyId}>
+            <button className="btn btn-sm btn-outline-secondary" type="button">
+              CEO Page
+            </button>
+          </Link>
+        )}
+
+        <ul className="navbar-nav mr-auto"></ul>
+
+        <Link to={"/"}>
+          <button
+            className="btn btn-sm btn-outline-danger"
+            type="button"
+            onClick={() => this.logout()}
+          >
+            Log out
+          </button>
+        </Link>
+
+        {this.props.atPage != "notification" && (
+          <form className="form-inline my-2 my-lg-0">
+            {numberOfUnreadNotifications > 0 && (
+              <Link to="/notification/1/Unread">
+                <button className="btn btn-outline-warning" type="button">
+                  Unread Notifications: {numberOfUnreadNotifications}
+                </button>
+              </Link>
+            )}
+            {numberOfUnreadNotifications == 0 && (
+              <Link to="/notification/1">
+                <button
+                  className="btn btn-sm btn-outline-success"
+                  type="button"
+                >
+                  Notifications
+                </button>
+              </Link>
+            )}
+          </form>
+        )}
+      </nav>
+    );
+  }
 }
 
 export default NavBar;

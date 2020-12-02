@@ -16,10 +16,11 @@ import {
   tasks,
   deleteTasks,
 } from "../services/fakeTaskService";
-import { getTeams, getTeamById } from "../services/fakeTeamService";
+import { getTasksByTeam } from "../services/taskService";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
+import { getTeamById } from "../services/teamService";
 import TeamTable from "./teamTable";
 class team extends Component {
   state = {
@@ -41,14 +42,21 @@ class team extends Component {
     }
     return name;
   };
-  componentDidMount() {
+  async componentDidMount() {
     const teamId = this.props.match.params.id;
-    const team = getTeamById(teamId);
-    if (!team) return this.props.history.replace("/not-found");
-    this.setState({
-      data: this.mapToViewModel(team),
-      tasks: getTaskByTeamId(teamId),
-    });
+    const team = await getTeamById(teamId);
+    if (team.status == 200) {
+      let teams = await team.json();
+      if (!teams) return this.props.history.replace("/not-found");
+      this.setState({ data: teams });
+    }
+    const task = await getTaskByTeamId(teamId);
+    console.log(task);
+    if (task.status == 200) {
+      let tasks = await task.json();
+      console.log(tasks);
+      this.setState({ tasks: tasks });
+    }
   }
   mapToViewModel(team) {
     return {

@@ -3,11 +3,12 @@ import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
-import { deleteCompany, getCompanies } from "../services/fakeCompanyServices";
+import { deleteCompany, getCompanyById } from "../services/fakeCompanyServices";
 import {
   deleteMember,
   getMembers,
   getMembersByCompanyId,
+  getMemberById,
 } from "../services/fakeMemberService";
 import { getNotificaitons } from "../services/fakeNotificationServices";
 import {
@@ -20,7 +21,6 @@ import {
   getTeams,
   getTeamsByCompanyId,
 } from "../services/fakeTeamService";
-import { companies, getCompanyById } from "../services/fakeCompanyServices";
 import CompaniesTable from "../components/adminCompanyTable";
 import TeamTable from "../components/adminTeamTable";
 import MemberTable from "../components/adminMemberTable";
@@ -31,6 +31,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import NotificationsTable from "../components/adminNotificationTable";
 class ceo extends Component {
   state = {
+    company: {},
     tasks: getTasks(),
     teams: getTeams(),
     members: getMembers(),
@@ -46,6 +47,7 @@ class ceo extends Component {
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
+      company: getCompanyById(companyId),
       tasks: getTasksByCompanyId(companyId),
       teams: getTeamsByCompanyId(companyId),
       members: getMembersByCompanyId(companyId),
@@ -133,7 +135,6 @@ class ceo extends Component {
               ))}
             </ul>
           </div>
-
           <div className="col">
             <div className="row">
               <div className="col">
@@ -196,6 +197,12 @@ class ceo extends Component {
               <tbody></tbody>
             </table>{" "}
                 */}
+          </div>
+          <div className="col-3">
+            <div className="row right">
+              <img src={this.state.company.companyPic} />
+              <h3>Welcome to {this.state.company.name} CEO page</h3>
+            </div>
           </div>
         </div>
       </React.Fragment>

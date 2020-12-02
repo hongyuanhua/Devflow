@@ -33,7 +33,7 @@ class Personal extends Component {
   };
 
   async componentDidMount() {
-    let userId = localStorage.memberId;
+    let userId = this.props.match.params.id;
     let member = await getMemberById(userId);
     console.log(userId);
     if (member.status == 200) {
