@@ -6,6 +6,7 @@ import Personal from "./components/personal.jsx";
 import Tmp from "./components/tmp.jsx";
 import TaskDetail from "./components/taskDetail.jsx";
 import TaskList from "./components/taskList.jsx";
+import Unauthorized from "./components/unauthorized.jsx";
 import Notification from "./components/notification.jsx";
 import TaskDetail_Present from "./components/taskDetail_Present.jsx";
 import Company from "./components/company.jsx";
@@ -45,6 +46,7 @@ class App extends React.Component {
               component={Notification}
             />
             <Route exact path="/taskList" component={TaskList} />
+            <Route exact path="/unauthorized" component={Unauthorized} />
             <Route exact path="/company/:id" component={Company} />
             <Route exact path="/team/:id" component={Team} />
             <Route exact path="/admin" component={Admin} />

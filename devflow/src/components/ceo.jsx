@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
 import { deleteCompany, getCompanyById } from "../services/fakeCompanyServices";
+import { logout } from "../services/authService";
 import {
   deleteMember,
   getMembers,
@@ -42,8 +43,16 @@ class ceo extends Component {
     ],
     sortColumn: { path: "_id", order: "asc" },
   };
+
   componentDidMount() {
+    const rank = localStorage.rank;
+    const curCompanyId = localStorage.companyId;
     const companyId = this.props.match.params.id;
+
+    if (rank != 1 || curCompanyId != companyId) {
+      this.props.history.push("/unauthorized")
+    }
+
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
@@ -53,6 +62,7 @@ class ceo extends Component {
       members: getMembersByCompanyId(companyId),
     });
   }
+
   mapToViewModel(company) {
     return {
       _id: company._id,
