@@ -17,6 +17,7 @@ import { getTeamById, saveTeam } from "../services/fakeTeamService";
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
+import { addMember, checkSession } from "../services/adminService";
 class ModifyMember extends Form {
   state = {
     data: {
@@ -70,8 +71,16 @@ class ModifyMember extends Form {
       profilePic: member.profilePic,
     };
   }
-  handleSave = () => {
-    // saveTeam(this.state.data);
+  doSubmit = async () => {
+    //call the server
+    // await
+    try {
+      console.log("do submit");
+      await addMember(this.state.data);
+      // this.props.history.push("/admin");
+    } catch (error) {
+      console.log(error);
+    }
   };
   render() {
     return (
@@ -100,7 +109,7 @@ class ModifyMember extends Form {
               tabindex="-1"
               role="button"
               aria-disabled="false"
-              onClick={this.handleSave}
+              onClick={this.doSubmit}
             >
               Submit
             </a>

@@ -16,7 +16,7 @@ import {
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
-import { addCompany } from "../services/adminService";
+import { addCompany, checkSession } from "../services/adminService";
 
 class ModifyCompany extends Form {
   state = {

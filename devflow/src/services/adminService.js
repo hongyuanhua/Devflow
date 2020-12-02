@@ -67,3 +67,50 @@ export const addTeam = (data) => {
       console.log(error);
     });
 };
+
+export const addMember = (data) => {
+  const {
+    _id,
+    firstName,
+    lastName,
+    userName,
+    rank,
+    teamId,
+    companyId,
+    password,
+    profilePic,
+  } = data;
+  console.log(data);
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/admin/addMember", {
+    method: "put",
+    body: JSON.stringify({
+      _id: _id,
+      firstName: firstName,
+      lastName: lastName,
+      userName: userName,
+      rank: rank,
+      teamId: teamId,
+      companyId: companyId,
+      password: password,
+      profilePic: profilePic,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("Member added successfully!");
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail to add the Member");
+      // console.log(res)
+      console.log(error);
+    });
+};
