@@ -23,7 +23,7 @@ class Tmp extends Component {
       this.setState({ company: c });
     }
 
-    const notifications = await getNotificationByToId("2");
+    const notifications = await getNotificationByToId("1");
     if (notifications.status == 200) {
       let c = await notifications.json();
       this.setState({ notifications: c });

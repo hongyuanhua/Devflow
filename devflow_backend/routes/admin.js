@@ -93,4 +93,81 @@ router.put("/addTeam", async (req, res) => {
   // await req.session.save();
   return res.status(200).send("Team successfully added.");
 });
+
+router.put("/addMember", async (req, res) => {
+  console.log(req.body);
+  const {
+    _id,
+    firstName,
+    lastName,
+    userName,
+    rank,
+    teamId,
+    companyId,
+    password,
+    profilePic,
+  } = req.body;
+  let member;
+  try {
+    // if does not exist
+    if (
+      !_id ||
+      !firstName ||
+      !lastName ||
+      !userName ||
+      !rank ||
+      !companyId ||
+      !password ||
+      !profilePic
+    ) {
+      res.status(400).send("Missing signup fields");
+      return;
+    }
+
+    let previousMember = await Member.findOne({ _id: _id });
+    if (previousMember) {
+      return res.status(400).send("Duplicated Member id");
+    }
+
+    previousMember = await Member.findOne({ userName: userName });
+    if (previousMember) {
+      return res.status(400).send("Duplicated Username");
+    }
+
+    let company = await Company.findOne({ _id: companyId });
+    if (!company) {
+      return res.status(400).send("The company does not exsit!");
+    }
+
+    let team = await Team.findOne({ _id: teamId });
+    if (!team) {
+      return res.status(400).send("The Team does not exsit!");
+    }
+
+    //add member to team list
+
+    member = await new Member({
+      _id: _id,
+      firstName: firstName,
+      lastName: lastName,
+      userName: userName,
+      rank: rank,
+      teamId: teamId,
+      companyId: companyId,
+      password: password,
+      profilePic: profilePic,
+      isApproved: true,
+    }).save();
+    console.log(member);
+  } catch (err) {
+    console.log(err);
+    console.log("Member added failed!");
+    res.status(400).send();
+    return;
+  }
+  // req.session.memberId = member._id;
+  // console.log(req.session);
+  // await req.session.save();
+  return res.status(200).send("Member successfully added.");
+});
 module.exports = router;

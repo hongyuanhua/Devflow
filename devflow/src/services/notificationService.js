@@ -22,8 +22,8 @@ export const getNotificationByFromId = async (id) => {
   const notification = await fetch(url);
   return notification;
 };
-export const getNotificationFromId = async (id) => {
-  console.log("---getAllNotification---");
+export const getAllNotifications = async () => {
+  console.log("---getAllNotifications---");
   // Create our request constructor with all the parameters we need
   const url = host + port + "/api/notification/all";
   console.log(url);
