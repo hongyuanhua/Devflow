@@ -26,33 +26,31 @@ class Login extends Form {
 
   doSubmit = async () => {
     //call the server
-    // await 
+    // await
     // await checkSession()
     try {
-      console.log("do submit")
-      let res = await login(this.state.data.username, this.state.data.password)
-      console.log("res: ", res)
-      console.log(res.status == 200)
-      console.log("res: ", res.body)
+      console.log("do submit");
+      let res = await login(this.state.data.username, this.state.data.password);
+      console.log("res: ", res);
+      console.log(res.status == 200);
+      console.log("res: ", res.body);
 
       if (res.status == 200) {
-        let member = await res.json()
-        console.log("member")
-        console.log(member)
-        localStorage.setItem("memberId", member._id)
-        localStorage.setItem("teamId", member.teamId)
-        localStorage.setItem("companyId", member.companyId)
-        this.props.history.push("/taskList")
+        let member = await res.json();
+        console.log("member");
+        console.log(member);
+        localStorage.setItem("memberId", member._id);
+        localStorage.setItem("teamId", member.teamId);
+        localStorage.setItem("companyId", member.companyId);
+        this.props.history.push("/taskList");
       }
-      checkSession()
+      checkSession();
     } catch (error) {
       console.log(error);
     }
   };
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   render() {
     return (
