@@ -36,7 +36,12 @@ class Login extends Form {
       console.log("res: ", res.body)
 
       if (res.status == 200) {
-        localStorage.setItem("memberId", "1")
+        let member = await res.json()
+        console.log("member")
+        console.log(member)
+        localStorage.setItem("memberId", member._id)
+        localStorage.setItem("teamId", member.teamId)
+        localStorage.setItem("companyId", member.companyId)
         this.props.history.push("/taskList")
       }
       checkSession()
