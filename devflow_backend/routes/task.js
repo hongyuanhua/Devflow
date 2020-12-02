@@ -22,7 +22,22 @@ router.get("/team/:teamId/:memberId", async (req, res) => {
     // they are from same company and able to see the tasks fo the group
     Task.find({ teamId: teamId })
         .then(tasks => {
-            console.log("")
+            res.status(200).send(tasks);
+        })
+        .catch(err => res.status(500).send("Server err"))
+});
+
+router.get("/member/:memberId", async (req, res) => {
+    console.log("--In get task by member id--")
+    const memberId = req.params.memberId;
+
+    // check if memeber is from the same company as the team
+    let member = await Member.findById(memberId);
+    if (!member) { return res.status(400).send("No member with such id") }
+
+    // they are from same company and able to see the tasks fo the group
+    Task.find({ assignedToId: memberId })
+        .then(tasks => {
             res.status(200).send(tasks);
         })
         .catch(err => res.status(500).send("Server err"))
