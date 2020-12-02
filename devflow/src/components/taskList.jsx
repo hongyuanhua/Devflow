@@ -9,9 +9,9 @@ import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 class taskList extends Component {
 
-  async componentWillMount() {
-    checkSession(this); // sees if a user is logged in.
-  }
+  // async componentWillMount() {
+  //   checkSession(this); // sees if a user is logged in.
+  // }
 
   state = {
     curUserId: "",

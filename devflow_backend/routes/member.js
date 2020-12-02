@@ -3,14 +3,14 @@ const router = express.Router();
 const { Member } = require("../models/Member.js");
 
 // localhost:5000/api/member/1
-// router.get("/all", async (req, res) => {
-//     Member.find()
-//         .then(members => {
-//             console.log(member)
-//             res.send(members);
-//         })
-//         .catch(err => res.status(500).send("Server err"))
-// });
+router.get("/all", async (req, res) => {
+    Member.find()
+        .then(members => {
+            console.log(member)
+            res.send(members);
+        })
+        .catch(err => res.status(500).send("Server err"))
+});
 
 router.get("/:id", async (req, res) => {
     const memberId = req.params.id;

@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { getAllCompany, getCompanyById } from "../services/companyService";
+import { getTasksByTeam } from "../services/taskService";
 
 class Tmp extends Component {
 
     state = {
         companies: [],
-        company: {}
+        company: {},
+        tasks: [],
     }
 
     async componentDidMount() {
@@ -20,6 +22,12 @@ class Tmp extends Component {
             let c = await company.json();
             this.setState({ company: c });
         }
+
+        const tasks = await getTasksByTeam("1", "2")
+        if (tasks.status == 200) {
+            let ts = await tasks.json();
+            this.setState({ tasks: ts });
+        }
     }
     render() {
         console.log("In tmp")
@@ -27,6 +35,7 @@ class Tmp extends Component {
         // console.log(await getCompanyById("1"))
         console.log(this.state.companies)
         console.log(this.state.company)
+        console.log(this.state.tasks)
 
         // console.log("checkSession()")
         // console.log(checkSession())
