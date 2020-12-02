@@ -39,7 +39,7 @@ export const login = async (userName, password) => {
   console.log("at login")
   // Send the request with fetch()
   const isSuccessLogin = await fetch(request);
-  console.log(await isSuccessLogin.json())
+  // console.log(await isSuccessLogin.json())
   return isSuccessLogin
   // .then(res => {
   //   console.log("login fetch");
