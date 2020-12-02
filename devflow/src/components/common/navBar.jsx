@@ -22,13 +22,13 @@ class NavBar extends Component {
     let memberId = localStorage.memberId;
     let companyId = localStorage.companyId;
     let teamId = localStorage.teamId;
-    this.setState({ memberId, companyId, teamId });
+    let rank = rank;
+    this.setState({ memberId, companyId, teamId, rank });
 
     const member = await getMemberById(memberId);
     if (member.status == 200) {
       let members = await member.json();
       this.setState({ memberName: members.firstName + " " + members.lastName });
-      this.setState({ rank: member.rank });
     }
 
     const company = await getCompanyById(companyId);
