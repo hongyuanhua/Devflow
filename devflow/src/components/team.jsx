@@ -10,12 +10,7 @@ import {
 
 import { getCompanyNameById } from "../services/fakeCompanyServices";
 
-import {
-  getTasks,
-  getTaskByTeamId,
-  tasks,
-  deleteTasks,
-} from "../services/fakeTaskService";
+import { getTasks, tasks, deleteTasks } from "../services/fakeTaskService";
 import { getTasksByTeam } from "../services/taskService";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
@@ -43,6 +38,7 @@ class team extends Component {
     return name;
   };
   async componentDidMount() {
+    const memberId = localStorage.memberId;
     const teamId = this.props.match.params.id;
     const team = await getTeamById(teamId);
     if (team.status == 200) {
@@ -50,8 +46,7 @@ class team extends Component {
       if (!teams) return this.props.history.replace("/not-found");
       this.setState({ data: teams });
     }
-    const task = await getTaskByTeamId(teamId);
-    console.log(task);
+    const task = await getTasksByTeam(teamId, memberId);
     if (task.status == 200) {
       let tasks = await task.json();
       console.log(tasks);
@@ -87,19 +82,25 @@ class team extends Component {
       [this.state.sortColumn.path],
       [this.state.sortColumn.order]
     );
+    console.log("organizedTaskData");
+    console.log(organizedTaskData);
     for (let t in organizedTaskData) {
-      organizedTaskData[t].assignedBy = getFullNameById(
-        organizedTaskData[t].assignedById
-      );
-      organizedTaskData[t].assignedByPic = getMemberById(
-        organizedTaskData[t].assignedById
-      ).profilePic;
-      organizedTaskData[t].assignedTo = getFullNameById(
-        organizedTaskData[t].assignedToId
-      );
-      organizedTaskData[t].assignedToPic = getMemberById(
-        organizedTaskData[t].assignedToId
-      ).profilePic;
+      if (organizedTaskData[t].assignedById != "") {
+        organizedTaskData[t].assignedBy = getFullNameById(
+          organizedTaskData[t].assignedById
+        );
+        organizedTaskData[t].assignedByPic = getMemberById(
+          organizedTaskData[t].assignedById
+        ).profilePic;
+      }
+      if (organizedTaskData[t].assignedToId != "") {
+        organizedTaskData[t].assignedTo = getFullNameById(
+          organizedTaskData[t].assignedToId
+        );
+        organizedTaskData[t].assignedToPic = getMemberById(
+          organizedTaskData[t].assignedToId
+        ).profilePic;
+      }
     }
     // console.log(organizedTaskData);
     return (
