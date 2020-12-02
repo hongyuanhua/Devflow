@@ -44,6 +44,20 @@ class adminTaskTable extends Component {
       label: "Estimate Time",
     },
     {
+      key: "Modify",
+      content: (task) => (
+        <a
+          href={"/taskDetail_Present/" + task._id}
+          className="btn btn-primary btn-sm "
+          tabindex="-1"
+          role="button"
+          aria-disabled="false"
+        >
+          Modify
+        </a>
+      ),
+    },
+    {
       key: "delete",
       content: (task) => (
         <button

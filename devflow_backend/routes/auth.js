@@ -57,7 +57,7 @@ router.put("/register", async (req, res) => {
     }
     // req.session.memberId = member._id;
     // console.log(req.session);
-    // await req.session.save();
+    await req.session.save();
     return res.status(200).send("Successfully registered.");
 });
 
@@ -106,7 +106,7 @@ router.post("/login", async (req, res) => {
     console.log(req.session)
     // await req.session.save();
     console.log("Successful login");
-    res.status(200).send(member);
+    res.send(member);
 });
 
 router.post("/logout", (req, res) => {

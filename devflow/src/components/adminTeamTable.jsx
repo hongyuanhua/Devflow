@@ -26,6 +26,20 @@ class adminTeamTable extends Component {
       label: "teamPic",
     },
     {
+      key: "Modify",
+      content: (team) => (
+        <a
+          href={"/mt/" + team._id}
+          className="btn btn-primary btn-sm "
+          tabindex="-1"
+          role="button"
+          aria-disabled="false"
+        >
+          Modify
+        </a>
+      ),
+    },
+    {
       key: "delete",
       content: (team) => (
         <button
@@ -34,20 +48,6 @@ class adminTeamTable extends Component {
         >
           Delete
         </button>
-      ),
-    },
-    {
-      key: "Modify",
-      content: (team) => (
-        <a
-          href={"./mt/" + team._id}
-          className="btn btn-primary btn-sm "
-          tabindex="-1"
-          role="button"
-          aria-disabled="false"
-        >
-          Modify
-        </a>
       ),
     },
   ];
