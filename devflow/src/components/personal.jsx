@@ -17,7 +17,6 @@ import _ from "lodash";
 import { getTaskById, getTaskByMemberId } from "./../services/fakeTaskService";
 import { addPersonalMessage } from "./../services/notificationService";
 
-
 class Personal extends Component {
   state = {
     data: {
@@ -38,7 +37,7 @@ class Personal extends Component {
   };
 
   async componentDidMount() {
-    let memberId = localStorage.memberId
+    let memberId = localStorage.memberId;
     this.setState({ memberId });
 
     let userId = this.props.match.params.id;
@@ -84,10 +83,10 @@ class Personal extends Component {
     await addPersonalMessage({
       fromId: this.state.memberId,
       toId: this.state.data._id,
-      message: this.state.notification
-    })
-    this.props.history.push("/personal/" + this.state.data._id);
-
+      message: this.state.notification,
+    });
+    // this.props.history.push("/personal/" + this.state.data._id);
+    window.location.reload();
   };
 
   modifyName = (name) => {
