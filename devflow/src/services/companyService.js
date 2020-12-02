@@ -31,6 +31,7 @@ export const getCompanyById = async (id) => {
 
   // Send the request with fetch()
   const company = await fetch(url);
+  return company;
   //     .then((res) => {
   //     console.log("Success in getting all companies")
   //     return res.json();
