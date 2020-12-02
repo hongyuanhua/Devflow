@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
-import { login, checkSession } from "../services/authService";
+import { getAllCompany, getCompanyById } from "../services/companyService";
 
 class Tmp extends Component {
 
-    state = {}
+    state = { companies: [] }
+
+    async componentDidMount() {
+        const res = await getAllCompany()
+        if (res.status == 200) {
+            let companies = await res.json();
+            this.setState({ companies: companies });
+        }
+    }
     render() {
         console.log("In tmp")
-        console.log(login("user", "user"))
+        // console.log(await getAllCompany())
+        // console.log(await getCompanyById("1"))
+        console.log(this.state.companies)
         // console.log("checkSession()")
         // console.log(checkSession())
         return (
