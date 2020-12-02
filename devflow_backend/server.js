@@ -16,8 +16,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const auth = require("./routes/auth");
 const member = require("./routes/member");
 const company = require("./routes/company");
+const notification = require("./routes/notification");
 const task = require("./routes/task");
 const admin = require("./routes/admin");
+const team = require("./routes/team");
 
 const { Company } = require("./models/Company");
 const { Member } = require("./models/Member");
@@ -81,5 +83,7 @@ app.use(
 app.use("/auth", auth);
 app.use("/api/member", member);
 app.use("/api/company", company);
+app.use("/api/team", team);
+app.use("/api/notification", notification);
 app.use("/api/task", task);
 app.use("/admin", admin);
