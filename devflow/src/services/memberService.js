@@ -11,3 +11,10 @@ export const getMemberById = async (id) => {
   const member = await fetch(url);
   return member;
 };
+export const getMembersByCompanyId = async (id) => {
+  console.log("---getMembersByCompanyId---");
+  const url = host + port + "/api/member/company/" + id;
+  // Send the request with fetch()
+  const member = await fetch(url);
+  return member;
+};

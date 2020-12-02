@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./personal.css";
 import { getNotificaitons } from "../services/fakeNotificationServices";
-import { getCompanyById } from "../services/fakeCompanyServices";
 import { getTeamsByCompanyId } from "../services/fakeTeamService.js";
 import {
-  getMemberById,
   getMemberByCompanyId_NoTeam,
   getFullNameById,
 } from "../services/fakeMemberService.js";
@@ -14,6 +12,11 @@ import CompanyTable from "./companyTable";
 import MemberTable from "./memberTable";
 import _ from "lodash";
 import { getTeamByCompanyId } from "../services/teamService";
+import { getCompanyById } from "../services/companyService";
+import {
+  getMemberById,
+  getMembersByCompanyId,
+} from "./../services/memberService";
 class Company extends Component {
   state = {
     data: {
@@ -36,14 +39,26 @@ class Company extends Component {
     const team = await getTeamByCompanyId(companyId);
     if (team.status == 200) {
       let teams = await team.json();
-      if (!teams) return this.props.history.replace("/not-found");
       this.setState({ teams: teams });
     }
-    this.setState({
-      company: getCompanyById(companyId),
-      boss: getMemberById(getCompanyById(companyId).bossId),
-      members: getMemberByCompanyId_NoTeam(companyId),
-    });
+    const company = await getCompanyById(companyId);
+    if (company.status == 200) {
+      let companies = await company.json();
+      if (!companies) return this.props.history.replace("/not-found");
+      this.setState({ company: companies });
+    }
+
+    const boss = await getMemberById(this.state.company.bossId);
+    if (boss.status == 200) {
+      let member = await boss.json();
+      this.setState({ boss: member });
+    }
+
+    const memberk = await getMembersByCompanyId(companyId);
+    if (memberk.status == 200) {
+      let member = await memberk.json();
+      this.setState({ members: member });
+    }
   }
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
@@ -77,9 +92,11 @@ class Company extends Component {
       [this.state.sortColumn2.path],
       [this.state.sortColumn2.order]
     );
-
     for (let t in organizedMemberData) {
-      organizedMemberData[t].name = getFullNameById(organizedMemberData[t]._id);
+      organizedMemberData[t].name =
+        organizedMemberData[t].firstName +
+        " " +
+        organizedMemberData[t].lastName;
     }
     console.log(organizedMemberData);
     return (
