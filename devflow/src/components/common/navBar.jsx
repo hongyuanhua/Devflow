@@ -22,7 +22,7 @@ class NavBar extends Component {
     let memberId = localStorage.memberId;
     let companyId = localStorage.companyId;
     let teamId = localStorage.teamId;
-    let rank = rank;
+    let rank = localStorage.rank;
     this.setState({ memberId, companyId, teamId, rank });
 
     const member = await getMemberById(memberId);
