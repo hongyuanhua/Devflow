@@ -12,6 +12,7 @@ import {
   members,
 } from "../services/fakeMemberService";
 import TaskTable from "./taskTable";
+import Textarea from "./common/textarea.jsx";
 import _ from "lodash";
 import { getTaskById, getTaskByMemberId } from "./../services/fakeTaskService";
 
@@ -30,6 +31,7 @@ class Personal extends Component {
     },
     tasks: [],
     sortColumn: { path: "name", order: "asc" },
+    notification: "",
   };
 
   async componentDidMount() {
@@ -64,6 +66,18 @@ class Personal extends Component {
       profilePic: member.profilePic,
     };
   }
+
+  handleChange = ({ currentTarget: input }) => {
+    this.state.notification = input.value;
+    // console.log(this.state.notification);
+    // this.setState({ state });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    // console.log(this.state.notification);
+  };
+
   modifyName = (name) => {
     if (name.length > 28) {
       name = name.slice(0, 25) + "...";
@@ -132,6 +146,22 @@ class Personal extends Component {
                   <h3>{this.state.data.rank}</h3>
                 </div>
               </div>
+              <Textarea
+                name="notification"
+                label="Send Notification"
+                onChange={this.handleChange}
+                rows="4"
+              />
+              <br></br>
+              <a
+                className="btn btn-primary btn-lg "
+                tabindex="-1"
+                role="button"
+                aria-disabled="false"
+                onClick={this.handleSubmit}
+              >
+                Send
+              </a>
             </div>
             <div className="col-8">
               <h2>Tasks</h2>
