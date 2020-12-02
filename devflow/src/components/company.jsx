@@ -17,6 +17,8 @@ import {
   getMemberById,
   getMembersByCompanyId,
 } from "./../services/memberService";
+import Textarea from "./common/textarea.jsx";
+
 class Company extends Component {
   state = {
     data: {
@@ -33,6 +35,7 @@ class Company extends Component {
     members: [],
     sortColumn: { path: "teamName", order: "asc" },
     sortColumn2: { path: "firstName", order: "asc" },
+    notification: "",
   };
   async componentDidMount() {
     let companyId = this.props.match.params.id;
@@ -66,6 +69,17 @@ class Company extends Component {
 
   handleSort2 = (sortColumn2) => {
     this.setState({ sortColumn2 });
+  };
+
+  handleChange = ({ currentTarget: input }) => {
+    this.state.notification = input.value;
+    // console.log(this.state.notification);
+    // this.setState({ state });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(this.state.notification);
   };
 
   render() {
@@ -110,6 +124,22 @@ class Company extends Component {
               <Link to={`/personal/${this.state.boss._id}`}>
                 <h2>CEO: {this.state.boss.firstName}</h2>
               </Link>
+              <Textarea
+                name="notification"
+                label="Send Notification"
+                onChange={this.handleChange}
+                rows="4"
+              />
+              <br></br>
+              <a
+                className="btn btn-primary btn-lg "
+                tabindex="-1"
+                role="button"
+                aria-disabled="false"
+                onClick={this.handleSubmit}
+              >
+                Send
+              </a>
             </div>
             <div className="col-8">
               <h2>Teams</h2>
