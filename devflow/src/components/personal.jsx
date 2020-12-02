@@ -4,9 +4,10 @@ import NavBar from "./common/navBar";
 import "./personal.css";
 import { getTasks, deleteTasks } from "../services/fakeTaskService";
 import { Link } from "react-router-dom";
+import { getTasksByAssignedTo } from "../services/taskService";
+import { getMemberById } from "../services/memberService";
 import {
   getMembers,
-  getMemberById,
   getFullNameById,
   members,
 } from "../services/fakeMemberService";
@@ -30,14 +31,25 @@ class Personal extends Component {
     tasks: [],
     sortColumn: { path: "name", order: "asc" },
   };
-  componentDidMount() {
-    const personId = this.props.match.params.id;
-    const member = getMemberById(personId);
-    if (!member) return this.props.history.replace("/not-found");
-    this.setState({
-      data: this.mapToViewModel(member),
-      tasks: getTaskByMemberId(personId),
-    });
+
+  async componentDidMount() {
+    let userId = localStorage.memberId;
+    let member = await getMemberById(userId);
+    console.log(userId);
+    if (member.status == 200) {
+      let members = await member.json();
+      this.setState({
+        data: this.mapToViewModel(members),
+      });
+      let task = await getTasksByAssignedTo(userId);
+      if (task.status == 200) {
+        let tasks = await task.json();
+        console.log(tasks);
+        this.setState({
+          tasks: tasks,
+        });
+      }
+    }
   }
   mapToViewModel(member) {
     return {
@@ -73,7 +85,6 @@ class Personal extends Component {
       [this.state.sortColumn.path],
       [this.state.sortColumn.order]
     );
-    console.log(organizedTaskData);
     for (let t in organizedTaskData) {
       organizedTaskData[t].assignedBy = getFullNameById(
         organizedTaskData[t].assignedById

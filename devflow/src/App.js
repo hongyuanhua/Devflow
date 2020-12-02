@@ -38,7 +38,7 @@ class App extends React.Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/tmp" component={Tmp} />
             <Route exact path="/taskDetail/:id" component={TaskDetail} />
-            <Route exact path="/personal/:id" component={Personal} />
+            <Route exact path="/personal/" component={Personal} />
             <Route
               exact
               path="/notification/:id/:entry?"
