@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import CompanyTable from "./companyTable";
 import MemberTable from "./memberTable";
 import _ from "lodash";
-
+import { getTeamByCompanyId } from "../services/teamService";
 class Company extends Component {
   state = {
     data: {
@@ -24,14 +24,27 @@ class Company extends Component {
       teamId: "placeholder",
       quote: "placeholder",
     },
-    company: getCompanyById(this.props.match.params.id),
-    teams: getTeamsByCompanyId(this.props.match.params.id),
-    boss: getMemberById(getCompanyById(this.props.match.params.id).bossId),
-    members: getMemberByCompanyId_NoTeam(this.props.match.params.id),
+    company: {},
+    teams: [],
+    boss: {},
+    members: [],
     sortColumn: { path: "teamName", order: "asc" },
     sortColumn2: { path: "firstName", order: "asc" },
   };
-
+  async componentDidMount() {
+    let companyId = this.props.match.params.id;
+    const team = await getTeamByCompanyId(companyId);
+    if (team.status == 200) {
+      let teams = await team.json();
+      if (!teams) return this.props.history.replace("/not-found");
+      this.setState({ teams: teams });
+    }
+    this.setState({
+      company: getCompanyById(companyId),
+      boss: getMemberById(getCompanyById(companyId).bossId),
+      members: getMemberByCompanyId_NoTeam(companyId),
+    });
+  }
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
   };

@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { getAllCompany, getCompanyById } from "../services/companyService";
 import { getNotificationByToId } from "../services/notificationService";
 import { getMemberById } from "../services/memberService";
-
+import { getTeamByCompanyId } from "../services/teamService";
 class Tmp extends Component {
   state = {
     companies: [],
     company: {},
     notifications: [],
     member: {},
+    teams: [],
   };
 
   async componentDidMount() {
@@ -30,6 +31,11 @@ class Tmp extends Component {
       let member = await m.json();
       this.setState({ member });
     }
+    const n = await getTeamByCompanyId("2");
+    if (n.status == 200) {
+      let k = await n.json();
+      this.setState({ teams: k });
+    }
   }
   render() {
     console.log("In tmp");
@@ -37,8 +43,7 @@ class Tmp extends Component {
     // console.log(await getCompanyById("1"))
     // console.log(this.state.companies);
     // console.log(this.state.company);
-    console.log(this.state.member);
-
+    console.log(this.state.teams);
     // console.log("checkSession()")
     // console.log(checkSession())
     return (
