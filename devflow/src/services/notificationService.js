@@ -32,3 +32,35 @@ export const getAllNotifications = async () => {
   const notification = await fetch(url);
   return notification;
 };
+
+export const addPersonalMessage = (data) => {
+  console.log("---In send Personal Message")
+  const { fromId, toId, message } = data;
+  console.log(data);
+
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/notification/personal", {
+    method: "put",
+    body: JSON.stringify({
+      fromId: fromId,
+      toId: toId,
+      message: message
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("success send personal information");
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail send personal information");
+      console.log(error);
+    });
+};

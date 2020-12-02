@@ -1,9 +1,17 @@
+// level
+// system: 1
+// company announcement: 2
+// team announcement: 3
+// task: 4
+// personal message: 5
+
 const mongoose = require('mongoose')
+const { nanoid } = require('nanoid')
 
 const Notification = mongoose.model('Notification', {
     _id: {
         type: String,
-        required: true,
+        default: nanoid()
     },
     level: {
         type: String,
@@ -27,7 +35,7 @@ const Notification = mongoose.model('Notification', {
     },
     isUnread: {
         type: Boolean,
-        required: true
+        default: true
     }
 })
 
