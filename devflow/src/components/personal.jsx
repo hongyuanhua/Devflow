@@ -94,12 +94,17 @@ class Personal extends Component {
         <div className="container">
           <div className="row">
             <div id="personalInfo" className="col-4">
+              <div className="row">
+                {
+                  <img
+                    className="small right"
+                    src={this.state.data.profilePic}
+                  />
+                }
+              </div>
               <h1>
                 {this.state.data.firstName + " " + this.state.data.lastName}
               </h1>
-              <div className="row">
-                {<img className="small" src={this.state.data.profilePic} />}
-              </div>
               <div className="row">
                 <div className="col">
                   <h3>Team:</h3>
