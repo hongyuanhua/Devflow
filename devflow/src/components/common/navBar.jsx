@@ -98,7 +98,7 @@ class NavBar extends Component {
           </button>
         </Link>
 
-        {this.state.rank === 1 && (
+        {this.state.rank == 1 && (
           <Link to={"/ceo/" + this.state.companyId}>
             <button className="btn btn-sm btn-outline-secondary" type="button">
               CEO Page

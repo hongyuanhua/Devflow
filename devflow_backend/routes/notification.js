@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Notification } = require("../models/Notification.js");
 const { Member } = require("../models/Member.js");
+const { nanoid } = require('nanoid')
 
 router.get("/to/:id", async (req, res) => {
   console.log("---GetNotificationByToId---");
@@ -47,6 +48,7 @@ router.put("/personal", async (req, res) => {
 
   // get data for this notification
   const { fromId, toId, message } = req.body;
+  const id = nanoid()
   const level = 5;
   const time = new Date().toString();
   console.log(time)
@@ -62,6 +64,7 @@ router.put("/personal", async (req, res) => {
     if (fromMember.companyId !== toMember.companyId) return res.status(400).send("From and to member must be in the same company")
 
     notification = await new Notification({
+      _id: id,
       from: fromId,
       to: toId,
       level: level,

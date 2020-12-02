@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { nanoid } = require('nanoid')
 
 const Team = mongoose.model('Team', {
     _id: {

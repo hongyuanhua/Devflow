@@ -15,6 +15,8 @@ import TaskTable from "./taskTable";
 import Textarea from "./common/textarea.jsx";
 import _ from "lodash";
 import { getTaskById, getTaskByMemberId } from "./../services/fakeTaskService";
+import { addPersonalMessage } from "./../services/notificationService";
+
 
 class Personal extends Component {
   state = {
@@ -29,12 +31,16 @@ class Personal extends Component {
       password: "",
       profilePic: "",
     },
+    memberId: null,
     tasks: [],
     sortColumn: { path: "name", order: "asc" },
     notification: "",
   };
 
   async componentDidMount() {
+    let memberId = localStorage.memberId
+    this.setState({ memberId });
+
     let userId = this.props.match.params.id;
     let member = await getMemberById(userId);
     console.log(userId);
@@ -73,9 +79,15 @@ class Personal extends Component {
     // this.setState({ state });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log(this.state.notification);
+  handleSubmit = async (e) => {
+    console.log("this.state.notification: ", this.state.notification);
+    await addPersonalMessage({
+      fromId: this.state.memberId,
+      toId: this.state.data._id,
+      message: this.state.notification
+    })
+    this.props.history.push("/personal/" + this.state.data._id);
+
   };
 
   modifyName = (name) => {

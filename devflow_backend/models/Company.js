@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { nanoid } = require('nanoid')
+
 
 const Company = mongoose.model("Company", {
   _id: {

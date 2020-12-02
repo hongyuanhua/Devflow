@@ -8,10 +8,11 @@
 const mongoose = require('mongoose')
 const { nanoid } = require('nanoid')
 
+
 const Notification = mongoose.model('Notification', {
     _id: {
         type: String,
-        default: nanoid()
+        required: true,
     },
     level: {
         type: String,
