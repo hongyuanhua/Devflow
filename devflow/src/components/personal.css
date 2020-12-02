@@ -14,6 +14,13 @@ h1{
 
 } */
 
-#quote{
-    color: gray
+#quote {
+  color: gray;
+}
+.small {
+  width: 100px;
+  height: 100px;
+}
+.right {
+  margin-left: 35px;
 }

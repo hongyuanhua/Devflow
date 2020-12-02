@@ -12,21 +12,46 @@ import {
 } from "../services/fakeMemberService";
 import TaskTable from "./taskTable";
 import _ from "lodash";
+import { getTaskById, getTaskByMemberId } from "./../services/fakeTaskService";
 
 class Personal extends Component {
   state = {
     data: {
       _id: "",
-      firstName: "First Name",
-      lastName: "Last Name",
-      rank: 10000,
-      teamId: "placeholder",
-      quote: "placeholder",
+      firstName: "",
+      lastName: "",
+      userName: "",
+      rank: 3,
+      companyId: "",
+      teamId: "",
+      password: "",
+      profilePic: "",
     },
-    tasks: getTasks(),
+    tasks: [],
     sortColumn: { path: "name", order: "asc" },
   };
-
+  componentDidMount() {
+    const personId = this.props.match.params.id;
+    const member = getMemberById(personId);
+    if (!member) return this.props.history.replace("/not-found");
+    this.setState({
+      data: this.mapToViewModel(member),
+      tasks: getTaskByMemberId(personId),
+    });
+  }
+  mapToViewModel(member) {
+    return {
+      _id: member._id,
+      firstName: member.firstName,
+      lastName: member.lastName,
+      userName: member.userName,
+      rank: member.rank,
+      companyId: member.companyId,
+      teamId: member.teamId,
+      password: member.password,
+      profilePic: member.profilePic,
+    };
+  }
   modifyName = (name) => {
     if (name.length > 28) {
       name = name.slice(0, 25) + "...";
@@ -48,6 +73,7 @@ class Personal extends Component {
       [this.state.sortColumn.path],
       [this.state.sortColumn.order]
     );
+    console.log(organizedTaskData);
     for (let t in organizedTaskData) {
       organizedTaskData[t].assignedBy = getFullNameById(
         organizedTaskData[t].assignedById
@@ -68,6 +94,14 @@ class Personal extends Component {
         <div className="container">
           <div className="row">
             <div id="personalInfo" className="col-4">
+              <div className="row">
+                {
+                  <img
+                    className="small right"
+                    src={this.state.data.profilePic}
+                  />
+                }
+              </div>
               <h1>
                 {this.state.data.firstName + " " + this.state.data.lastName}
               </h1>
@@ -87,9 +121,6 @@ class Personal extends Component {
                   <h3>{this.state.data.rank}</h3>
                 </div>
               </div>
-              <div id="quote" className="row">
-                <h5>{"'" + this.state.data.quote + "'"}</h5>
-              </div>
             </div>
             <div className="col-8">
               <h2>Tasks</h2>
@@ -103,34 +134,6 @@ class Personal extends Component {
                 onSort={this.handleSort}
                 onDelete={this.handleDelete}
               />
-              {/* <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Create By</th>
-                    <th scope="col">Assigned By</th>
-                    <th scope="col">Assined TO</th>
-                    <th scope="col">Time Estimated</th>
-                    <th scope="col">Time Used</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.tasks.map((task) => (
-                    <tr>
-                      <Link to={`/taskDetail_Present/${task._id}`}>
-                        <th className="clickable" scope="col">
-                          {this.modifyName(task.name)}
-                        </th>
-                      </Link>
-                      <td>{task.createdById}</td>
-                      <td>{task.assignedById}</td>
-                      <td>{task.assignedToId}</td>
-                      <td>{task.estimatedTime}</td>
-                      <td>{task.usedTime}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table> */}
             </div>
           </div>
         </div>
