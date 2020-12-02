@@ -3,13 +3,22 @@ import { getAllCompany, getCompanyById } from "../services/companyService";
 
 class Tmp extends Component {
 
-    state = { companies: [] }
+    state = {
+        companies: [],
+        company: {}
+    }
 
     async componentDidMount() {
-        const res = await getAllCompany()
-        if (res.status == 200) {
-            let companies = await res.json();
-            this.setState({ companies: companies });
+        const companies = await getAllCompany()
+        if (companies.status == 200) {
+            let cs = await companies.json();
+            this.setState({ companies: cs });
+        }
+
+        const company = await getCompanyById("3")
+        if (company.status == 200) {
+            let c = await company.json();
+            this.setState({ company: c });
         }
     }
     render() {
@@ -17,6 +26,8 @@ class Tmp extends Component {
         // console.log(await getAllCompany())
         // console.log(await getCompanyById("1"))
         console.log(this.state.companies)
+        console.log(this.state.company)
+
         // console.log("checkSession()")
         // console.log(checkSession())
         return (
