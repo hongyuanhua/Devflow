@@ -81,21 +81,21 @@ class NavBar extends Component {
           DevFlow
         </a>
         {this.state.companyId != "" && (
-          <Link to={"/company/" + this.state.companyId}>
+          <Link to={"/company/" + this.state.companyId} className={"mx-2"}>
             <button className="btn btn-sm btn-outline-primary" type="button">
               {this.state.companyName}
             </button>
           </Link>)
         }
         {this.state.teamId != "" && (
-          <Link to={"/team/" + this.state.teamId}>
+          <Link to={"/team/" + this.state.teamId} className={"mx-2"}>
             <button className="btn btn-sm btn-outline-secondary" type="button">
               {this.state.teamName}
             </button>
           </Link>
         )}
         {this.state.memberId != "" && (
-          <Link to={"/personal/" + this.state.memberId}>
+          <Link to={"/personal/" + this.state.memberId} className={"mx-2"}>
             <button className="btn btn-sm btn-outline-success" type="button">
               {this.state.memberName}
             </button>
@@ -125,14 +125,14 @@ class NavBar extends Component {
         {this.props.atPage != "notification" && this.rank != 0 && (
           <form className="form-inline my-2 my-lg-0">
             {numberOfUnreadNotifications > 0 && (
-              <Link to={"/notification/" + this.state.memberId + "/Unread"}>
+              <Link to="/notification/1/Unread">
                 <button className="btn btn-outline-warning" type="button">
                   Unread Notifications: {numberOfUnreadNotifications}
                 </button>
               </Link>
             )}
             {numberOfUnreadNotifications == 0 && (
-              <Link to={"/notification/" + this.state.memberId}>
+              <Link to="/notification/1">
                 <button
                   className="btn btn-sm btn-outline-success"
                   type="button"
