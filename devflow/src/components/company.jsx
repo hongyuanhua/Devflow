@@ -16,6 +16,7 @@ import { getCompanyById } from "../services/companyService";
 import {
   getMemberById,
   getMembersByCompanyId,
+  getNotTeamMembersByCompanyId,
 } from "./../services/memberService";
 import Textarea from "./common/textarea.jsx";
 
@@ -57,7 +58,7 @@ class Company extends Component {
       this.setState({ boss: member });
     }
 
-    const memberk = await getMembersByCompanyId(companyId);
+    const memberk = await getNotTeamMembersByCompanyId(companyId);
     if (memberk.status == 200) {
       let member = await memberk.json();
       this.setState({ members: member });

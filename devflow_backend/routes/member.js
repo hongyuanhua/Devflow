@@ -34,8 +34,17 @@ router.get("/company/:id", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
-// router.put("/", async (req, res) => {
-//     const memberId = req.body.memberId;
-//     const
-// })
+
+router.get("/noTeamCompany/:id", async (req, res) => {
+  const company = req.params.id;
+  Member.find({ companyId: company, teamId: "" })
+    .then((member) => {
+      if (!member) {
+        return res.status(404).send("No such member");
+      }
+      res.send(member);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
 module.exports = router;
