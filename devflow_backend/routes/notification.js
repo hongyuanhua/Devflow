@@ -82,4 +82,27 @@ router.put("/personal", async (req, res) => {
   }
 });
 
+router.post("/readAll/", async (req, res) => {
+  console.log("---read all---");
+  console.log(req.body);
+  const { memberId } = req.body;
+
+  if (!memberId) {
+    console.log(memberId);
+    res.status(400).send("Missing login fields");
+    return;
+  }
+  let member = await Member.findById(memberId);
+  if (!member) {
+    console.log("no such user");
+    res.status(400).send("Invalid login fields");
+    return;
+  }
+
+  const results = await Notification.update({ to: memberId }, { $set: { isUnread: false } }, { multi: true })
+  console.log(results)
+
+  res.status(200).send(results);
+});
+
 module.exports = router;
