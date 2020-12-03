@@ -3,10 +3,17 @@ const router = express.Router();
 const { Member } = require("../models/Member.js");
 
 // localhost:5000/api/member/1
+
 router.get("/all", async (req, res) => {
+  console.log("---get all teams---");
   Member.find()
     .then((members) => {
-      console.log(member);
+      if (!members) {
+        console.log("No such members");
+        return res.status(404).send("No such members");
+      }
+      console.log("Success in geting all members");
+      console.log(members);
       res.send(members);
     })
     .catch((err) => res.status(500).send("Server err"));

@@ -9,24 +9,27 @@ import {
   deleteTasks,
   saveTask,
 } from "../services/fakeTaskService";
-import { getMembers, getMemberById } from "../services/fakeMemberService";
 import { Link } from "react-router-dom";
 import Textarea from "./common/textarea.jsx";
-
+import { getAllMembers } from "../services/memberService";
+import { getMemberById } from "./../services/memberService";
+import { getTeam } from "../services/teamService";
 class TaskDetail extends Form {
   state = {
     data: {
       _id: "",
       companyId: "",
+      teamId: "",
       name: "",
       estimatedTime: 0,
       usedTime: 0,
       assignedToId: "",
       assignedById: "",
-      createdById: "",
       taskDetail: "",
     },
     members: [],
+    teams: [],
+    current: {},
     errors: {},
   };
 
@@ -37,11 +40,40 @@ class TaskDetail extends Form {
     taskDetail: Joi.string().required(),
   };
 
-  componentDidMount() {
-    const new_members = getMembers();
-    // console.log(new_members)
-    this.setState({ members: new_members });
-    // console.log(this.state.members)
+  async componentDidMount() {
+    const memberId = localStorage.memberId;
+    const new_members = await getAllMembers();
+    if (new_members.status == 200) {
+      let member = await new_members.json();
+      this.setState({ members: member });
+    }
+    const current = await getMemberById(memberId);
+    if (current.status == 200) {
+      let member = await current.json();
+      if (member.rank > 2) {
+        this.props.history.push("/unauthorized");
+      }
+      this.setState({
+        data: {
+          _id: "",
+          companyId: member.companyId,
+          teamId: member.teamId,
+          name: "",
+          estimatedTime: 0,
+          usedTime: 0,
+          assignedToId: "",
+          assignedById: memberId,
+          taskDetail: "",
+        },
+      });
+      this.setState({ current: member });
+    }
+    const new_teams = await getTeam();
+    if (new_teams.status == 200) {
+      let team = await new_teams.json();
+      console.log(team);
+      this.setState({ teams: team });
+    }
 
     const taskId = this.props.match.params.id;
     if (taskId === "new") return;
@@ -56,13 +88,13 @@ class TaskDetail extends Form {
   mapToViewModel(task) {
     return {
       _id: task._id,
+      teamId: task.teamId,
       companyId: task.companyId,
       name: task.name,
       estimatedTime: task.estimatedTime,
       usedTime: task.usedTime,
       assignedToId: task.assignedToId,
       assignedById: task.assignedById,
-      createdById: task.createdById,
       taskDetail: task.taskDetail,
     };
   }
@@ -92,6 +124,27 @@ class TaskDetail extends Form {
           <div className="row">
             <div className="col">
               <div className="row">
+                {this.state.current.rank < 2 && (
+                  <div className="col">
+                    <div className="form-group">
+                      <label for="exampleFormControlSelect1">TeamId:</label>
+                      <select
+                        className="form-control"
+                        id="exampleFormControlSelect1"
+                      >
+                        {this.state.teams.map((team) => (
+                          <option
+                            key={team._id}
+                            value={team._id}
+                            selected={this.state.data.teamId === team._id}
+                          >
+                            {team._id}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
                 <div className="col">
                   <div className="form-group">
                     <label>Assigned to:</label>
@@ -101,44 +154,6 @@ class TaskDetail extends Form {
                           key={member._id}
                           value={member._id}
                           selected={this.state.data.assignedToId === member._id}
-                        >
-                          {member.firstName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label for="exampleFormControlSelect1">Assigned by:</label>
-                    <select
-                      className="form-control"
-                      id="exampleFormControlSelect1"
-                    >
-                      {this.state.members.map((member) => (
-                        <option
-                          key={member._id}
-                          value={member._id}
-                          selected={this.state.data.assignedById === member._id}
-                        >
-                          {member.firstName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label for="exampleFormControlSelect1">Created by:</label>
-                    <select
-                      className="form-control"
-                      id="exampleFormControlSelect1"
-                    >
-                      {this.state.members.map((member) => (
-                        <option
-                          key={member._id}
-                          value={member._id}
-                          selected={this.state.data.createdById === member._id}
                         >
                           {member.firstName}
                         </option>

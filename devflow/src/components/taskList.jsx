@@ -14,6 +14,7 @@ class taskList extends Component {
   // }
 
   state = {
+    currentUser: {},
     tasks: [],
     members: getMembers(),
   };
@@ -36,6 +37,11 @@ class taskList extends Component {
     if (koo.status == 200) {
       let member = await koo.json();
       this.setState({ members: member });
+    }
+    const currentUser = await getMemberById(memberId);
+    if (currentUser.status == 200) {
+      let member = await currentUser.json();
+      this.setState({ currentUser: member });
     }
   }
 
@@ -284,11 +290,13 @@ class taskList extends Component {
           >
             Estimated Time
           </button>
-          <Link to="/taskDetail/new">
-            <button className="float-right btn btn-outline-primary">
-              Add new task
-            </button>
-          </Link>
+          {this.state.currentUser.rank < 3 && (
+            <Link to="/taskDetail/new">
+              <button className="float-right btn btn-outline-primary">
+                Add new task
+              </button>
+            </Link>
+          )}
 
           <div className="row justify-content-center">
             {this.state.tasks.map((task) => (
