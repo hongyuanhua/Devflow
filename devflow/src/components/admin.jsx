@@ -12,7 +12,7 @@ import {
   getAllMember,
   deleteMember,
   getAllTask,
-  getAllTaskcheckSession,
+  deleteTask,
 } from "../services/adminService";
 // import { deleteMember, getMembers } from "../services/fakeMemberService";
 // import { getNotificaitons } from "../services/fakeNotificationServices";
@@ -95,7 +95,7 @@ class admin extends Component {
   TaskHandleDelete = (task) => {
     const notTask = this.state.tasks.filter((t) => t._id !== task._id);
     this.setState({ tasks: notTask });
-    // deleteTasks(task._id);
+    deleteTask(task._id);
   };
   MemberHandleDelete = (member) => {
     const notMember = this.state.members.filter((t) => t._id !== member._id);
