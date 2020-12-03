@@ -137,7 +137,6 @@ router.post("/readAll", async (req, res) => {
     res.status(400).send("Invalid login fields");
     return;
   }
-
   const results = await Notification.update(
     { to: memberId },
     { $set: { isUnread: false } },
@@ -147,5 +146,28 @@ router.post("/readAll", async (req, res) => {
 
   res.status(200).send(results);
 });
+
+router.post("/ceo-send-notification", async (req, res) => {
+  console.log("----- ceo send -----")
+  from = req.body.from
+  results = req.body.toMembers.map(p => {
+    id = nanoid()
+
+    return {
+      _id: id,
+      from: from,
+      level: 2,
+      to: p._id,
+      message: req.body.message,
+      isUnread: true,
+      time: new Date()
+    }
+
+  })
+  Notification.insertMany(results, function(err) {
+    console.log(err)
+  })
+  res.send('success')
+})
 
 module.exports = router;

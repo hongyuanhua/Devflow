@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
+import axios from 'axios';
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
@@ -35,7 +36,8 @@ class ceo extends Component {
     company: {},
     tasks: getTasks(),
     teams: getTeams(),
-    members: getMembers(),
+    members: [],
+    message: "",
     types: [
       { name: "Teams", selected: "true" },
       { name: "Members", selected: "false" },
@@ -52,14 +54,17 @@ class ceo extends Component {
     if (rank != 1 || curCompanyId != companyId) {
       this.props.history.push("/unauthorized")
     }
-
+    axios.get("http://localhost:5000/api/company/company-members", {params: {company_id: "1"}}).then(res => {
+      this.setState({
+        members: res.data.members,
+      })
+    })
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
       company: getCompanyById(companyId),
       tasks: getTasksByCompanyId(companyId),
       teams: getTeamsByCompanyId(companyId),
-      members: getMembersByCompanyId(companyId),
     });
   }
 
@@ -109,6 +114,7 @@ class ceo extends Component {
     this.setState({ members: notMember });
     deleteMember(member._id);
   };
+
   render() {
     const organizedTeamData = _.orderBy(
       this.state.teams,

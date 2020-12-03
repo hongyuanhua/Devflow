@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
+import axios from "axios";
 import "./personal.css";
 import { getNotificaitons } from "../services/fakeNotificationServices";
 import { getTeamsByCompanyId } from "../services/fakeTeamService.js";
@@ -30,6 +31,8 @@ class Company extends Component {
       teamId: "placeholder",
       quote: "placeholder",
     },
+    message: "",
+
     company: {},
     teams: [],
     boss: {},
@@ -80,8 +83,19 @@ class Company extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state.notification);
+    this.ceoSendNotify()
   };
+
+
+  ceoSendNotify = () => {
+    axios.post("http://localhost:5000/api/notification/ceo-send-notification", {
+      from: localStorage.memberId,
+      toMembers: this.state.members,
+      message: this.state.notification,
+    }).then(res => {
+      console.log(res);
+    })
+  }
 
   render() {
     // console.log("this.state.teams", this.state.teams);
