@@ -64,3 +64,22 @@ export const addPersonalMessage = (data) => {
       console.log(error);
     });
 };
+
+export const readAll = async (memberId) => {
+  console.log("---read all---")
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/notification/readAll", {
+    method: "post",
+    body: JSON.stringify({
+      memberId: memberId
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log("read all");
+  const result = await fetch(request);
+  return result;
+};

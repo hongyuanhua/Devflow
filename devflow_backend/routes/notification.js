@@ -82,7 +82,7 @@ router.put("/personal", async (req, res) => {
   }
 });
 
-router.post("/readAll/", async (req, res) => {
+router.post("/readAll", async (req, res) => {
   console.log("---read all---");
   console.log(req.body);
   const { memberId } = req.body;

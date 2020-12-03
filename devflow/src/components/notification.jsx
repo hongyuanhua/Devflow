@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
-import { readAllNotificationsById } from "../services/fakeNotificationServices";
+import { readAll } from "../services/notificationService";
 import { getNameById } from "../services/fakeMemberService";
 import { getMemberById } from "../services/memberService";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import ListGroup from "./common/listGroup.jsx";
 import { getNotificationByToId } from "./../services/notificationService";
 import { notifications } from "./../services/fakeNotificationServices";
 import { members } from "./../services/fakeMemberService";
+import { config } from "../config";
 
 class Notification extends Component {
   state = {
@@ -20,16 +21,22 @@ class Notification extends Component {
   };
 
   componentWillMount() {
-    const userId = this.props.match.params.id;
-    let entry = this.props.match.params.entry;
-    this.setState({ userId });
-    this.setState({ entry });
-    this.setState({ selectedNotificationType: entry });
   }
 
   async componentDidMount() {
     let userId = localStorage.memberId;
+    if (userId != this.props.match.params.id) {
+      this.props.history.push("/unauthorized")
+    }
     this.setState({ userId });
+
+    let entry = this.props.match.params.entry;
+    this.setState({ entry });
+    this.setState({ selectedNotificationType: entry });
+
+    if (entry == "Unread") {
+      await readAll(userId);
+    }
 
     let ns = await getNotificationByToId(userId);
     if (ns.status == 200) {
@@ -55,8 +62,9 @@ class Notification extends Component {
     // consnotificationsole.log(notifications)
   }
 
-  handleGenreSelect = (curType) => {
-    readAllNotificationsById(this.state.userId);
+  handleGenreSelect = async (curType) => {
+    console.log("handleGenreSelect")
+    await readAll(this.state.userId);
     console.log("curType: ", curType);
     this.setState({ selectedNotificationType: curType });
   };
