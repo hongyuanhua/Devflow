@@ -88,6 +88,26 @@ export const deleteMember = async (_id) => {
   return member;
 };
 
+export const deleteTask = async (_id) => {
+  console.log("---deleteTask---");
+  // Create our request constructor with all the parameters we need
+  //   const url = host + port + "/admin/deleteMember";
+  //   console.log(_id);
+  const request = new Request(host + port + "/admin/deleteTask", {
+    method: "delete",
+    body: JSON.stringify({
+      _id: _id,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+  // Send the request with fetch()
+  const task = await fetch(request);
+  return task;
+};
+
 export const getAllTask = async () => {
   console.log("---getAllTask---");
   // Create our request constructor with all the parameters we need
