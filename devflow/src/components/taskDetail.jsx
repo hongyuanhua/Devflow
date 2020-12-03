@@ -14,6 +14,8 @@ import Textarea from "./common/textarea.jsx";
 import { getAllMembers } from "../services/memberService";
 import { getMemberById } from "./../services/memberService";
 import { getTeam } from "../services/teamService";
+import { addTask, updateTask } from "./../services/taskService";
+import { getAllTask } from "./../services/adminService";
 class TaskDetail extends Form {
   state = {
     data: {
@@ -30,6 +32,7 @@ class TaskDetail extends Form {
     members: [],
     teams: [],
     current: {},
+    status: "new",
     errors: {},
   };
 
@@ -76,12 +79,14 @@ class TaskDetail extends Form {
     }
 
     const taskId = this.props.match.params.id;
-    if (taskId === "new") return;
+    if (taskId === "new") {
+      return;
+    }
     console.log(taskId);
 
     const task = getTaskById(taskId);
     if (!task) return this.props.history.replace("/not-found");
-
+    this.setState({ status: "notNew" });
     this.setState({ data: this.mapToViewModel(task) });
   }
 
@@ -102,18 +107,28 @@ class TaskDetail extends Form {
   handleNameChange = ({ currentTarget: input }) => {
     const data = this.state.data;
     data.name = input.value;
-
     this.setState({ data });
   };
 
   handleDelete = () => {
     deleteTasks(this.state.data._id);
   };
-
-  handleSave = () => {
-    saveTask(this.state.data);
+  handleGetInput = (e, name) => {
+    const data = this.state.data;
+    if (name == "assignedTo") {
+      data.assignedToId = document.getElementById("assignedTo").value;
+    } else if (name == "teamId") {
+      data.teamId = document.getElementById("teamId").value;
+    }
+    this.setState({ data });
   };
-
+  handleSave = async () => {
+    if (this.state.status == "new") {
+      await addTask(this.state.data);
+    } else {
+      await updateTask(this.state.data);
+    }
+  };
   render() {
     return (
       <React.Fragment>
@@ -131,7 +146,10 @@ class TaskDetail extends Form {
                       <select
                         className="form-control"
                         id="exampleFormControlSelect1"
+                        onChange={(e) => this.handleGetInput(e, "teamId")}
+                        id="teamId"
                       >
+                        <option value="">Empty</option>
                         {this.state.teams.map((team) => (
                           <option
                             key={team._id}
@@ -145,22 +163,31 @@ class TaskDetail extends Form {
                     </div>
                   </div>
                 )}
-                <div className="col">
-                  <div className="form-group">
-                    <label>Assigned to:</label>
-                    <select className="form-control">
-                      {this.state.members.map((member) => (
-                        <option
-                          key={member._id}
-                          value={member._id}
-                          selected={this.state.data.assignedToId === member._id}
-                        >
-                          {member.firstName}
-                        </option>
-                      ))}
-                    </select>
+                {this.state.current.rank != 1 && (
+                  <div className="col">
+                    <div className="form-group">
+                      <label>Assigned to:</label>
+                      <select
+                        className="form-control"
+                        onChange={(e) => this.handleGetInput(e, "assignedTo")}
+                        id="assignedTo"
+                      >
+                        <option value="">Empty</option>
+                        {this.state.members.map((member) => (
+                          <option
+                            key={member._id}
+                            value={member._id}
+                            selected={
+                              this.state.data.assignedToId === member._id
+                            }
+                          >
+                            {member.firstName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               {/* <div className="row">
                 <label for="exampleFormControlTextarea1">
@@ -215,15 +242,13 @@ class TaskDetail extends Form {
               </div>
               <br></br>
               <div className="row">
-                <Link to="/taskList">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.handleSave}
-                  >
-                    Save
-                  </button>
-                </Link>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.handleSave}
+                >
+                  Save
+                </button>
               </div>
               <br></br>
               <div className="row">
