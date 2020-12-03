@@ -155,6 +155,7 @@ router.post("/ceo-send-notification", async (req, res) => {
   from = req.body.from
   results = req.body.toMembers.map(p => {
     return {
+      _id: parseInt(Math.random() * 100000),
       from: from,
       level: 2,
       to: p._id,
@@ -165,7 +166,7 @@ router.post("/ceo-send-notification", async (req, res) => {
 
   })
   Notification.insertMany(results, function(err) {
-    res.err(err)
+    console.log(err)
   })
   res.send('success')
 })
