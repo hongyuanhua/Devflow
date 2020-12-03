@@ -72,6 +72,8 @@ class ModifyCompany extends Form {
   };
 
   render() {
+    console.log("props");
+    console.log(this.props.location.pathname === "/mc/new");
     return (
       <React.Fragment>
         <NavBar />
@@ -80,9 +82,11 @@ class ModifyCompany extends Form {
           <div className="col-5">
             <h1>{this.state.text}</h1>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("_id", "Company ID", "text")}
+              {/* {this.props.location.pathname != "/mc/new" &&
+                this.renderInput("_id", "Company ID", "text")} */}
               {this.renderInput("name", "Company Name", "text")}
-              {this.renderInput("bossId", "Boss ID", "text")}
+              {this.props.location.pathname != "/mc/new" &&
+                this.renderInput("bossId", "Boss ID", "text")}
               {this.renderInput("companyPic", "Company picture", "text")}
               <br></br>
               {/* {this.renderButton("submit", "Submit")}{" "} */}

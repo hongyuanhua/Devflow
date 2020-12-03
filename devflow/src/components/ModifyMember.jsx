@@ -91,13 +91,16 @@ class ModifyMember extends Form {
           <div className="col-5">
             <h1>{this.state.text}</h1>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("_id", "Member ID", "text")}
+              {/* {this.renderInput("_id", "Member ID", "text")} */}
               {this.renderInput("firstName", "First Name", "text")}
               {this.renderInput("lastName", "Last Name", "text")}
               {this.renderInput("userName", "Username", "text")}
-              {this.renderInput("rank", "Rank", "text")}
-              {this.renderInput("companyId", "Company Id", "text")}
-              {this.renderInput("teamId", "Team Id", "text")}
+              {this.props.location.pathname != "/mm/new" &&
+                this.renderInput("rank", "Rank", "text")}
+              {this.props.location.pathname != "/mm/new" &&
+                this.renderInput("companyId", "Company Id", "text")}
+              {this.props.location.pathname != "/mm/new" &&
+                this.renderInput("teamId", "Team Id", "text")}
               {this.renderInput("password", "Password", "text")}
               {this.renderInput("profilePic", "Profile Picture", "text")}
               <br></br>
