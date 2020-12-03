@@ -115,16 +115,6 @@ class ceo extends Component {
     deleteMember(member._id);
   };
 
-  ceoSendNotify = () => {
-      axios.post("http://localhost:5000/api/notification/ceo-send-notification", {
-        from: localStorage.memberId,
-        toMembers: this.state.members,
-        message: this.state.message
-      }).then(res => {
-        console.log(res);
-      })
-  }
-
   render() {
     const organizedTeamData = _.orderBy(
       this.state.teams,
@@ -197,31 +187,12 @@ class ceo extends Component {
               />
             )}
             {this.state.types[1].selected == "true" && (
-              <div>
-                <MemberTable
-                  members={organizedMemberData}
-                  sortColumn={this.state.sortColumn}
-                  onDelete={this.MemberHandleDelete}
-                  onSort={this.handleSort}
-                />
-             
-                <div class="form-group w-75 mx-auto mt-5">
-                  <label >Send message to all members</label>
-                  <textarea
-
-                    class="form-control" 
-                    aria-label="With textarea"
-                    value={this.state.message}
-                    onChange={v => this.setState({message: v.target.value})}
-                    >
-
-                  </textarea>
-                  <button class="btn btn-outline-secondary float-right mt-3" 
-                    onClick={() => this.ceoSendNotify()}
-                  type="button" id="button-addon1">Send</button>
-                </div>
-              </div>
-             
+              <MemberTable
+                members={organizedMemberData}
+                sortColumn={this.state.sortColumn}
+                onDelete={this.MemberHandleDelete}
+                onSort={this.handleSort}
+              />
             )}
             {this.state.types[2].selected == "true" && (
               <TaskTable
