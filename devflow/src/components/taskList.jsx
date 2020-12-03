@@ -1,29 +1,42 @@
 import React, { Component, Fragment } from "react";
 import { getTasksByTeam } from "../services/taskService";
 import { checkSession } from "../services/authService";
-
-import { getMemberById, getMembers } from "../services/fakeMemberService";
+import { getAllMembers, getMemberById } from "../services/memberService";
+import { getMemberProfilePic } from "../services/memberServiceHelper";
+import { getMembers } from "../services/fakeMemberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 class taskList extends Component {
-
   // async componentWillMount() {
   //   checkSession(this); // sees if a user is logged in.
   // }
 
   state = {
-    curUserId: "",
     tasks: [],
-    show: false,
     members: getMembers(),
   };
 
-
   async componentDidMount() {
-
-    // getTasksByTeam(teamId, memberId);
+    const memberId = localStorage.memberId;
+    console.log(memberId);
+    const boss = await getMemberById(memberId);
+    console.log(boss.status);
+    if (boss.status == 200) {
+      let member = await boss.json();
+      console.log(member);
+      const task = await getTasksByTeam(member.teamId, memberId);
+      if (task.status == 200) {
+        let tasks = await task.json();
+        this.setState({ tasks: tasks });
+      }
+    }
+    const koo = await getAllMembers();
+    if (koo.status == 200) {
+      let member = await koo.json();
+      this.setState({ members: member });
+    }
   }
 
   handleJoin = (task, id) => {
@@ -44,25 +57,16 @@ class taskList extends Component {
     this.setState({ tasks });
   };
 
-  getMemberFirstName = (id) => {
-    if (getMemberById(id) == null) {
-      return "";
-    } else {
-      console.log(getMemberById(id))
-      return getMemberById(id).firstName;
-    }
-  };
-
   getCurrentGID = (id) => {
     var input, i;
     input = this.state.tasks;
     for (i = 0; i < input.length; i++) {
       if (input[i].createdById === id) {
-        return this.getMemberFirstName(input[i].createdById);
+        return this.getMemberByIdIn(input[i].createdById).firstName;
       } else if (input[i].assignedToId === id) {
-        return this.getMemberFirstName(input[i].assignedToId);
+        return this.getMemberByIdIn(input[i].assignedToId).firstName;
       } else if (input[i].assignedById === id) {
-        return this.getMemberFirstName(input[i].assignedById);
+        return this.getMemberByIdIn(input[i].assignedById).firstName;
       }
     }
     return "None";
@@ -116,7 +120,9 @@ class taskList extends Component {
     b.push(k);
     this.setState({ b });
   }
-
+  getMemberByIdIn(id) {
+    return this.state.members.find((t) => t._id == id);
+  }
   sortCategory = (path) => {
     const taskss = this.state.tasks.sort(function (a, b) {
       if (path === "usedTime") {
@@ -129,7 +135,6 @@ class taskList extends Component {
         return ("" + a.teamId).localeCompare(b.teamId);
       } else if (path == "Estimated Time") {
         return a.estimatedTime - b.estimatedTime;
-
       }
     });
     const task = taskss.reverse();
@@ -140,9 +145,9 @@ class taskList extends Component {
     var filter, item, a, i, txtValue, fil, abyValue, assValue, creValue;
     item = document.getElementsByClassName("col-sm-4");
     filter = document.getElementsByClassName("filters");
-    abyValue = this.getMemberFirstName(filter[0].value);
-    assValue = this.getMemberFirstName(filter[1].value);
-    creValue = this.getMemberFirstName(filter[2].value);
+    abyValue = this.getMemberByIdIn(filter[0].value).firstName;
+    assValue = this.getMemberByIdIn(filter[1].value).firstName;
+    creValue = this.getMemberByIdIn(filter[2].value).firstName;
     for (i = 0; i < item.length; i++) {
       a = item[i];
 
@@ -308,28 +313,29 @@ class taskList extends Component {
                   <Link to={`/personal/${task.assignedById}`}>
                     {task.assignedById != "" && (
                       <img
-                        src={getMemberById(task.assignedById).profilePic}
+                        src={this.getMemberByIdIn(task.assignedById).profilePic}
                         style={{ borderRadius: "50%", width: "20px" }}
                       />
                     )}
                     <span style={{ marginLeft: "5px" }}>
-                      {this.getMemberFirstName(task.assignedById)}
+                      {this.getMemberByIdIn(task.assignedById).firstName}
                     </span>
                   </Link>
                 </p>
                 <p className="mt-4">
                   <span className="font-weight-bold">Assigned To: </span>
-                  <Link to={`/personal/${task.assignedToId}`}>
-                    {task.assignedToId != "" && (
+                  {task.assignedToId != "" && (
+                    <Link to={`/personal/${task.assignedToId}`}>
                       <img
-                        src={getMemberById(task.assignedToId).profilePic}
+                        src={this.getMemberByIdIn(task.assignedToId).profilePic}
                         style={{ borderRadius: "50%", width: "20px" }}
                       />
-                    )}
-                    <span style={{ marginLeft: "5px" }}>
-                      {this.getMemberFirstName(task.assignedToId)}
-                    </span>
-                  </Link>
+
+                      <span style={{ marginLeft: "5px" }}>
+                        {this.getMemberByIdIn(task.assignedToId).firstName}
+                      </span>
+                    </Link>
+                  )}
                 </p>
                 <p className="font-weight-light">
                   Time spent: {task.usedTime} hrs
