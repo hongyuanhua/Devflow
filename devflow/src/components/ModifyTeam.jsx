@@ -87,7 +87,7 @@ class ModifyTeam extends Form {
           <div className="col-5">
             <h1>{this.state.text}</h1>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("_id", "ID", "text")}
+              {/* {this.props.location.pathname != "/mt/new"&&this.renderInput("_id", "ID", "text")} */}
               {this.renderInput("companyId", "Company Id", "text")}
               {this.renderInput("teamName", "Team Name", "text")}
               {this.renderInput("leader", "Leader", "text")}
