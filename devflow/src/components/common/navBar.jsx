@@ -80,11 +80,13 @@ class NavBar extends Component {
         <a className="navbar-brand" href="/taskList">
           DevFlow
         </a>
-        <Link to={"/company/" + this.state.companyId}>
-          <button className="btn btn-sm btn-outline-primary" type="button">
-            {this.state.companyName}
-          </button>
-        </Link>
+        {this.state.companyId != "" && (
+          <Link to={"/company/" + this.state.companyId}>
+            <button className="btn btn-sm btn-outline-primary" type="button">
+              {this.state.companyName}
+            </button>
+          </Link>)
+        }
         {this.state.teamId != "" && (
           <Link to={"/team/" + this.state.teamId}>
             <button className="btn btn-sm btn-outline-secondary" type="button">
@@ -92,11 +94,13 @@ class NavBar extends Component {
             </button>
           </Link>
         )}
-        <Link to={"/personal/" + this.state.memberId}>
-          <button className="btn btn-sm btn-outline-success" type="button">
-            {this.state.memberName}
-          </button>
-        </Link>
+        {this.state.memberId != "" && (
+          <Link to={"/personal/" + this.state.memberId}>
+            <button className="btn btn-sm btn-outline-success" type="button">
+              {this.state.memberName}
+            </button>
+          </Link>
+        )}
 
         {this.state.rank == 1 && (
           <Link to={"/ceo/" + this.state.companyId}>
@@ -118,7 +122,7 @@ class NavBar extends Component {
           </button>
         </Link>
 
-        {this.props.atPage != "notification" && (
+        {this.props.atPage != "notification" && this.rank != 0 && (
           <form className="form-inline my-2 my-lg-0">
             {numberOfUnreadNotifications > 0 && (
               <Link to="/notification/1/Unread">
