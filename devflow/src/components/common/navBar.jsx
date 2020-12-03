@@ -125,14 +125,14 @@ class NavBar extends Component {
         {this.props.atPage != "notification" && this.rank != 0 && (
           <form className="form-inline my-2 my-lg-0">
             {numberOfUnreadNotifications > 0 && (
-              <Link to="/notification/1/Unread">
+              <Link to={"/notification/" + this.state.memberId + "/Unread"}>
                 <button className="btn btn-outline-warning" type="button">
                   Unread Notifications: {numberOfUnreadNotifications}
                 </button>
               </Link>
             )}
             {numberOfUnreadNotifications == 0 && (
-              <Link to="/notification/1">
+              <Link to={"/notification/" + this.state.memberId}>
                 <button
                   className="btn btn-sm btn-outline-success"
                   type="button"
