@@ -33,7 +33,7 @@ const Comment = ({ from, time, message, level }) => {
           <h5 className="mb-1">{header}</h5>
           <div className="d-flex w-100 justify-content-between">
             {level == "5" && (
-              <Link>
+              <Link to={"/personal/" + from}>
                 <h6 className="mb-1">{from}</h6>
               </Link>
             )}
