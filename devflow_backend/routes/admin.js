@@ -7,6 +7,91 @@ const { Company } = require("../models/Company");
 const { Team } = require("../models/Team");
 const { Task } = require("../models/Task");
 
+router.get("/getCompany", async (req, res) => {
+  console.log("---GetCompany---");
+  Company.find({})
+    .then((company) => {
+      res.send(company);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
+router.delete("/deleteCompany", async (req, res) => {
+  console.log("---deleteCompany---");
+  //   const { _id } = req.body._id;
+  //   console.log(req.body._id);
+  Company.findOneAndRemove({ _id: req.body._id }, function (err, company) {
+    if (!err && company) {
+      console.log(company);
+      //   console.log("Company successfully deleted");
+      res.status(200).send("Company successfully deleted");
+    } else {
+      console.log("error");
+      res.status(404).send("error");
+    }
+  });
+});
+
+router.get("/getTeam", async (req, res) => {
+  console.log("---getTeam---");
+  Team.find({})
+    .then((team) => {
+      res.send(team);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
+router.delete("/deleteTeam", async (req, res) => {
+  console.log("---deleteTeam---");
+  //   const { _id } = req.body._id;
+  //   console.log(req.body._id);
+  Team.findOneAndRemove({ _id: req.body._id }, function (err, team) {
+    if (!err && team) {
+      console.log(team);
+      //   console.log("Company successfully deleted");
+      res.status(200).send("Team successfully deleted");
+    } else {
+      // console.log("error");
+      res.status(404).send("error");
+    }
+  });
+});
+
+router.get("/getMember", async (req, res) => {
+  console.log("---getMember---");
+  Member.find({})
+    .then((member) => {
+      res.send(member);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
+router.delete("/deleteMember", async (req, res) => {
+  console.log("---deleteMember---");
+  //   const { _id } = req.body._id;
+  //   console.log(req.body._id);
+  console.log(req.body);
+  Member.findOneAndRemove({ _id: req.body._id }, function (err, member) {
+    if (!err && member) {
+      console.log(member);
+      //   console.log("Company successfully deleted");
+      res.status(200).send("Member successfully deleted");
+    } else {
+      // console.log("error");
+      res.status(404).send("error");
+    }
+  });
+});
+
+router.get("/getTask", async (req, res) => {
+  console.log("---getTask---");
+  Task.find({})
+    .then((task) => {
+      res.send(task);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
 router.put("/addCompany", async (req, res) => {
   console.log(req.body);
   const { _id, name, bossId, companyPic } = req.body;

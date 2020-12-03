@@ -3,11 +3,21 @@ import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
-import { deleteCompany, getCompanies } from "../services/fakeCompanyServices";
-import { deleteMember, getMembers } from "../services/fakeMemberService";
-import { getNotificaitons } from "../services/fakeNotificationServices";
-import { deleteTasks, getTasks } from "../services/fakeTaskService";
-import { deleteTeam, getTeams } from "../services/fakeTeamService";
+// import { deleteCompany, getCompanies } from "../services/fakeCompanyServices";
+import {
+  getAllCompany,
+  deleteCompany,
+  getAllTeam,
+  deleteTeam,
+  getAllMember,
+  deleteMember,
+  getAllTask,
+  getAllTaskcheckSession,
+} from "../services/adminService";
+// import { deleteMember, getMembers } from "../services/fakeMemberService";
+// import { getNotificaitons } from "../services/fakeNotificationServices";
+// import { deleteTasks, getTasks } from "../services/fakeTaskService";
+// import { deleteTeam, getTeams } from "../services/fakeTeamService";
 import { companies } from "../services/fakeCompanyServices";
 import CompaniesTable from "../components/adminCompanyTable";
 import TeamTable from "../components/adminTeamTable";
@@ -19,11 +29,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import NotificationsTable from "../components/adminNotificationTable";
 class admin extends Component {
   state = {
-    companies: getCompanies(),
-    tasks: getTasks(),
-    teams: getTeams(),
-    members: getMembers(),
-    notifications: getNotificaitons(),
+    companies: [],
+    tasks: [],
+    teams: [],
+    members: [],
+    // notifications: getNotificaitons(),
     types: [
       { name: "Companies", selected: "true" },
       { name: "Teams", selected: "false" },
@@ -32,6 +42,20 @@ class admin extends Component {
     ],
     sortColumn: { path: "_id", order: "asc" },
   };
+
+  async componentDidMount() {
+    console.log("All company");
+    const company = await getAllCompany();
+    const task = await getAllTask();
+    const team = await getAllTeam();
+    const member = await getAllMember();
+    this.setState({
+      companies: await company.json(),
+      tasks: await task.json(),
+      teams: await team.json(),
+      members: await member.json(),
+    });
+  }
   selected = (name) => {
     var k = this.state.types;
     var h = k.findIndex((t) => t.selected == "true");
@@ -60,6 +84,7 @@ class admin extends Component {
       (t) => t._id !== company._id
     );
     this.setState({ companies: notCompany });
+    console.log(company._id);
     deleteCompany(company._id);
   };
   TeamHandleDelete = (team) => {
@@ -70,7 +95,7 @@ class admin extends Component {
   TaskHandleDelete = (task) => {
     const notTask = this.state.tasks.filter((t) => t._id !== task._id);
     this.setState({ tasks: notTask });
-    deleteTasks(task._id);
+    // deleteTasks(task._id);
   };
   MemberHandleDelete = (member) => {
     const notMember = this.state.members.filter((t) => t._id !== member._id);
