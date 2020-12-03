@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Company } = require("../models/Company.js");
+const { Member } = require("../models/Member.js")
 
 router.get("/all", async (req, res) => {
   console.log("---get all companies---");
@@ -15,6 +16,23 @@ router.get("/all", async (req, res) => {
       res.send(companys);
     })
     .catch((err) => res.status(500).send("Server err"));
+});
+
+router.get("/company-members", async (req, res) => {
+  var companyId = req.query.company_id
+  Company.findById(companyId)
+      .then(company => {
+          if (!company) {
+              return res.status(404).send("No such company");
+          }
+          members = company.members
+          Member.find({
+              '_id': { $in: members}
+          }, function(err, docs) {
+              res.send({members: docs})
+          })
+      })
+      .catch(err => res.status(500).send("Server err" + err))
 });
 
 router.get("/:id", async (req, res) => {
@@ -32,5 +50,8 @@ router.get("/:id", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
+
+
+
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
+import axios from 'axios';
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
@@ -35,7 +36,8 @@ class ceo extends Component {
     company: {},
     tasks: getTasks(),
     teams: getTeams(),
-    members: getMembers(),
+    members: [],
+    message: "",
     types: [
       { name: "Teams", selected: "true" },
       { name: "Members", selected: "false" },
@@ -52,14 +54,17 @@ class ceo extends Component {
     if (rank != 1 || curCompanyId != companyId) {
       this.props.history.push("/unauthorized")
     }
-
+    axios.get("http://localhost:5000/api/company/company-members", {params: {company_id: "1"}}).then(res => {
+      this.setState({
+        members: res.data.members,
+      })
+    })
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
       company: getCompanyById(companyId),
       tasks: getTasksByCompanyId(companyId),
       teams: getTeamsByCompanyId(companyId),
-      members: getMembersByCompanyId(companyId),
     });
   }
 
@@ -109,6 +114,17 @@ class ceo extends Component {
     this.setState({ members: notMember });
     deleteMember(member._id);
   };
+
+  ceoSendNotify = () => {
+      axios.post("http://localhost:5000/api/notification/ceo-send-notification", {
+        from: localStorage.memberId,
+        toMembers: this.state.members,
+        message: this.state.message
+      }).then(res => {
+        console.log(res);
+      })
+  }
+
   render() {
     const organizedTeamData = _.orderBy(
       this.state.teams,
@@ -181,12 +197,31 @@ class ceo extends Component {
               />
             )}
             {this.state.types[1].selected == "true" && (
-              <MemberTable
-                members={organizedMemberData}
-                sortColumn={this.state.sortColumn}
-                onDelete={this.MemberHandleDelete}
-                onSort={this.handleSort}
-              />
+              <div>
+                <MemberTable
+                  members={organizedMemberData}
+                  sortColumn={this.state.sortColumn}
+                  onDelete={this.MemberHandleDelete}
+                  onSort={this.handleSort}
+                />
+             
+                <div class="form-group w-75 mx-auto mt-5">
+                  <label >Send message to all members</label>
+                  <textarea
+
+                    class="form-control" 
+                    aria-label="With textarea"
+                    value={this.state.message}
+                    onChange={v => this.setState({message: v.target.value})}
+                    >
+
+                  </textarea>
+                  <button class="btn btn-outline-secondary float-right mt-3" 
+                    onClick={() => this.ceoSendNotify()}
+                  type="button" id="button-addon1">Send</button>
+                </div>
+              </div>
+             
             )}
             {this.state.types[2].selected == "true" && (
               <TaskTable
