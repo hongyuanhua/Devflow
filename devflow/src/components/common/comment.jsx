@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Comment = ({ from, time, message, level }) => {
   let header;
@@ -31,7 +32,12 @@ const Comment = ({ from, time, message, level }) => {
         <div className="col">
           <h5 className="mb-1">{header}</h5>
           <div className="d-flex w-100 justify-content-between">
-            <h6 className="mb-1">{from}</h6>
+            {level == "5" && (
+              <Link>
+                <h6 className="mb-1">{from}</h6>
+              </Link>
+            )}
+            {level != "5" && <h6 className="mb-1">{from}</h6>}
             <small>{time}</small>
           </div>
         </div>
