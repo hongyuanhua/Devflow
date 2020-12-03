@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Notification } = require("../models/Notification.js");
 const { Member } = require("../models/Member.js");
-const { nanoid } = require('nanoid')
+const { nanoid } = require("nanoid");
 
 router.get("/to/:id", async (req, res) => {
   console.log("---GetNotificationByToId---");
@@ -17,6 +17,42 @@ router.get("/to/:id", async (req, res) => {
     .catch((err) => res.status(500).send("Server err"));
 });
 
+router.get("/company/:id", async (req, res) => {
+  console.log("---GetCompanyNotificationByToId---");
+  const memberId = req.params.id;
+  Notification.find({ level: "2", to: memberId })
+    .then((notifications) => {
+      if (!notifications) {
+        return res.status(404).send("No such notifications");
+      }
+      res.send(notifications);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+router.get("/team/:id", async (req, res) => {
+  console.log("---GetTeamNotificationByToId---");
+  const memberId = req.params.id;
+  Notification.find({ level: "3", to: memberId })
+    .then((notifications) => {
+      if (!notifications) {
+        return res.status(404).send("No such notifications");
+      }
+      res.send(notifications);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+router.get("/system/:id", async (req, res) => {
+  console.log("---GetSystemNotificationByToId---");
+  const memberId = req.params.id;
+  Notification.find({ level: "1", to: memberId })
+    .then((notifications) => {
+      if (!notifications) {
+        return res.status(404).send("No such notifications");
+      }
+      res.send(notifications);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
 router.get("/from/:id", async (req, res) => {
   console.log("---GetNotificationByFromId---");
   const memberId = req.params.id;
@@ -43,25 +79,28 @@ router.get("/all", async (req, res) => {
 });
 
 router.put("/personal", async (req, res) => {
-  console.log("---Add personal message---")
+  console.log("---Add personal message---");
   console.log(req.body);
 
   // get data for this notification
   const { fromId, toId, message } = req.body;
-  const id = nanoid()
+  const id = nanoid();
   const level = 5;
   const time = new Date().toString();
-  console.log(time)
+  console.log(time);
 
   let notification;
   try {
     // check the from and to member exists
     let fromMember = await Member.findById(fromId);
-    if (!fromMember) return res.status(404).send("no such from member")
+    if (!fromMember) return res.status(404).send("no such from member");
     let toMember = await Member.findById(fromId);
-    if (!toMember) return res.status(404).send("no such to member")
+    if (!toMember) return res.status(404).send("no such to member");
 
-    if (fromMember.companyId !== toMember.companyId) return res.status(400).send("From and to member must be in the same company")
+    if (fromMember.companyId !== toMember.companyId)
+      return res
+        .status(400)
+        .send("From and to member must be in the same company");
 
     notification = await new Notification({
       _id: id,
@@ -72,7 +111,7 @@ router.put("/personal", async (req, res) => {
       time: time,
     }).save();
     console.log(notification);
-    console.log("Send personal notification success")
+    console.log("Send personal notification success");
     return;
   } catch (err) {
     console.log(err);
@@ -99,8 +138,12 @@ router.post("/readAll", async (req, res) => {
     return;
   }
 
-  const results = await Notification.update({ to: memberId }, { $set: { isUnread: false } }, { multi: true })
-  console.log(results)
+  const results = await Notification.update(
+    { to: memberId },
+    { $set: { isUnread: false } },
+    { multi: true }
+  );
+  console.log(results);
 
   res.status(200).send(results);
 });
