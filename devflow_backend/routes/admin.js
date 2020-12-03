@@ -92,6 +92,23 @@ router.get("/getTask", async (req, res) => {
     .catch((err) => res.status(500).send("Server err"));
 });
 
+router.delete("/deleteTask", async (req, res) => {
+  console.log("---deleteTask---");
+  //   const { _id } = req.body._id;
+  //   console.log(req.body._id);
+  console.log(req.body);
+  Task.findOneAndRemove({ _id: req.body._id }, function (err, task) {
+    if (!err && task) {
+      console.log(task);
+      //   console.log("Company successfully deleted");
+      res.status(200).send("Task successfully deleted");
+    } else {
+      // console.log("error");
+      res.status(404).send("error");
+    }
+  });
+});
+
 router.put("/addCompany", async (req, res) => {
   console.log(req.body);
   const { _id, name, bossId, companyPic } = req.body;
