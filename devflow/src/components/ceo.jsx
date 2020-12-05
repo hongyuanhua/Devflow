@@ -134,7 +134,7 @@ class ceo extends Component {
     return (
       <React.Fragment>
         <NavBar />
-        <div className="row">
+        <div className="row mx-5">
           <div className="col-3">
             <ul className="list-group">
               {this.state.types.map((type) => (
