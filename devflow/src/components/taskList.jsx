@@ -257,21 +257,21 @@ class taskList extends Component {
           <button
             type="button"
             onClick={() => this.sortCategory("name")}
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary mr-1"
           >
             Names
           </button>
           <button
             type="button"
             onClick={() => this.sortCategory("usedTime")}
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary mr-1"
           >
             Used Time
           </button>
           <button
             type="button"
             onClick={() => this.sortCategory("id")}
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary mr-1"
           >
             ID
           </button>
