@@ -152,7 +152,7 @@ class ceo extends Component {
             </ul>
           </div>
           <div className="col">
-            <div className="row">
+            <div className="row mb-3">
               <div className="col">
                 {this.state.types[0].selected == "true" && (
                   <Link to={`/mt/new`}>
