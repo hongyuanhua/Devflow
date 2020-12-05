@@ -279,14 +279,14 @@ class taskList extends Component {
           <button
             type="button"
             onClick={() => this.sortCategory("Group ID")}
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary mr-1"
           >
             Group ID
           </button>
           <button
             type="button"
             onClick={() => this.sortCategory("Estimated Time")}
-            className="btn btn-outline-secondary"
+            className="btn btn-outline-secondary mr-1"
           >
             Estimated Time
           </button>
