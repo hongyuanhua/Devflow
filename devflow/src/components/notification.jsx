@@ -100,7 +100,7 @@ class Notification extends Component {
     return (
       <React.Fragment>
         <NavBar atPage="notification" />
-        <div className="row">
+        <div className="row mx-3">
           <div className="col-3">
             <h1></h1>
             <ListGroup
