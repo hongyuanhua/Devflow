@@ -76,7 +76,7 @@ class NavBar extends Component {
     let unreadNotifications = this.getUnread();
     let numberOfUnreadNotifications = unreadNotifications.length;
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
         <a className="navbar-brand" href="/taskList">
           DevFlow
         </a>
@@ -112,7 +112,7 @@ class NavBar extends Component {
 
         <ul className="navbar-nav mr-auto"></ul>
 
-        <Link to={"/"}>
+        <Link to={"/"} className="mr-5">
           <button
             className="btn btn-sm btn-outline-danger"
             type="button"
