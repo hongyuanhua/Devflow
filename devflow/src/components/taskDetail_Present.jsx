@@ -2,12 +2,9 @@ import React from "react";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import { getTasks, getTaskById } from "../services/fakeTaskService";
-import {
-  getMembers,
-  getMemberById,
-  members,
-} from "../services/fakeMemberService";
+import { getMembers, members } from "../services/fakeMemberService";
 import "./taskDetail_Present.css";
+import { getMemberById } from "./../services/memberService";
 
 class taskDetail_Present extends React.Component {
   state = {
@@ -23,9 +20,10 @@ class taskDetail_Present extends React.Component {
       taskDetail: "",
     },
     members: [],
+    current: {},
   };
 
-  componentWillMount() {
+  async componentWillMount() {
     const new_members = getMembers();
     // console.log(new_members);
     this.setState({ members: new_members });
@@ -34,7 +32,12 @@ class taskDetail_Present extends React.Component {
     const taskId = this.props.match.params.id;
     if (taskId === "new") return;
     // console.log(taskId);
-
+    const memberId = localStorage.memberId;
+    const current = await getMemberById(memberId);
+    if (current.status == 200) {
+      let member = await current.json();
+      this.setState({ current: member });
+    }
     const task = getTaskById(taskId);
     if (!task) return this.props.history.replace("/not-found");
 
@@ -120,12 +123,15 @@ class taskDetail_Present extends React.Component {
                 </Link>
               </div>
               <br></br>
+              {console.log(this.state.current.rank)}
               <div className="row">
-                <Link to={`/taskDetail/${this.state.data._id}`}>
-                  <button type="button" className="btn btn-primary">
-                    Edit
-                  </button>
-                </Link>
+                {this.state.current.rank < 3 && (
+                  <Link to={`/taskDetail/${this.state.data._id}`}>
+                    <button type="button" className="btn btn-primary">
+                      Edit
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

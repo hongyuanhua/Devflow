@@ -25,11 +25,11 @@ class taskList extends Component {
     const boss = await getMemberById(memberId);
     console.log(boss.status);
     if (boss.status == 200) {
-      let member = await boss.json();
-      console.log(member);
+      const member = await boss.json();
       const task = await getTasksByTeam(member.teamId, memberId);
       if (task.status == 200) {
-        let tasks = await task.json();
+        const tasks = await task.json();
+        console.log(tasks);
         this.setState({ tasks: tasks });
       }
     }
