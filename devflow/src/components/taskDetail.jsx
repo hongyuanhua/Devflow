@@ -34,6 +34,7 @@ class TaskDetail extends Form {
     current: {},
     status: "new",
     errors: {},
+    selected: "",
   };
 
   schema = {
@@ -56,6 +57,7 @@ class TaskDetail extends Form {
       if (member.rank > 2) {
         this.props.history.push("/unauthorized");
       }
+      this.setState({ selected: member.teamId });
       this.setState({
         data: {
           _id: "",
@@ -74,15 +76,12 @@ class TaskDetail extends Form {
     const new_teams = await getTeam();
     if (new_teams.status == 200) {
       let team = await new_teams.json();
-      console.log(team);
       this.setState({ teams: team });
     }
-
     const taskId = this.props.match.params.id;
     if (taskId === "new") {
       return;
     }
-    console.log(taskId);
 
     const task = getTaskById(taskId);
     if (!task) return this.props.history.replace("/not-found");
@@ -103,7 +102,9 @@ class TaskDetail extends Form {
       taskDetail: task.taskDetail,
     };
   }
-
+  getMemberByTeamId(teamId) {
+    return this.state.members.filter((t) => t.teamId == teamId);
+  }
   handleNameChange = ({ currentTarget: input }) => {
     const data = this.state.data;
     data.name = input.value;
@@ -118,6 +119,7 @@ class TaskDetail extends Form {
     if (name == "assignedTo") {
       data.assignedToId = document.getElementById("assignedTo").value;
     } else if (name == "teamId") {
+      this.setState({ selected: document.getElementById("teamId").value });
       data.teamId = document.getElementById("teamId").value;
     }
     this.setState({ data });
@@ -135,7 +137,6 @@ class TaskDetail extends Form {
         <NavBar />
         <div className="container">
           <form>{this.renderInput("name", "Task Name:", "text")}</form>
-
           <div className="row">
             <div className="col">
               <div className="row">
@@ -151,11 +152,7 @@ class TaskDetail extends Form {
                       >
                         <option value="">Empty</option>
                         {this.state.teams.map((team) => (
-                          <option
-                            key={team._id}
-                            value={team._id}
-                            selected={this.state.data.teamId === team._id}
-                          >
+                          <option key={team._id} value={team._id}>
                             {team._id}
                           </option>
                         ))}
@@ -163,31 +160,28 @@ class TaskDetail extends Form {
                     </div>
                   </div>
                 )}
-                {this.state.current.rank != 1 && (
-                  <div className="col">
-                    <div className="form-group">
-                      <label>Assigned to:</label>
-                      <select
-                        className="form-control"
-                        onChange={(e) => this.handleGetInput(e, "assignedTo")}
-                        id="assignedTo"
-                      >
-                        <option value="">Empty</option>
-                        {this.state.members.map((member) => (
-                          <option
-                            key={member._id}
-                            value={member._id}
-                            selected={
-                              this.state.data.assignedToId === member._id
-                            }
-                          >
-                            {member.firstName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+
+                <div className="col">
+                  <div className="form-group">
+                    <label>Assigned to:</label>
+                    <select
+                      className="form-control"
+                      onChange={(e) => this.handleGetInput(e, "assignedTo")}
+                      id="assignedTo"
+                    >
+                      <option value="">Empty</option>
+
+                      {this.state.selected != "" &&
+                        this.getMemberByTeamId(this.state.selected).map(
+                          (member) => (
+                            <option key={member._id} value={member._id}>
+                              {member.firstName}
+                            </option>
+                          )
+                        )}
+                    </select>
                   </div>
-                )}
+                </div>
               </div>
               {/* <div className="row">
                 <label for="exampleFormControlTextarea1">

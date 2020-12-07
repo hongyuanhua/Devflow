@@ -30,7 +30,6 @@ export const getAllMembers = async () => {
   console.log("---getAllMembers---");
   // Create our request constructor with all the parameters we need
   const url = host + port + "/api/member/all";
-
   // Send the request with fetch()
   const companies = await fetch(url);
   return companies;
