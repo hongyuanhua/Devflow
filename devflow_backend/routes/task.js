@@ -46,7 +46,7 @@ router.get("/all", async (req, res) => {
 });
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
-  Task.find({ _id: id })
+  Task.findById(id)
     .then((tasks) => {
       if (!tasks) {
         console.log("No such tasks");
@@ -164,6 +164,7 @@ router.put("/add", async (req, res) => {
     return;
   }
 });
+
 router.post("/update", async (req, res) => {
   console.log("---update task---");
   console.log(req.body);

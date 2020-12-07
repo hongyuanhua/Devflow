@@ -3,13 +3,12 @@ import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { getTasks, deleteTasks, saveTask } from "../services/fakeTaskService";
-
 import { Link } from "react-router-dom";
 import Textarea from "./common/textarea.jsx";
 import { getAllMembers } from "../services/memberService";
 import { getMemberById } from "./../services/memberService";
 import { getTeam, getTeamByCompanyId } from "../services/teamService";
+import { deleteTask } from "../services/adminService";
 import {
   addTask,
   updateTask,
@@ -47,11 +46,13 @@ class TaskDetail extends Form {
 
   async componentDidMount() {
     const memberId = localStorage.memberId;
+
     const new_members = await getAllMembers();
     if (new_members.status == 200) {
       let member = await new_members.json();
       this.setState({ members: member });
     }
+
     const current = await getMemberById(memberId);
     if (current.status == 200) {
       let member = await current.json();
@@ -72,23 +73,23 @@ class TaskDetail extends Form {
           taskDetail: "",
         },
       });
+      const taskId = this.props.match.params.id;
+      if (taskId === "new") {
+        return;
+      }
+      const tasks = await getTasksById(taskId);
+      if (tasks.status == 200) {
+        let task = await tasks.json();
+        console.log(task);
+        if (!task) return this.props.history.replace("/not-found");
+        this.setState({ data: this.mapToViewModel(task) });
+      }
       this.setState({ current: member });
     }
     const new_teams = await getTeamByCompanyId(this.state.current.companyId);
     if (new_teams.status == 200) {
       let team = await new_teams.json();
       this.setState({ teams: team });
-    }
-    const taskId = this.props.match.params.id;
-    if (taskId === "new") {
-      return;
-    }
-    const tasks = await getTasksById(taskId);
-    if (tasks.status == 200) {
-      let task = await tasks.json();
-      console.log(task);
-      if (!task) return this.props.history.replace("/not-found");
-      this.setState({ data: this.mapToViewModel(task) });
     }
     this.setState({ status: "notNew" });
   }
@@ -116,7 +117,7 @@ class TaskDetail extends Form {
   };
 
   handleDelete = () => {
-    deleteTasks(this.state.data._id);
+    deleteTask(this.state.data._id);
   };
   handleGetInput = (e, name) => {
     const data = this.state.data;
@@ -154,9 +155,15 @@ class TaskDetail extends Form {
                         onChange={(e) => this.handleGetInput(e, "teamId")}
                         id="teamId"
                       >
-                        <option value="">Empty</option>
+                        <option value="" selected={this.data.teamId === ""}>
+                          Empty
+                        </option>
                         {this.state.teams.map((team) => (
-                          <option key={team._id} value={team._id}>
+                          <option
+                            key={team._id}
+                            value={team._id}
+                            selected={this.data.teamId === team._id}
+                          >
                             {team.teamName}
                           </option>
                         ))}
@@ -173,12 +180,23 @@ class TaskDetail extends Form {
                       onChange={(e) => this.handleGetInput(e, "assignedTo")}
                       id="assignedTo"
                     >
-                      <option value="">Empty</option>
+                      <option
+                        value=""
+                        selected={this.state.data.assignedToId === ""}
+                      >
+                        Empty
+                      </option>
 
                       {this.state.selected != "" &&
                         this.getMemberByTeamId(this.state.selected).map(
                           (member) => (
-                            <option key={member._id} value={member._id}>
+                            <option
+                              key={member._id}
+                              value={member._id}
+                              selected={
+                                this.state.data.assignedToId === member._id
+                              }
+                            >
                               {member.firstName}
                             </option>
                           )
@@ -240,13 +258,15 @@ class TaskDetail extends Form {
               </div>
               <br></br>
               <div className="row">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.handleSave}
-                >
-                  Save
-                </button>
+                <Link to="/taskList">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.handleSave}
+                  >
+                    Save
+                  </button>
+                </Link>
               </div>
               <br></br>
               <div className="row">

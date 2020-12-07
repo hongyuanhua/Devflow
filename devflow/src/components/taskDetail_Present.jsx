@@ -1,9 +1,8 @@
 import React from "react";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
-import { getMembers, members } from "../services/fakeMemberService";
 import "./taskDetail_Present.css";
-import { getMemberById } from "./../services/memberService";
+import { getMemberById, getAllMembers } from "./../services/memberService";
 import { getTasksById } from "../services/taskService";
 
 class taskDetail_Present extends React.Component {
@@ -24,9 +23,12 @@ class taskDetail_Present extends React.Component {
   };
 
   async componentWillMount() {
-    const new_members = getMembers();
+    const new_members = await getAllMembers();
+    if (new_members.status == 200) {
+      let member = await new_members.json();
+      this.setState({ members: member });
+    }
     // console.log(new_members);
-    this.setState({ members: new_members });
     // console.log(this.state.members);
 
     const taskId = this.props.match.params.id;
@@ -44,7 +46,7 @@ class taskDetail_Present extends React.Component {
       console.log(task);
       console.log(this.state.data);
       if (!task) return this.props.history.replace("/not-found");
-      this.setState({ data: this.mapToViewModel(task[0]) });
+      this.setState({ data: this.mapToViewModel(task) });
     }
   }
 

@@ -2,8 +2,6 @@ import React, { Component, Fragment } from "react";
 import { getTasksByTeam, joinTask } from "../services/taskService";
 import { checkSession } from "../services/authService";
 import { getAllMembers, getMemberById } from "../services/memberService";
-import { getMemberProfilePic } from "../services/memberServiceHelper";
-import { getMembers } from "../services/fakeMemberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./common/navBar";
@@ -16,11 +14,16 @@ class taskList extends Component {
   state = {
     currentUser: {},
     tasks: [],
-    members: getMembers(),
+    members: [],
   };
 
   async componentDidMount() {
     const memberId = localStorage.memberId;
+    const koo = await getAllMembers();
+    if (koo.status == 200) {
+      let member = await koo.json();
+      this.setState({ members: member });
+    }
     console.log(memberId);
     const boss = await getMemberById(memberId);
     console.log(boss.status);
@@ -32,11 +35,7 @@ class taskList extends Component {
         this.setState({ tasks: tasks });
       }
     }
-    const koo = await getAllMembers();
-    if (koo.status == 200) {
-      let member = await koo.json();
-      this.setState({ members: member });
-    }
+    console.log(this.state.members);
     const currentUser = await getMemberById(memberId);
     if (currentUser.status == 200) {
       let member = await currentUser.json();

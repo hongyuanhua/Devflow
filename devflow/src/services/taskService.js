@@ -101,6 +101,7 @@ export const updateTask = async (data) => {
   console.log("---update task---");
   // Create our request constructor with all the parameters we need
   const {
+    _id,
     teamId,
     companyId,
     name,
@@ -114,6 +115,7 @@ export const updateTask = async (data) => {
   const request = new Request(host + port + "/api/task/update", {
     method: "post",
     body: JSON.stringify({
+      id: _id,
       teamId: teamId,
       companyId: companyId,
       name: name,
