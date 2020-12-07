@@ -3,18 +3,19 @@ import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import {
-  getTasks,
-  getTaskById,
-  deleteTasks,
-  saveTask,
-} from "../services/fakeTaskService";
+import { getTasks, deleteTasks, saveTask } from "../services/fakeTaskService";
+
 import { Link } from "react-router-dom";
 import Textarea from "./common/textarea.jsx";
 import { getAllMembers } from "../services/memberService";
 import { getMemberById } from "./../services/memberService";
-import { getTeam } from "../services/teamService";
-import { addTask, updateTask } from "./../services/taskService";
+import { getTeam, getTeamByCompanyId } from "../services/teamService";
+import {
+  addTask,
+  updateTask,
+  getTaskById,
+  getTasksById,
+} from "./../services/taskService";
 import { getAllTask } from "./../services/adminService";
 class TaskDetail extends Form {
   state = {
@@ -73,7 +74,7 @@ class TaskDetail extends Form {
       });
       this.setState({ current: member });
     }
-    const new_teams = await getTeam();
+    const new_teams = await getTeamByCompanyId(this.state.current.companyId);
     if (new_teams.status == 200) {
       let team = await new_teams.json();
       this.setState({ teams: team });
@@ -82,11 +83,14 @@ class TaskDetail extends Form {
     if (taskId === "new") {
       return;
     }
-
-    const task = getTaskById(taskId);
-    if (!task) return this.props.history.replace("/not-found");
+    const tasks = await getTasksById(taskId);
+    if (tasks.status == 200) {
+      let task = await tasks.json();
+      console.log(task);
+      if (!task) return this.props.history.replace("/not-found");
+      this.setState({ data: this.mapToViewModel(task) });
+    }
     this.setState({ status: "notNew" });
-    this.setState({ data: this.mapToViewModel(task) });
   }
 
   mapToViewModel(task) {
@@ -153,7 +157,7 @@ class TaskDetail extends Form {
                         <option value="">Empty</option>
                         {this.state.teams.map((team) => (
                           <option key={team._id} value={team._id}>
-                            {team._id}
+                            {team.teamName}
                           </option>
                         ))}
                       </select>
@@ -258,6 +262,7 @@ class TaskDetail extends Form {
               </div>
             </div>
           </div>
+          {console.log(this.state)}
         </div>
       </React.Fragment>
     );

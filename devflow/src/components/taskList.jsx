@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { getTasksByTeam } from "../services/taskService";
+import { getTasksByTeam, joinTask } from "../services/taskService";
 import { checkSession } from "../services/authService";
 import { getAllMembers, getMemberById } from "../services/memberService";
 import { getMemberProfilePic } from "../services/memberServiceHelper";
@@ -29,7 +29,6 @@ class taskList extends Component {
       const task = await getTasksByTeam(member.teamId, memberId);
       if (task.status == 200) {
         const tasks = await task.json();
-        console.log(tasks);
         this.setState({ tasks: tasks });
       }
     }
@@ -45,23 +44,10 @@ class taskList extends Component {
     }
   }
 
-  handleJoin = (task, id) => {
-    var tasks = this.state.tasks.filter((m) => m._id !== task._id);
-    const newTask = {
-      _id: task._id,
-      teamId: task.teamId,
-      companyId: task.companyId,
-      name: task.name,
-      estimatedTime: task.estimatedTime,
-      usedTime: task.usedTime,
-      assignedToId: id,
-      assignedById: task.assignedById,
-      createdById: task.createdById,
-      taskDetail: task.taskDetail,
-    };
-    tasks.push(newTask);
-    this.setState({ tasks });
-  };
+  async handleJoin(task) {
+    joinTask(task._id, this.state.currentUser._id);
+    window.location.reload();
+  }
 
   getCurrentGID = (id) => {
     var input, i;
@@ -353,7 +339,7 @@ class taskList extends Component {
                 </p>
                 <div className="text-center">
                   <button
-                    onClick={() => this.handleJoin(task, "1")}
+                    onClick={() => this.handleJoin(task)}
                     className="btn btn-danger text-center"
                     disabled={!(task.assignedToId === "")}
                   >

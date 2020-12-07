@@ -44,6 +44,19 @@ router.get("/all", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  Task.find({ _id: id })
+    .then((tasks) => {
+      if (!tasks) {
+        console.log("No such tasks");
+        return res.status(404).send("No such tasks");
+      }
+      console.log("Success in geting all tasks");
+      res.send(tasks);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
 router.get("/toMember/:memberId", async (req, res) => {
   console.log("--In get task by member id--");
   const memberId = req.params.memberId;
@@ -62,7 +75,42 @@ router.get("/toMember/:memberId", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
+router.post("/join", async (req, res) => {
+  console.log("---join task---");
+  console.log(req.body);
+  const { taskId, memberId } = req.body;
 
+  if (!memberId) {
+    console.log(memberId);
+    res.status(400).send("Missing login fields");
+    return;
+  }
+  if (!taskId) {
+    console.log(taskId);
+    res.status(400).send("Missing task fields");
+    return;
+  }
+  let member = await Member.findById(memberId);
+  if (!member) {
+    console.log("no such user");
+    res.status(400).send("Invalid login fields");
+    return;
+  }
+  let task = await Task.findById(taskId);
+  if (!task) {
+    console.log("no such task");
+    res.status(400).send("Invalid task fields");
+    return;
+  }
+  const results = await Task.update(
+    { _id: taskId },
+    { $set: { assignedToId: memberId } },
+    { multi: true }
+  );
+  console.log(results);
+
+  res.status(200).send(results);
+});
 // router.put("/", async (req, res) => {
 //     const teamId = req.body.teamId;
 //     const
@@ -81,26 +129,19 @@ router.put("/add", async (req, res) => {
     assignedById,
     taskDetail,
   } = req.body;
-
+  console.log(req.body);
   let task;
   try {
     let team = await Team.findById(teamId);
     if (!team) return res.status(404).send("no such team");
-
+    console.log(1);
     let company = await Company.findById(companyId);
     if (!company) return res.status(404).send("no such to company");
-
-    let assToMember = await Member.findById(assignedToId);
-    if (!assToMember) return res.status(404).send("assign to no such member");
-
+    console.log(1);
     let assByMember = await Member.findById(assignedById);
     if (!assByMember) return res.status(404).send("assign by no such member");
 
-    if (assToMember.companyId !== assByMember.companyId)
-      return res
-        .status(400)
-        .send("From and to member must be in the same company");
-
+    console.log(1);
     task = await new Task({
       _id: id,
       teamId: teamId,
@@ -169,4 +210,5 @@ router.post("/update", async (req, res) => {
 
   res.status(200).send(results);
 });
+
 module.exports = router;

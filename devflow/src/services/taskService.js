@@ -27,6 +27,32 @@ export const getTasksByAssignedTo = async (memberId) => {
   const tasks = await fetch(host + port + "/api/task/toMember/" + memberId);
   return tasks;
 };
+
+export const joinTask = async (taskId, memberId) => {
+  console.log("---read all---");
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/task/join", {
+    method: "post",
+    body: JSON.stringify({
+      taskId: taskId,
+      memberId: memberId,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log("read all");
+  const result = await fetch(request);
+  return result;
+};
+
+export const getTasksById = async (Id) => {
+  console.log("---at get tasks by task id---");
+  const task = await fetch(host + port + "/api/task/" + Id);
+  return task;
+};
 export const addTask = (data) => {
   console.log("---Add Task---");
   const {

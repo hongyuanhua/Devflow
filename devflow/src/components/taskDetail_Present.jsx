@@ -1,10 +1,10 @@
 import React from "react";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
-import { getTasks, getTaskById } from "../services/fakeTaskService";
 import { getMembers, members } from "../services/fakeMemberService";
 import "./taskDetail_Present.css";
 import { getMemberById } from "./../services/memberService";
+import { getTasksById } from "../services/taskService";
 
 class taskDetail_Present extends React.Component {
   state = {
@@ -38,10 +38,14 @@ class taskDetail_Present extends React.Component {
       let member = await current.json();
       this.setState({ current: member });
     }
-    const task = getTaskById(taskId);
-    if (!task) return this.props.history.replace("/not-found");
-
-    this.setState({ data: this.mapToViewModel(task) });
+    const tasks = await getTasksById(taskId);
+    if (tasks.status == 200) {
+      let task = await tasks.json();
+      console.log(task);
+      console.log(this.state.data);
+      if (!task) return this.props.history.replace("/not-found");
+      this.setState({ data: this.mapToViewModel(task[0]) });
+    }
   }
 
   mapToViewModel(task) {
@@ -88,11 +92,6 @@ class taskDetail_Present extends React.Component {
                   <label htmlFor="assignedBy">Assigned by:</label>
                   <p>{this.filterID(this.state.data.assignedById)}</p>
                   {/* for assignedBy */}
-                </div>
-                <div className="col">
-                  <label htmlFor="createdBy">Created by:</label>
-                  <p>{this.filterID(this.state.data.createdById)}</p>
-                  {/* for createdBy */}
                 </div>
               </div>
               <label htmlFor="taskDetail">Task Description:</label>
