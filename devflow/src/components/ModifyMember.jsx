@@ -109,7 +109,7 @@ class ModifyMember extends Form {
             <a
               href="/admin"
               className="btn btn-primary btn-lg "
-              tabindex="-1"
+              tabIndex="-1"
               role="button"
               aria-disabled="false"
               onClick={this.doSubmit}
@@ -119,7 +119,7 @@ class ModifyMember extends Form {
             <a
               href="/admin"
               className="btn btn-primary btn-lg "
-              tabindex="-1"
+              tabIndex="-1"
               role="button"
               aria-disabled="false"
             >
