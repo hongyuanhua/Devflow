@@ -31,7 +31,7 @@ class adminTeamTable extends Component {
         <a
           href={"/mt/" + team._id}
           className="btn btn-primary btn-sm "
-          tabindex="-1"
+          tabIndex="-1"
           role="button"
           aria-disabled="false"
         >

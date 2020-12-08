@@ -59,11 +59,6 @@ class ceo extends Component {
         members: data.members
       });
     })
-    // axios.get("http://localhost:5000/api/company/company-members", {params: {company_id: "1"}}).then(res => {
-    //   this.setState({
-    //     members: res.data.members,
-    //   })
-    // })
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
@@ -142,18 +137,20 @@ class ceo extends Component {
         <div className="row mx-5">
           <div className="col-3">
             <ul className="list-group">
-              {this.state.types.map((type) => (
+              {this.state.types.map((type) => {
+                return (
                 <li
                   className={
                     type.selected === "true"
                       ? "list-group-item active"
                       : "list-group-item"
                   }
+                  key={type.name}
                   onClick={() => this.selected(type.name)}
                 >
                   {type.name}
                 </li>
-              ))}
+              )})}
             </ul>
           </div>
           <div className="col">
@@ -163,7 +160,6 @@ class ceo extends Component {
                   <Link to={`/mt/new`}>
                     <button
                       className="btn btn-primary btn-large float-left"
-                      onClick={"./mt/new"}
                     >
                       Add Team
                     </button>
