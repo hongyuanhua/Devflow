@@ -25,7 +25,7 @@ class adminCompanyTable extends Component {
         <a
           href={"/mc/" + company._id}
           className="btn btn-primary btn-sm "
-          tabindex="-1"
+          tabIndex="-1"
           role="button"
           aria-disabled="false"
         >
