@@ -4,6 +4,9 @@ const { host, port } = backend;
 
 // module.export = { login: login };a
 export const getMemberById = async (id) => {
+  if (! id) {
+    return {status: 'failed'}
+  }
   console.log("---getMemberByToId---");
   // Create our request constructor with all the parameters we need
   const url = host + port + "/api/member/" + id;
@@ -14,6 +17,13 @@ export const getMemberById = async (id) => {
 export const getMembersByCompanyId = async (id) => {
   console.log("---getMembersByCompanyId---");
   const url = host + port + "/api/member/company/" + id;
+  // Send the request with fetch()
+  const member = await fetch(url);
+  return member;
+};
+export const getMembersByCompanyId2 = async (id) => {
+  console.log("---getMembersByCompanyId---");
+  const url = host + port + "/api/company/company-members?company_id=" + id;
   // Send the request with fetch()
   const member = await fetch(url);
   return member;

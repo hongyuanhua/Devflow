@@ -34,9 +34,9 @@ class Notification extends Component {
     this.setState({ entry });
     this.setState({ selectedNotificationType: entry });
 
-    if (entry == "Unread") {
-      await readAll(userId);
-    }
+    // if (entry == "Unread") {
+    //   await readAll(userId);
+    // }
 
     let ns = await getNotificationByToId(userId);
     if (ns.status == 200) {

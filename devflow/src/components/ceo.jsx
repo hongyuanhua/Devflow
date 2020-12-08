@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
-import axios from 'axios';
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
@@ -9,7 +8,6 @@ import { logout } from "../services/authService";
 import {
   deleteMember,
   getMembers,
-  getMembersByCompanyId,
   getMemberById,
 } from "../services/fakeMemberService";
 import { getNotificaitons } from "../services/fakeNotificationServices";
@@ -29,6 +27,7 @@ import MemberTable from "../components/adminMemberTable";
 import TaskTable from "../components/adminTasksTable";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {getMembersByCompanyId2} from "../services/memberService"
 
 import NotificationsTable from "../components/adminNotificationTable";
 class ceo extends Component {
@@ -54,10 +53,11 @@ class ceo extends Component {
     if (rank != 1 || curCompanyId != companyId) {
       this.props.history.push("/unauthorized")
     }
-    axios.get("http://localhost:5000/api/company/company-members", {params: {company_id: "1"}}).then(res => {
+    getMembersByCompanyId2(companyId).then(result => result.json())
+    .then(data => {
       this.setState({
-        members: res.data.members,
-      })
+        members: data.members
+      });
     })
     const company = getCompanyById(companyId);
     if (!company) return this.props.history.replace("/not-found");
@@ -137,18 +137,20 @@ class ceo extends Component {
         <div className="row mx-5">
           <div className="col-3">
             <ul className="list-group">
-              {this.state.types.map((type) => (
+              {this.state.types.map((type) => {
+                return (
                 <li
                   className={
                     type.selected === "true"
                       ? "list-group-item active"
                       : "list-group-item"
                   }
+                  key={type.name}
                   onClick={() => this.selected(type.name)}
                 >
                   {type.name}
                 </li>
-              ))}
+              )})}
             </ul>
           </div>
           <div className="col">
@@ -158,7 +160,6 @@ class ceo extends Component {
                   <Link to={`/mt/new`}>
                     <button
                       className="btn btn-primary btn-large float-left"
-                      onClick={"./mt/new"}
                     >
                       Add Team
                     </button>

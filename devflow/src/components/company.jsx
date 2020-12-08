@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
-import axios from "axios";
 import "./personal.css";
 import { getNotificaitons } from "../services/fakeNotificationServices";
 import { getTeamsByCompanyId } from "../services/fakeTeamService.js";
@@ -20,6 +19,7 @@ import {
   getNotTeamMembersByCompanyId,
 } from "./../services/memberService";
 import Textarea from "./common/textarea.jsx";
+import {ceoPostNotif} from "../services/notificationService";
 
 class Company extends Component {
   state = {
@@ -88,12 +88,9 @@ class Company extends Component {
 
 
   ceoSendNotify = () => {
-    axios.post("http://localhost:5000/api/notification/ceo-send-notification", {
-      from: localStorage.memberId,
-      toMembers: this.state.members,
-      message: this.state.notification,
-    }).then(res => {
-      console.log(res);
+    ceoPostNotif(localStorage.memberId, this.state.members, this.state.notification)
+    .then(e => {
+      console.log(e);
     })
   }
 
@@ -148,7 +145,7 @@ class Company extends Component {
               <br></br>
               <a
                 className="btn btn-primary btn-lg "
-                tabindex="-1"
+                tabIndex="-1"
                 role="button"
                 aria-disabled="false"
                 onClick={this.handleSubmit}
