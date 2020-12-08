@@ -145,7 +145,7 @@ class Company extends Component {
               <br></br>
               <a
                 className="btn btn-primary btn-lg "
-                tabindex="-1"
+                tabIndex="-1"
                 role="button"
                 aria-disabled="false"
                 onClick={this.handleSubmit}
