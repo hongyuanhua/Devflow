@@ -83,3 +83,20 @@ export const readAll = async (memberId) => {
   const result = await fetch(request);
   return result;
 };
+
+export const ceoPostNotif = async (fromId, toIds, message) => {
+  console.log(fromId, toIds, message)
+  const request = new Request(host + port + "/api/notification/ceo-send-notification", {
+    method: "post",
+    body: JSON.stringify({
+      from: fromId,
+      toMembers: toIds,
+      message: message,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+  return await fetch(request)
+}
