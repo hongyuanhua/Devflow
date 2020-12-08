@@ -7,7 +7,11 @@ import { Link } from "react-router-dom";
 import Textarea from "./common/textarea.jsx";
 import { getAllMembers } from "../services/memberService";
 import { getMemberById } from "./../services/memberService";
-import { getTeam, getTeamByCompanyId } from "../services/teamService";
+import {
+  getTeam,
+  getTeamByCompanyId,
+  getTeamById,
+} from "../services/teamService";
 import { deleteTask } from "../services/adminService";
 import {
   addTask,
@@ -48,50 +52,43 @@ class TaskDetail extends Form {
     const memberId = localStorage.memberId;
 
     const new_members = await getAllMembers();
-    if (new_members.status == 200) {
-      let member = await new_members.json();
-      this.setState({ members: member });
+    const currentUserR = await getMemberById(memberId);
+    const currentUser = await currentUserR.json();
+    const new_teams = await getTeamByCompanyId(currentUser.companyId);
+    console.log(this.state.data);
+    this.setState({
+      members: await new_members.json(),
+      current: currentUser,
+      selected: currentUser.teamId,
+      teams: await new_teams.json(),
+      data: {
+        _id: "",
+        companyId: currentUser.companyId,
+        teamId: currentUser.teamId != "" && currentUser.teamId,
+        name: "",
+        estimatedTime: 0,
+        usedTime: 0,
+        assignedToId: "",
+        assignedById: memberId,
+        taskDetail: "",
+      },
+    });
+    if (this.state.current.rank > 2) {
+      this.props.history.push("/unauthorized");
     }
 
-    const current = await getMemberById(memberId);
-    if (current.status == 200) {
-      let member = await current.json();
-      if (member.rank > 2) {
-        this.props.history.push("/unauthorized");
-      }
-      this.setState({ selected: member.teamId });
-      this.setState({
-        data: {
-          _id: "",
-          companyId: member.companyId,
-          teamId: member.teamId,
-          name: "",
-          estimatedTime: 0,
-          usedTime: 0,
-          assignedToId: "",
-          assignedById: memberId,
-          taskDetail: "",
-        },
-      });
-      const taskId = this.props.match.params.id;
-      if (taskId === "new") {
-        return;
-      }
-      const tasks = await getTasksById(taskId);
-      if (tasks.status == 200) {
-        let task = await tasks.json();
-        console.log(task);
-        if (!task) return this.props.history.replace("/not-found");
-        this.setState({ data: this.mapToViewModel(task) });
-      }
-      this.setState({ current: member });
+    const taskId = this.props.match.params.id;
+    if (taskId === "new") {
+      return;
     }
-    const new_teams = await getTeamByCompanyId(this.state.current.companyId);
-    if (new_teams.status == 200) {
-      let team = await new_teams.json();
-      this.setState({ teams: team });
-    }
-    this.setState({ status: "notNew" });
+
+    const tasks = await getTasksById(taskId);
+
+    this.setState({
+      data: this.mapToViewModel(await tasks.json()),
+      status: "notNew",
+    });
+    if (!this.state.data) return this.props.history.replace("/not-found");
   }
 
   mapToViewModel(task) {
@@ -145,6 +142,8 @@ class TaskDetail extends Form {
           <div className="row">
             <div className="col">
               <div className="row">
+                {console.log("1")}
+                {console.log(this.state.current)}
                 {this.state.current.rank < 2 && (
                   <div className="col">
                     <div className="form-group">
@@ -155,14 +154,17 @@ class TaskDetail extends Form {
                         onChange={(e) => this.handleGetInput(e, "teamId")}
                         id="teamId"
                       >
-                        <option value="" selected={this.data.teamId === ""}>
+                        <option
+                          value=""
+                          selected={this.state.data.teamId === ""}
+                        >
                           Empty
                         </option>
                         {this.state.teams.map((team) => (
                           <option
                             key={team._id}
                             value={team._id}
-                            selected={this.data.teamId === team._id}
+                            selected={this.state.data.teamId === team._id}
                           >
                             {team.teamName}
                           </option>
@@ -182,7 +184,7 @@ class TaskDetail extends Form {
                     >
                       <option
                         value=""
-                        selected={this.state.data.assignedToId === ""}
+                        defaultValue={this.state.data.assignedToId === ""}
                       >
                         Empty
                       </option>

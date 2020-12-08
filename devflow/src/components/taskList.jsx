@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import "./taskList.css";
 import { getTasksByTeam, joinTask } from "../services/taskService";
 import { checkSession } from "../services/authService";
 import { getAllMembers, getMemberById } from "../services/memberService";
@@ -330,19 +331,28 @@ class taskList extends Component {
                     </Link>
                   )}
                 </p>
-                <p className="font-weight-light">
+                <p className="font-weight-light mt-4">
                   Time spent: {task.usedTime} hrs
                 </p>
-                <p className="font-weight-light">
+                <p className="font-weight-light mt-4">
                   Estimated Time: {task.estimatedTime} hrs
                 </p>
-                <div className="text-center">
+                <div className="text-center mt-4">
                   <button
                     onClick={() => this.handleJoin(task)}
-                    className="btn btn-danger text-center"
+                    className="btn btn-danger mr-1"
                     disabled={!(task.assignedToId === "")}
                   >
                     Join
+                  </button>
+                  <button
+                    onClick={() => this.handleJoin(task)}
+                    className="btn btn-warning mr-1"
+                    disabled={
+                      !(task.assignedToId === this.state.currentUser._id)
+                    }
+                  >
+                    Finish
                   </button>
                 </div>
               </div>
