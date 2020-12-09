@@ -22,7 +22,11 @@ import { getTeamById, saveTeam } from "../services/fakeTeamService";
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
-import { addMember, checkSession } from "../services/adminService";
+import {
+  addMember,
+  modifyMember,
+  checkSession,
+} from "../services/adminService";
 class ModifyMember extends Form {
   state = {
     data: {
@@ -51,9 +55,10 @@ class ModifyMember extends Form {
     profilePic: Joi.string().required().label("Profile Picture"),
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const modifyId = this.props.match.params.id;
-    const member = getMemberById(modifyId);
+    const tmp = await getMemberById(modifyId);
+    const member = await tmp.json();
     if (modifyId == "new") {
       this.setState({ text: "Create Member Page" });
       return;
@@ -81,7 +86,12 @@ class ModifyMember extends Form {
     // await
     try {
       console.log("do submit");
-      await addMember(this.state.data);
+      if (this.props.match.params.id == "new") {
+        await addMember(this.state.data);
+      } else {
+        modifyMember(this.state.data);
+      }
+
       // this.props.history.push("/admin");
     } catch (error) {
       console.log(error);

@@ -285,37 +285,30 @@ router.put("/addMember", async (req, res) => {
   let member;
   try {
     // if does not exist
-    if (
-      !firstName ||
-      !lastName ||
-      !userName ||
-      !rank ||
-      !password ||
-      !profilePic
-    ) {
+    if (!firstName || !lastName || !userName || !password || !profilePic) {
       res.status(400).send("Missing signup fields");
       return;
     }
 
-    let previousMember = await Member.findOne({ _id: _id });
-    if (previousMember) {
-      return res.status(400).send("Duplicated Member id");
-    }
+    // let previousMember = await Member.findOne({ _id: _id });
+    // if (previousMember) {
+    //   return res.status(400).send("Duplicated Member id");
+    // }
 
     previousMember = await Member.findOne({ userName: userName });
     if (previousMember) {
       return res.status(400).send("Duplicated Username");
     }
 
-    let company = await Company.findOne({ _id: companyId });
-    if (!company) {
-      return res.status(400).send("The company does not exsit!");
-    }
+    // let company = await Company.findOne({ _id: companyId });
+    // if (!company) {
+    //   return res.status(400).send("The company does not exsit!");
+    // }
 
-    let team = await Team.findOne({ _id: teamId });
-    if (!team) {
-      return res.status(400).send("The Team does not exsit!");
-    }
+    // let team = await Team.findOne({ _id: teamId });
+    // if (!team) {
+    //   return res.status(400).send("The Team does not exsit!");
+    // }
 
     //add member to team list
 
@@ -342,5 +335,40 @@ router.put("/addMember", async (req, res) => {
   // console.log(req.session);
   // await req.session.save();
   return res.status(200).send("Member successfully added.");
+});
+
+router.post("/modifyMember", async (req, res) => {
+  console.log(req.body);
+  const {
+    _id,
+    firstName,
+    lastName,
+    userName,
+    rank,
+    teamId,
+    companyId,
+    password,
+    profilePic,
+  } = req.body;
+  //add Member to company list
+
+  Member.find({ _id: _id })
+    .then((member) => {
+      const target = member[0];
+      target.firstName = firstName;
+      target.lastName = lastName;
+      target.userName = userName;
+      target.rank = rank;
+      target.teamId = teamId;
+      target.companyId = companyId;
+      target.password = password;
+      target.profilePic = profilePic;
+      target.save();
+    })
+    .catch((err) => {
+      console.log("fail modify member");
+
+      res.status(500).send("Server err");
+    });
 });
 module.exports = router;

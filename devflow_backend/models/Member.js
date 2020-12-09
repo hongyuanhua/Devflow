@@ -28,7 +28,7 @@ const Member = mongoose.model("Member", {
   },
   companyId: {
     type: String,
-    required: true,
+    required: false,
   },
   password: {
     type: String,
