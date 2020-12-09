@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
+const { nanoid } = require("nanoid");
 
 const { Member } = require("../models/Member");
 const { Company } = require("../models/Company");
@@ -59,7 +60,7 @@ router.delete("/deleteTeam", async (req, res) => {
 
 router.get("/getMember", async (req, res) => {
   console.log("---getMember---");
-  Member.find({})
+  Member.find({ isApproved: true })
     .then((member) => {
       res.send(member);
     })
@@ -111,11 +112,11 @@ router.delete("/deleteTask", async (req, res) => {
 
 router.put("/addCompany", async (req, res) => {
   console.log(req.body);
-  const { _id, name, bossId, companyPic } = req.body;
+  const { name, companyPic } = req.body;
   let company;
   try {
     // if does not exist
-    if (!_id || !name || !bossId || !companyPic) {
+    if (!name || !companyPic) {
       res.status(400).send("Missing signup fields");
       return;
     }
@@ -125,14 +126,14 @@ router.put("/addCompany", async (req, res) => {
       return res.status(400).send("Duplicated Company Name");
     }
 
-    previousCompany = await Company.findOne({ _id: _id });
-    if (previousCompany) {
-      return res.status(400).send("Duplicated Company ID");
-    }
+    // previousCompany = await Company.findOne({ _id: _id });
+    // if (previousCompany) {
+    //   return res.status(400).send("Duplicated Company ID");
+    // }
     company = await new Company({
-      _id: _id,
+      _id: nanoid(),
       name: name,
-      bossId: bossId,
+      bossId: "",
       companyPic: companyPic,
     }).save();
     console.log(company);
@@ -150,19 +151,19 @@ router.put("/addCompany", async (req, res) => {
 
 router.put("/addTeam", async (req, res) => {
   console.log(req.body);
-  const { _id, companyId, teamName, leader, teamPic, quote } = req.body;
+  const { companyId, teamName, leader, teamPic, quote } = req.body;
   let team;
   try {
     // if does not exist
-    if (!_id || !companyId || !teamName || !leader || !teamPic || !quote) {
+    if (!companyId || !teamName || !leader || !teamPic || !quote) {
       res.status(400).send("Missing signup fields");
       return;
     }
 
-    let previousTeam = await Team.findOne({ _id: _id });
-    if (previousTeam) {
-      return res.status(400).send("Duplicated Team id");
-    }
+    // let previousTeam = await Team.findOne({ _id: _id });
+    // if (previousTeam) {
+    //   return res.status(400).send("Duplicated Team id");
+    // }
 
     let company = await Company.findOne({ _id: companyId });
     if (!company) {
@@ -176,7 +177,7 @@ router.put("/addTeam", async (req, res) => {
     //add Team to company list
 
     team = await new Team({
-      _id: _id,
+      _id: nanoid(),
       companyId: companyId,
       teamName: teamName,
       leader: leader,
@@ -199,13 +200,10 @@ router.put("/addTeam", async (req, res) => {
 router.put("/addMember", async (req, res) => {
   console.log(req.body);
   const {
-    _id,
     firstName,
     lastName,
     userName,
     rank,
-    teamId,
-    companyId,
     password,
     profilePic,
   } = req.body;
@@ -213,12 +211,10 @@ router.put("/addMember", async (req, res) => {
   try {
     // if does not exist
     if (
-      !_id ||
       !firstName ||
       !lastName ||
       !userName ||
       !rank ||
-      !companyId ||
       !password ||
       !profilePic
     ) {
@@ -249,13 +245,13 @@ router.put("/addMember", async (req, res) => {
     //add member to team list
 
     member = await new Member({
-      _id: _id,
+      _id: nanoid(),
       firstName: firstName,
       lastName: lastName,
       userName: userName,
       rank: rank,
-      teamId: teamId,
-      companyId: companyId,
+      teamId: "",
+      companyId: "",
       password: password,
       profilePic: profilePic,
       isApproved: true,

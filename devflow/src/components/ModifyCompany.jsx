@@ -14,7 +14,8 @@ import {
 } from "./../services/fakeMemberService";
 
 import _ from "lodash";
-import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
+// import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
+import { getCompanyById } from "../services/companyService";
 import { saveCompany } from "./../services/fakeCompanyServices";
 import { addCompany, checkSession } from "../services/adminService";
 

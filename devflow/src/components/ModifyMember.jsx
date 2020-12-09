@@ -5,14 +5,19 @@ import Form from "./common/form";
 import Joi from "joi-browser";
 import MemberTable from "../components/adminMemberTable";
 import { saveTask } from "../services/fakeTaskService";
+// import {
+//   getMemberByCompanyId,
+//   members,
+//   getMemberById,
+//   deleteMember,
+//   getMemberByCompanyId_NoTeam,
+//   saveMemberFromCompany,
+// } from "./../services/fakeMemberService";
 import {
-  getMemberByCompanyId,
-  members,
   getMemberById,
-  deleteMember,
-  getMemberByCompanyId_NoTeam,
-  saveMemberFromCompany,
-} from "./../services/fakeMemberService";
+  getMembersByCompanyId,
+  getNotTeamMembersByCompanyId,
+} from "./../services/memberService";
 import { getTeamById, saveTeam } from "../services/fakeTeamService";
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
@@ -50,7 +55,7 @@ class ModifyMember extends Form {
     const modifyId = this.props.match.params.id;
     const member = getMemberById(modifyId);
     if (modifyId == "new") {
-      this.setState({ text: "Create Team Page" });
+      this.setState({ text: "Create Member Page" });
       return;
     }
     if (!member) return this.props.history.replace("/not-found");

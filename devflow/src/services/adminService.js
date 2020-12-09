@@ -118,15 +118,13 @@ export const getAllTask = async () => {
 };
 
 export const addCompany = (data) => {
-  const { _id, name, bossId, companyPic } = data;
+  const { name, companyPic } = data;
   console.log(data);
   // Create our request constructor with all the parameters we need
   const request = new Request(host + port + "/admin/addCompany", {
     method: "put",
     body: JSON.stringify({
-      _id: _id,
       name: name,
-      bossId: bossId,
       companyPic: companyPic,
     }),
     headers: {
