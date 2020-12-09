@@ -21,15 +21,36 @@ export const getTasksByTeam = async (teamId, memberId) => {
   //     console.log(error);
   // });
 };
-
+export const getTasksByCompanyId = async (Id) => {
+  console.log("---at get tasks by company id---");
+  const task = await fetch(host + port + "/api/task/company/" + Id);
+  return task;
+};
 export const getTasksByAssignedTo = async (memberId) => {
   console.log("---at get tasks by team---");
   const tasks = await fetch(host + port + "/api/task/toMember/" + memberId);
   return tasks;
 };
-
-export const joinTask = async (taskId, memberId) => {
+export const finishTask = async (taskId) => {
   console.log("---read all---");
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/task/finish", {
+    method: "post",
+    body: JSON.stringify({
+      taskId: taskId,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log("read all");
+  const result = await fetch(request);
+  return result;
+};
+export const joinTask = async (taskId, memberId) => {
+  console.log("---join task---");
   // Create our request constructor with all the parameters we need
   const request = new Request(host + port + "/api/task/join", {
     method: "post",
@@ -64,6 +85,7 @@ export const addTask = (data) => {
     assignedToId,
     assignedById,
     taskDetail,
+    isFinish,
   } = data;
   console.log(data);
 
@@ -79,6 +101,7 @@ export const addTask = (data) => {
       assignedToId: assignedToId,
       assignedById: assignedById,
       taskDetail: taskDetail,
+      isFinish: isFinish,
     }),
     headers: {
       Accept: "application/json, text/plain, */*",
@@ -97,6 +120,7 @@ export const addTask = (data) => {
       console.log(error);
     });
 };
+
 export const updateTask = async (data) => {
   console.log("---update task---");
   // Create our request constructor with all the parameters we need

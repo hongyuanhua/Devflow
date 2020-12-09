@@ -32,6 +32,7 @@ class TaskDetail extends Form {
       assignedToId: "",
       assignedById: "",
       taskDetail: "",
+      isFinish: "",
     },
     members: [],
     teams: [],
@@ -71,6 +72,7 @@ class TaskDetail extends Form {
         assignedToId: "",
         assignedById: memberId,
         taskDetail: "",
+        isFinish: "false",
       },
     });
     if (this.state.current.rank > 2) {

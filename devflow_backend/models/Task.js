@@ -36,6 +36,10 @@ const Task = mongoose.model("Task", {
   taskDetail: {
     type: String,
   },
+  isFinish: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = { Task };
