@@ -17,7 +17,11 @@ import _ from "lodash";
 // import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { getCompanyById } from "../services/companyService";
 import { saveCompany } from "./../services/fakeCompanyServices";
-import { addCompany, checkSession } from "../services/adminService";
+import {
+  addCompany,
+  modifyCompany,
+  checkSession,
+} from "../services/adminService";
 
 class ModifyCompany extends Form {
   state = {
@@ -38,9 +42,11 @@ class ModifyCompany extends Form {
     bossId: Joi.string().required().label("Boss Id"),
     companyPic: Joi.string().required().label("Pic"),
   };
-  componentDidMount() {
+  async componentDidMount() {
     const modifyId = this.props.match.params.id;
-    const company = getCompanyById(modifyId);
+    const tmp = await getCompanyById(modifyId);
+    const company = await tmp.json();
+    console.log(tmp);
     if (modifyId == "new") {
       this.setState({ text: "Create Company Page" });
       return;
@@ -65,7 +71,12 @@ class ModifyCompany extends Form {
     // await
     try {
       console.log("do submit");
-      await addCompany(this.state.data);
+      if (this.props.match.params.id == "new") {
+        await addCompany(this.state.data);
+      } else {
+        modifyCompany(this.state.data);
+      }
+
       // this.props.history.push("/admin");
     } catch (error) {
       console.log(error);

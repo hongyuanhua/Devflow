@@ -149,6 +149,28 @@ router.put("/addCompany", async (req, res) => {
   return res.status(200).send("Company successfully added.");
 });
 
+router.post("/modifyCompany", async (req, res) => {
+  console.log("---modifyCompany---");
+  console.log(req.body);
+  const { _id, name, companyPic, bossId } = req.body;
+  Company.find({ _id: _id })
+    .then((company) => {
+      console.log("success modify company");
+      console.log(company);
+      const target = company[0];
+      target.name = name;
+      target.bossId = bossId;
+      target.companyPic = companyPic;
+      target.save();
+      // return target;
+    })
+    .catch((err) => {
+      console.log("fail modify company");
+
+      res.status(500).send("Server err");
+    });
+});
+
 router.put("/addTeam", async (req, res) => {
   console.log(req.body);
   const { companyId, teamName, leader, teamPic, quote } = req.body;

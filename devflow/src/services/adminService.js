@@ -118,8 +118,8 @@ export const getAllTask = async () => {
 };
 
 export const addCompany = (data) => {
+  console.log("---addCompany---");
   const { name, companyPic } = data;
-  console.log(data);
   // Create our request constructor with all the parameters we need
   const request = new Request(host + port + "/admin/addCompany", {
     method: "put",
@@ -137,19 +137,49 @@ export const addCompany = (data) => {
   fetch(request)
     .then((res) => {
       console.log("Company added successfully!");
-      console.log(res);
       return res;
     })
     .catch((error) => {
       console.log("fail to add the company");
       // console.log(res)
-      console.log(error);
+    });
+};
+
+export const modifyCompany = (data) => {
+  console.log("---modifyCompany---");
+  const { _id, name, bossId, companyPic } = data;
+  console.log(data);
+
+  console.log(host + port + "/admin/modifyCompany");
+  const request = new Request(host + port + "/admin/modifyCompany", {
+    method: "post",
+    body: JSON.stringify({
+      _id: _id,
+      name: name,
+      bossId: bossId,
+      companyPic: companyPic,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("Company modified successfully!");
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail to modify the company");
+      // console.log(res)
     });
 };
 
 export const addTeam = (data) => {
+  console.log("---addTeam---");
   const { _id, companyId, teamName, leader, teamPic, quote } = data;
-  console.log(data);
   // Create our request constructor with all the parameters we need
   const request = new Request(host + port + "/admin/addTeam", {
     method: "put",
@@ -182,6 +212,7 @@ export const addTeam = (data) => {
 };
 
 export const addMember = (data) => {
+  console.log("---addMember---");
   const {
     _id,
     firstName,
@@ -193,7 +224,6 @@ export const addMember = (data) => {
     password,
     profilePic,
   } = data;
-  console.log(data);
   // Create our request constructor with all the parameters we need
   const request = new Request(host + port + "/admin/addMember", {
     method: "put",

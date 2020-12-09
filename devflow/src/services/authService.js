@@ -8,8 +8,6 @@ export const checkSession = (app) => {
   fetch(url)
     .then((json) => {
       console.log("check session success");
-      console.log(json);
-      console.log(json.curUserId);
       if (json && json.curUserId) {
         app.setState({ curUserId: json.curUserId });
       }

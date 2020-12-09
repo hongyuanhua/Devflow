@@ -48,7 +48,7 @@ class ModifyTeam extends Form {
     const modifyId = this.props.match.params.id;
     const team = getTeamById(modifyId);
     if (modifyId == "new") {
-      this.setState({ text: "Create Team Page" });
+      this.setState({ text: "Modify Team Page" });
       return;
     }
     if (!team) return this.props.history.replace("/not-found");
