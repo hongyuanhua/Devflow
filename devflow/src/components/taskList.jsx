@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import "./taskList.css";
 import { getTasksByTeam, joinTask, finishTask } from "../services/taskService";
-import { checkSession } from "../services/authService";
 import { getAllMembers, getMemberById } from "../services/memberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -21,27 +20,16 @@ class taskList extends Component {
   async componentDidMount() {
     const memberId = localStorage.memberId;
     const koo = await getAllMembers();
-    if (koo.status == 200) {
-      let member = await koo.json();
-      this.setState({ members: member });
-    }
-    console.log(memberId);
     const boss = await getMemberById(memberId);
-    console.log(boss.status);
-    if (boss.status == 200) {
-      const member = await boss.json();
+    const member = await boss.json();
+    if (member.teamId != "") {
       const task = await getTasksByTeam(member.teamId, memberId);
-      if (task.status == 200) {
-        const tasks = await task.json();
-        this.setState({ tasks: tasks });
-      }
+      this.setState({ tasks: await task.json() });
     }
-    console.log(this.state.members);
-    const currentUser = await getMemberById(memberId);
-    if (currentUser.status == 200) {
-      let member = await currentUser.json();
-      this.setState({ currentUser: member });
-    }
+    this.setState({
+      currentUser: member,
+      members: await koo.json(),
+    });
   }
 
   async handleJoin(task) {
@@ -115,9 +103,6 @@ class taskList extends Component {
     var b = this.state.tasks;
     b.push(k);
     this.setState({ b });
-  }
-  getMemberByIdIn(id) {
-    return this.state.members.find((t) => t._id == id);
   }
   sortCategory = (path) => {
     const taskss = this.state.tasks.sort(function (a, b) {
@@ -280,6 +265,7 @@ class taskList extends Component {
           >
             Estimated Time
           </button>
+          {console.log(this.state)}
           {this.state.currentUser.rank < 3 && (
             <Link to="/taskDetail/new">
               <button className="float-right btn btn-outline-primary">
@@ -313,14 +299,12 @@ class taskList extends Component {
                       <Link to={`/personal/${task.assignedById}`}>
                         {task.assignedById != "" && (
                           <img
-                            src={
-                              this.getMemberByIdIn(task.assignedById).profilePic
-                            }
+                            src={this.state.currentUser.profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
                         )}
                         <span style={{ marginLeft: "5px" }}>
-                          {this.getMemberByIdIn(task.assignedById).firstName}
+                          {this.state.currentUser.firstName}
                         </span>
                       </Link>
                     </p>
@@ -329,14 +313,12 @@ class taskList extends Component {
                       {task.assignedToId != "" && (
                         <Link to={`/personal/${task.assignedToId}`}>
                           <img
-                            src={
-                              this.getMemberByIdIn(task.assignedToId).profilePic
-                            }
+                            src={this.state.currentUser.profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
 
                           <span style={{ marginLeft: "5px" }}>
-                            {this.getMemberByIdIn(task.assignedToId).firstName}
+                            {this.state.currentUser.firstName}
                           </span>
                         </Link>
                       )}
