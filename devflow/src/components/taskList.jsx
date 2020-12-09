@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import "./taskList.css";
-import { getTasksByTeam, joinTask } from "../services/taskService";
-import { checkSession } from "../services/authService";
+import { getTasksByTeam, joinTask, finishTask } from "../services/taskService";
 import { getAllMembers, getMemberById } from "../services/memberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -21,31 +20,24 @@ class taskList extends Component {
   async componentDidMount() {
     const memberId = localStorage.memberId;
     const koo = await getAllMembers();
-    if (koo.status == 200) {
-      let member = await koo.json();
-      this.setState({ members: member });
-    }
-    console.log(memberId);
     const boss = await getMemberById(memberId);
-    console.log(boss.status);
-    if (boss.status == 200) {
-      const member = await boss.json();
+    const member = await boss.json();
+    if (member.teamId != "") {
       const task = await getTasksByTeam(member.teamId, memberId);
-      if (task.status == 200) {
-        const tasks = await task.json();
-        this.setState({ tasks: tasks });
-      }
+      this.setState({ tasks: await task.json() });
     }
-    console.log(this.state.members);
-    const currentUser = await getMemberById(memberId);
-    if (currentUser.status == 200) {
-      let member = await currentUser.json();
-      this.setState({ currentUser: member });
-    }
+    this.setState({
+      currentUser: member,
+      members: await koo.json(),
+    });
   }
 
   async handleJoin(task) {
     joinTask(task._id, this.state.currentUser._id);
+    window.location.reload();
+  }
+  async handleFinish(task) {
+    finishTask(task._id);
     window.location.reload();
   }
 
@@ -111,9 +103,6 @@ class taskList extends Component {
     var b = this.state.tasks;
     b.push(k);
     this.setState({ b });
-  }
-  getMemberByIdIn(id) {
-    return this.state.members.find((t) => t._id == id);
   }
   sortCategory = (path) => {
     const taskss = this.state.tasks.sort(function (a, b) {
@@ -276,6 +265,7 @@ class taskList extends Component {
           >
             Estimated Time
           </button>
+          {console.log(this.state)}
           {this.state.currentUser.rank < 3 && (
             <Link to="/taskDetail/new">
               <button className="float-right btn btn-outline-primary">
@@ -285,78 +275,81 @@ class taskList extends Component {
           )}
 
           <div className="row justify-content-center">
-            {this.state.tasks.map((task) => (
-              <div
-                key={task._id}
-                className="col-sm-4 border rounded btn-outline-dark"
-              >
-                <Link to={`/taskDetail_Present/${task._id}`}>
-                  <button className="btn btn-outline-secondary">
-                    <h3 className="title">{this.modifyName(task.name)}</h3>
-                  </button>
-                </Link>
-
-                <Link to={`/team/${task.teamId}`}>
-                  <p className="mt-4">
-                    <span className="font-weight-bold">Team: </span>
-                    {task.teamId}
-                  </p>
-                </Link>
-                <p className="mt-4">
-                  <span className="font-weight-bold">Assigned By: </span>
-                  <Link to={`/personal/${task.assignedById}`}>
-                    {task.assignedById != "" && (
-                      <img
-                        src={this.getMemberByIdIn(task.assignedById).profilePic}
-                        style={{ borderRadius: "50%", width: "20px" }}
-                      />
-                    )}
-                    <span style={{ marginLeft: "5px" }}>
-                      {this.getMemberByIdIn(task.assignedById).firstName}
-                    </span>
-                  </Link>
-                </p>
-                <p className="mt-4">
-                  <span className="font-weight-bold">Assigned To: </span>
-                  {task.assignedToId != "" && (
-                    <Link to={`/personal/${task.assignedToId}`}>
-                      <img
-                        src={this.getMemberByIdIn(task.assignedToId).profilePic}
-                        style={{ borderRadius: "50%", width: "20px" }}
-                      />
-
-                      <span style={{ marginLeft: "5px" }}>
-                        {this.getMemberByIdIn(task.assignedToId).firstName}
-                      </span>
+            {this.state.tasks.map(
+              (task) =>
+                task.isFinish == "false" && (
+                  <div
+                    key={task._id}
+                    className="col-sm-4 border rounded btn-outline-dark"
+                  >
+                    <Link to={`/taskDetail_Present/${task._id}`}>
+                      <button className="btn btn-outline-secondary">
+                        <h3 className="title">{this.modifyName(task.name)}</h3>
+                      </button>
                     </Link>
-                  )}
-                </p>
-                <p className="font-weight-light mt-4">
-                  Time spent: {task.usedTime} hrs
-                </p>
-                <p className="font-weight-light mt-4">
-                  Estimated Time: {task.estimatedTime} hrs
-                </p>
-                <div className="text-center mt-4">
-                  <button
-                    onClick={() => this.handleJoin(task)}
-                    className="btn btn-danger mr-1"
-                    disabled={!(task.assignedToId === "")}
-                  >
-                    Join
-                  </button>
-                  <button
-                    onClick={() => this.handleJoin(task)}
-                    className="btn btn-warning mr-1"
-                    disabled={
-                      !(task.assignedToId === this.state.currentUser._id)
-                    }
-                  >
-                    Finish
-                  </button>
-                </div>
-              </div>
-            ))}
+
+                    <Link to={`/team/${task.teamId}`}>
+                      <p className="mt-4">
+                        <span className="font-weight-bold">Team: </span>
+                        {task.teamId}
+                      </p>
+                    </Link>
+                    <p className="mt-4">
+                      <span className="font-weight-bold">Assigned By: </span>
+                      <Link to={`/personal/${task.assignedById}`}>
+                        {task.assignedById != "" && (
+                          <img
+                            src={this.state.currentUser.profilePic}
+                            style={{ borderRadius: "50%", width: "20px" }}
+                          />
+                        )}
+                        <span style={{ marginLeft: "5px" }}>
+                          {this.state.currentUser.firstName}
+                        </span>
+                      </Link>
+                    </p>
+                    <p className="mt-4">
+                      <span className="font-weight-bold">Assigned To: </span>
+                      {task.assignedToId != "" && (
+                        <Link to={`/personal/${task.assignedToId}`}>
+                          <img
+                            src={this.state.currentUser.profilePic}
+                            style={{ borderRadius: "50%", width: "20px" }}
+                          />
+
+                          <span style={{ marginLeft: "5px" }}>
+                            {this.state.currentUser.firstName}
+                          </span>
+                        </Link>
+                      )}
+                    </p>
+                    <p className="font-weight-light mt-4">
+                      Time spent: {task.usedTime} hrs
+                    </p>
+                    <p className="font-weight-light mt-4">
+                      Estimated Time: {task.estimatedTime} hrs
+                    </p>
+                    <div className="text-center mt-4">
+                      <button
+                        onClick={() => this.handleJoin(task)}
+                        className="btn btn-danger mr-1"
+                        disabled={!(task.assignedToId === "")}
+                      >
+                        Join
+                      </button>
+                      <button
+                        onClick={() => this.handleFinish(task)}
+                        className="btn btn-warning mr-1"
+                        disabled={
+                          !(task.assignedToId === this.state.currentUser._id)
+                        }
+                      >
+                        Finish
+                      </button>
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         </div>
       </React.Fragment>

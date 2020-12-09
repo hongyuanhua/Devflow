@@ -1,40 +1,23 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
-import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
-import { deleteCompany, getCompanyById } from "../services/fakeCompanyServices";
-import { logout } from "../services/authService";
-import {
-  deleteMember,
-  getMembers,
-  getMemberById,
-} from "../services/fakeMemberService";
-import { getNotificaitons } from "../services/fakeNotificationServices";
-import {
-  deleteTasks,
-  getTasks,
-  getTasksByCompanyId,
-} from "../services/fakeTaskService";
-import {
-  deleteTeam,
-  getTeams,
-  getTeamsByCompanyId,
-} from "../services/fakeTeamService";
-import CompaniesTable from "../components/adminCompanyTable";
+
+import { getCompanyById } from "../services/companyService";
+import { getTasksByCompanyId } from "../services/taskService";
+import { deleteTask, deleteMember, deleteTeam } from "../services/adminService";
+import { getTeamByCompanyId } from "../services/teamService";
 import TeamTable from "../components/adminTeamTable";
 import MemberTable from "../components/adminMemberTable";
 import TaskTable from "../components/adminTasksTable";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {getMembersByCompanyId2} from "../services/memberService"
-
-import NotificationsTable from "../components/adminNotificationTable";
+import { getMembersByCompanyId2 } from "../services/memberService";
 class ceo extends Component {
   state = {
     company: {},
-    tasks: getTasks(),
-    teams: getTeams(),
+    tasks: [],
+    teams: [],
     members: [],
     message: "",
     types: [
@@ -45,26 +28,33 @@ class ceo extends Component {
     sortColumn: { path: "_id", order: "asc" },
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const rank = localStorage.rank;
     const curCompanyId = localStorage.companyId;
     const companyId = this.props.match.params.id;
-
+    console.log("1");
     if (rank != 1 || curCompanyId != companyId) {
-      this.props.history.push("/unauthorized")
+      this.props.history.push("/unauthorized");
     }
-    getMembersByCompanyId2(companyId).then(result => result.json())
-    .then(data => {
-      this.setState({
-        members: data.members
+    const task = await getTasksByCompanyId(companyId);
+    this.setState({ tasks: await task.json() });
+    console.log(this.state.tasks);
+    const tasks = getMembersByCompanyId2(companyId)
+      .then((result) => result.json())
+      .then((data) => {
+        this.setState({
+          members: data.members,
+        });
       });
-    })
-    const company = getCompanyById(companyId);
+    const companyP = await getCompanyById(companyId);
+    const teamP = await getTeamByCompanyId(companyId);
+    const company = await companyP.json();
+    const team = await teamP.json();
+    console.log(company);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
-      company: getCompanyById(companyId),
-      tasks: getTasksByCompanyId(companyId),
-      teams: getTeamsByCompanyId(companyId),
+      company: company,
+      teams: team,
     });
   }
 
@@ -99,20 +89,16 @@ class ceo extends Component {
       return this.state.tasks;
     }
   }
-  TeamHandleDelete = (team) => {
-    const notTeam = this.state.teams.filter((t) => t._id !== team._id);
-    this.setState({ teams: notTeam });
+  async TeamHandleDelete(team) {
     deleteTeam(team._id);
-  };
-  TaskHandleDelete = (task) => {
-    const notTask = this.state.tasks.filter((t) => t._id !== task._id);
-    this.setState({ tasks: notTask });
-    deleteTasks(task._id);
-  };
+  }
+  async TaskHandleDelete(task) {
+    deleteTask(task._id);
+    window.location.reload();
+  }
   MemberHandleDelete = (member) => {
-    const notMember = this.state.members.filter((t) => t._id !== member._id);
-    this.setState({ members: notMember });
     deleteMember(member._id);
+    window.location.reload();
   };
 
   render() {
@@ -139,18 +125,19 @@ class ceo extends Component {
             <ul className="list-group">
               {this.state.types.map((type) => {
                 return (
-                <li
-                  className={
-                    type.selected === "true"
-                      ? "list-group-item active"
-                      : "list-group-item"
-                  }
-                  key={type.name}
-                  onClick={() => this.selected(type.name)}
-                >
-                  {type.name}
-                </li>
-              )})}
+                  <li
+                    className={
+                      type.selected === "true"
+                        ? "list-group-item active"
+                        : "list-group-item"
+                    }
+                    key={type.name}
+                    onClick={() => this.selected(type.name)}
+                  >
+                    {type.name}
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div className="col">
@@ -158,9 +145,7 @@ class ceo extends Component {
               <div className="col">
                 {this.state.types[0].selected == "true" && (
                   <Link to={`/mt/new`}>
-                    <button
-                      className="btn btn-primary btn-large float-left"
-                    >
+                    <button className="btn btn-primary btn-large float-left">
                       Add Team
                     </button>
                   </Link>

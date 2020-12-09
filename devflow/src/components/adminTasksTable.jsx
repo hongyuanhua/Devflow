@@ -44,6 +44,10 @@ class adminTaskTable extends Component {
       label: "Estimate Time",
     },
     {
+      path: "isFinish",
+      label: "Is Finish",
+    },
+    {
       key: "Modify",
       content: (task) => (
         <a

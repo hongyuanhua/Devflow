@@ -57,6 +57,19 @@ router.get("/:id", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
+router.get("/company/:id", async (req, res) => {
+  const id = req.params.id;
+  Task.find({ companyId: id })
+    .then((tasks) => {
+      if (!tasks) {
+        console.log("No such tasks");
+        return res.status(404).send("No such tasks");
+      }
+      console.log("Success in geting all tasks");
+      res.send(tasks);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
 router.get("/toMember/:memberId", async (req, res) => {
   console.log("--In get task by member id--");
   const memberId = req.params.memberId;
@@ -74,6 +87,31 @@ router.get("/toMember/:memberId", async (req, res) => {
       res.status(200).send(tasks);
     })
     .catch((err) => res.status(500).send("Server err"));
+});
+router.post("/finish", async (req, res) => {
+  console.log("---join task---");
+  console.log(req.body);
+  const { taskId } = req.body;
+
+  if (!taskId) {
+    console.log(taskId);
+    res.status(400).send("Missing task fields");
+    return;
+  }
+  let task = await Task.findById(taskId);
+  if (!task) {
+    console.log("no such task");
+    res.status(400).send("Invalid task fields");
+    return;
+  }
+  const results = await Task.update(
+    { _id: taskId },
+    { $set: { isFinish: "true" } },
+    { multi: true }
+  );
+  console.log(results);
+
+  res.status(200).send(results);
 });
 router.post("/join", async (req, res) => {
   console.log("---join task---");
@@ -128,6 +166,7 @@ router.put("/add", async (req, res) => {
     assignedToId,
     assignedById,
     taskDetail,
+    isFinish,
   } = req.body;
   console.log(req.body);
   let task;
@@ -152,6 +191,7 @@ router.put("/add", async (req, res) => {
       assignedToId: assignedToId,
       assignedById: assignedById,
       taskDetail: taskDetail,
+      isFinish: isFinish,
     }).save();
     console.log(task);
     console.log("add task success");
