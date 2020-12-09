@@ -67,6 +67,15 @@ router.get("/getMember", async (req, res) => {
     .catch((err) => res.status(500).send("Server err"));
 });
 
+router.get("/getPendingMember", async (req, res) => {
+  console.log("---getPendingMember---");
+  Member.find({ isApproved: false })
+    .then((member) => {
+      res.send(member);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
+
 router.delete("/deleteMember", async (req, res) => {
   console.log("---deleteMember---");
   //   const { _id } = req.body._id;

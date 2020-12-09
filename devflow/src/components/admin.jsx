@@ -10,6 +10,7 @@ import {
   getAllTeam,
   deleteTeam,
   getAllMember,
+  getPendingMember,
   deleteMember,
   getAllTask,
   deleteTask,
@@ -23,6 +24,7 @@ import CompaniesTable from "../components/adminCompanyTable";
 import TeamTable from "../components/adminTeamTable";
 import MemberTable from "../components/adminMemberTable";
 import TaskTable from "../components/adminTasksTable";
+import PMemberTable from "../components/pendingMemberTable";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -33,27 +35,30 @@ class admin extends Component {
     tasks: [],
     teams: [],
     members: [],
+    pendingMember: [],
     // notifications: getNotificaitons(),
     types: [
       { name: "Companies", selected: "true" },
       { name: "Teams", selected: "false" },
       { name: "Members", selected: "false" },
       { name: "Tasks", selected: "false" },
+      { name: "Pending Approval", selected: "false" },
     ],
     sortColumn: { path: "_id", order: "asc" },
   };
 
   async componentDidMount() {
-    console.log("All company");
     const company = await getAllCompany();
     const task = await getAllTask();
     const team = await getAllTeam();
     const member = await getAllMember();
+    const pendingMember = await getPendingMember();
     this.setState({
       companies: await company.json(),
       tasks: await task.json(),
       teams: await team.json(),
       members: await member.json(),
+      pendingMember: await pendingMember.json(),
     });
   }
   selected = (name) => {
@@ -77,6 +82,8 @@ class admin extends Component {
       return this.state.members;
     } else if (value.name == "Tasks") {
       return this.state.tasks;
+    } else if (value.name == "Pending Approval") {
+      return this.state.pendingMember;
     }
   }
   CompanyHandleDelete = (company) => {
@@ -102,6 +109,22 @@ class admin extends Component {
     this.setState({ members: notMember });
     deleteMember(member._id);
   };
+
+  PendingMemberHandleDelete = (member) => {
+    const notMember = this.state.pendingMember.filter(
+      (t) => t._id !== member._id
+    );
+    this.setState({ pendingMember: notMember });
+    deleteMember(member._id);
+  };
+  HandleApprove = (member) => {
+    const notMember = this.state.pendingMember.filter(
+      (t) => t._id !== member._id
+    );
+    this.setState({ pendingMember: notMember });
+    console.log("HandleApprove");
+  };
+
   render() {
     const organizedCompaniesData = _.orderBy(
       this.state.companies,
@@ -120,6 +143,12 @@ class admin extends Component {
     );
     const organizedTaskData = _.orderBy(
       this.state.tasks,
+      [this.state.sortColumn.path],
+      [this.state.sortColumn.order]
+    );
+
+    const organizedPendingMemberData = _.orderBy(
+      this.state.pendingMember,
       [this.state.sortColumn.path],
       [this.state.sortColumn.order]
     );
@@ -174,11 +203,11 @@ class admin extends Component {
                     </button>
                   </Link>
                 )}
-                {this.state.types[3].selected == "true" && (
+                {/* {this.state.types[3].selected == "true" && (
                   <button className="btn btn-primary btn-large float-left">
                     Add Tasks
                   </button>
-                )}
+                )} */}
               </div>
             </div>
             {this.state.types[0].selected == "true" && (
@@ -210,6 +239,15 @@ class admin extends Component {
                 tasks={organizedTaskData}
                 sortColumn={this.state.sortColumn}
                 onDelete={this.TaskHandleDelete}
+                onSort={this.handleSort}
+              />
+            )}
+            {this.state.types[4].selected == "true" && (
+              <PMemberTable
+                members={organizedPendingMemberData}
+                sortColumn={this.state.sortColumn}
+                onDelete={this.PendingMemberHandleDelete}
+                onApprove={this.HandleApprove}
                 onSort={this.handleSort}
               />
             )}

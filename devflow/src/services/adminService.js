@@ -68,6 +68,22 @@ export const getAllMember = async () => {
   return member;
 };
 
+export const getPendingMember = async () => {
+  console.log("---getPendingMember---");
+  // Create our request constructor with all the parameters we need
+  const url = host + port + "/admin/getPendingMember";
+  // Send the request with fetch()
+  const member = await fetch(url);
+  return member;
+};
+
+export const approvePendingMember = async () => {
+  console.log("---approvePendingMember---");
+  const url = host + port + "/admin/approvePendingMember";
+  const member = await fetch(url);
+  return member;
+};
+
 export const deleteMember = async (_id) => {
   console.log("---deleteMember---");
   // Create our request constructor with all the parameters we need
