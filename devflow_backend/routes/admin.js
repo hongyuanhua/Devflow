@@ -76,6 +76,24 @@ router.get("/getPendingMember", async (req, res) => {
     .catch((err) => res.status(500).send("Server err"));
 });
 
+router.post("/approvePendingMember", async (req, res) => {
+  console.log("---approvePendingMember---");
+  const { _id } = req.body;
+  Member.find({ _id: _id })
+    .then((member) => {
+      console.log(member);
+      const target = member[0];
+      target.isApproved = true;
+      target.save();
+      // return target;
+    })
+    .catch((err) => {
+      console.log("fail approve user");
+
+      res.status(500).send("Server err");
+    });
+});
+
 router.delete("/deleteMember", async (req, res) => {
   console.log("---deleteMember---");
   //   const { _id } = req.body._id;

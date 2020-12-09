@@ -77,11 +77,30 @@ export const getPendingMember = async () => {
   return member;
 };
 
-export const approvePendingMember = async () => {
+export const approvePendingMember = async (_id) => {
   console.log("---approvePendingMember---");
-  const url = host + port + "/admin/approvePendingMember";
-  const member = await fetch(url);
-  return member;
+
+  const request = new Request(host + port + "/admin/approvePendingMember", {
+    method: "post",
+    body: JSON.stringify({
+      _id: _id,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("User success appove");
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail to approve the user");
+      // console.log(res)
+    });
 };
 
 export const deleteMember = async (_id) => {

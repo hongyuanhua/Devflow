@@ -11,6 +11,7 @@ import {
   deleteTeam,
   getAllMember,
   getPendingMember,
+  approvePendingMember,
   deleteMember,
   getAllTask,
   deleteTask,
@@ -122,7 +123,7 @@ class admin extends Component {
       (t) => t._id !== member._id
     );
     this.setState({ pendingMember: notMember });
-    console.log("HandleApprove");
+    approvePendingMember(member._id);
   };
 
   render() {
