@@ -17,7 +17,7 @@ import { getTeamById } from "../services/teamService";
 import _ from "lodash";
 import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
 import { saveCompany } from "./../services/fakeCompanyServices";
-import { addTeam } from "../services/adminService";
+import { addTeam, modifyTeam } from "../services/adminService";
 class ModifyTeam extends Form {
   state = {
     data: {
@@ -44,9 +44,10 @@ class ModifyTeam extends Form {
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
   };
-  componentDidMount() {
+  async componentDidMount() {
     const modifyId = this.props.match.params.id;
-    const team = getTeamById(modifyId);
+    const tmp = await getTeamById(modifyId);
+    const team = await tmp.json();
     if (modifyId == "new") {
       this.setState({ text: "Modify Team Page" });
       return;
@@ -73,7 +74,11 @@ class ModifyTeam extends Form {
     // await
     try {
       console.log("do submit");
-      await addTeam(this.state.data);
+      if (this.props.match.params._id == "new") {
+        await addTeam(this.state.data);
+      } else {
+        modifyTeam(this.state.data);
+      }
       // this.props.history.push("/admin");
     } catch (error) {
       console.log(error);

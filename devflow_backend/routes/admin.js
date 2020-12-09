@@ -224,7 +224,6 @@ router.put("/addTeam", async (req, res) => {
       return res.status(400).send("The leader does not exsit!");
     }
     //add Team to company list
-
     team = await new Team({
       _id: nanoid(),
       companyId: companyId,
@@ -244,6 +243,33 @@ router.put("/addTeam", async (req, res) => {
   // console.log(req.session);
   // await req.session.save();
   return res.status(200).send("Team successfully added.");
+});
+
+router.post("/modifyTeam", async (req, res) => {
+  console.log(req.body);
+  const { _id, companyId, teamName, leader, teamPic, quote } = req.body;
+  // if does not exist
+  if (!companyId || !teamName || !leader || !teamPic || !quote) {
+    res.status(400).send("Missing signup fields");
+    return;
+  }
+  //add Team to company list
+
+  Team.find({ _id: _id })
+    .then((team) => {
+      const target = team[0];
+      target.companyId = companyId;
+      target.teamName = teamName;
+      target.leader = leader;
+      target.teamPic = teamPic;
+      target.quote = quote;
+      target.save();
+    })
+    .catch((err) => {
+      console.log("fail modify team");
+
+      res.status(500).send("Server err");
+    });
 });
 
 router.put("/addMember", async (req, res) => {

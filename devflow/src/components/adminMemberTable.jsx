@@ -41,6 +41,20 @@ class adminMemberTable extends Component {
       label: "profilePic",
     },
     {
+      key: "Modify",
+      content: (member) => (
+        <a
+          href={"/mm/" + member._id}
+          className="btn btn-primary btn-sm "
+          tabIndex="-1"
+          role="button"
+          aria-disabled="false"
+        >
+          Modify
+        </a>
+      ),
+    },
+    {
       key: "Profile",
       content: (member) => (
         <a href={"/personal/" + member._id} className="btn btn-success btn-sm">

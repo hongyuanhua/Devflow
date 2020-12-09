@@ -246,6 +246,39 @@ export const addTeam = (data) => {
     });
 };
 
+export const modifyTeam = (data) => {
+  console.log("---modifyTeam---");
+  const { _id, companyId, teamName, leader, teamPic, quote } = data;
+  console.log(data);
+
+  const request = new Request(host + port + "/admin/modifyTeam", {
+    method: "post",
+    body: JSON.stringify({
+      _id: _id,
+      companyId: companyId,
+      teamName: teamName,
+      leader: leader,
+      teamPic: teamPic,
+      quote: quote,
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("Team modified successfully!");
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail to modify the Team");
+      // console.log(res)
+    });
+};
+
 export const addMember = (data) => {
   console.log("---addMember---");
   const {
