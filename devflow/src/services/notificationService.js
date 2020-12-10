@@ -65,6 +65,36 @@ export const addPersonalMessage = (data) => {
     });
 };
 
+export const addTeamMessage = (data) => {
+  console.log("---In send Team Message")
+  const { teamId, message } = data;
+
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/notification/team", {
+    method: "put",
+    body: JSON.stringify({
+      teamId: teamId,
+      message: message
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("success send team information");
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail send team information");
+      console.log(error);
+    });
+};
+
 export const readAll = async (memberId) => {
   console.log("---read all---")
   // Create our request constructor with all the parameters we need

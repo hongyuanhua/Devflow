@@ -18,6 +18,8 @@ import _ from "lodash";
 import { getTeamById } from "../services/teamService";
 import TeamTable from "./teamTable";
 import Textarea from "./common/textarea.jsx";
+import { addTeamMessage } from "./../services/notificationService";
+
 class team extends Component {
   state = {
     data: {
@@ -93,9 +95,14 @@ class team extends Component {
     // this.setState({ state });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(this.state.notification);
+  handleSubmit = async (e) => {
+    console.log("this.state.notification: ", this.state.notification);
+    await addTeamMessage({
+      teamId: this.props.match.params.id,
+      message: this.state.notification,
+    });
+    // this.props.history.push("/personal/" + this.state.data._id);
+    window.location.reload();
   };
   render() {
     const organizedTaskData = _.orderBy(
