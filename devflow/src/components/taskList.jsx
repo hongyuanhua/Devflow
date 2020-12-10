@@ -18,6 +18,12 @@ class taskList extends Component {
   };
 
   async componentDidMount() {
+    if (localStorage.rank == 0) {
+      this.props.history.push("/admin");
+    }
+    if (localStorage.rank == 1) {
+      this.props.history.push("/ceo/" + localStorage.companyId);
+    }
     const memberId = localStorage.memberId;
     const koo = await getAllMembers();
     const boss = await getMemberById(memberId);

@@ -49,6 +49,9 @@ class admin extends Component {
   };
 
   async componentDidMount() {
+    if (localStorage.rank != 0) {
+      this.props.history.push("/unauthorized");
+    }
     const company = await getAllCompany();
     const task = await getAllTask();
     const team = await getAllTeam();

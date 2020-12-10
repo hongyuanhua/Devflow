@@ -19,7 +19,7 @@ import {
   getNotTeamMembersByCompanyId,
 } from "./../services/memberService";
 import Textarea from "./common/textarea.jsx";
-import {ceoPostNotif} from "../services/notificationService";
+import { ceoPostNotif } from "../services/notificationService";
 
 class Company extends Component {
   state = {
@@ -82,6 +82,7 @@ class Company extends Component {
   };
 
   handleSubmit = (e) => {
+    window.location.reload();
     e.preventDefault();
     this.ceoSendNotify()
   };
@@ -89,9 +90,9 @@ class Company extends Component {
 
   ceoSendNotify = () => {
     ceoPostNotif(localStorage.memberId, this.state.members, this.state.notification)
-    .then(e => {
-      console.log(e);
-    })
+      .then(e => {
+        console.log(e);
+      })
   }
 
   render() {
@@ -136,22 +137,26 @@ class Company extends Component {
               <Link to={`/personal/${this.state.boss._id}`}>
                 <h2>CEO: {this.state.boss.firstName}</h2>
               </Link>
-              <Textarea
-                name="notification"
-                label="Send Notification"
-                onChange={this.handleChange}
-                rows="4"
-              />
-              <br></br>
-              <a
-                className="btn btn-primary btn-lg "
-                tabIndex="-1"
-                role="button"
-                aria-disabled="false"
-                onClick={this.handleSubmit}
-              >
-                Send
-              </a>
+              {localStorage.companyId == this.props.match.params.id && localStorage.rank == 1 && (
+                <div>
+                  <Textarea
+                    name="notification"
+                    label="Send Notification"
+                    onChange={this.handleChange}
+                    rows="4"
+                  />
+                  <br></br>
+                  <a
+                    className="btn btn-primary btn-lg "
+                    tabIndex="-1"
+                    role="button"
+                    aria-disabled="false"
+                    onClick={this.handleSubmit}
+                  >
+                    Send
+                  </a>
+                </div>
+              )}
             </div>
             <div className="col-8">
               <h2>Teams</h2>

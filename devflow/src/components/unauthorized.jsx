@@ -4,6 +4,7 @@ import { logout } from "../services/authService";
 
 class Unauthorized extends Component {
     async componentDidMount() {
+        localStorage.clear();
         logout()
     }
 

@@ -32,6 +32,7 @@ class team extends Component {
     tasks: [],
     sortColumn: { path: "name", order: "asc" },
     notification: "",
+    teamId: "",
   };
   modifyName = (name) => {
     if (name.length > 28) {
@@ -40,11 +41,14 @@ class team extends Component {
     return name;
   };
   async componentDidMount() {
+
     const memberId = localStorage.memberId;
     const teamId = this.props.match.params.id;
+    this.setState({ teamId });
     const team = await getTeamById(teamId);
+    let teams;
     if (team.status == 200) {
-      let teams = await team.json();
+      teams = await team.json();
       if (!teams) return this.props.history.replace("/not-found");
       this.setState({ data: teams });
     }
@@ -53,6 +57,10 @@ class team extends Component {
       let tasks = await task.json();
       console.log(tasks);
       this.setState({ tasks: tasks });
+    }
+
+    if (localStorage.rank != 0 && localStorage.companyId != teams.companyId) {
+      this.props.history.push("/unauthorized");
     }
   }
   mapToViewModel(team) {
@@ -166,22 +174,26 @@ class team extends Component {
                     </p>
                   ))}
                 </div>
-                <Textarea
-                  name="notification"
-                  label="Send Notification"
-                  onChange={this.handleChange}
-                  rows="4"
-                />
-                <br></br>
-                <a
-                  className="btn btn-primary btn-lg "
-                  tabIndex="-1"
-                  role="button"
-                  aria-disabled="false"
-                  onClick={this.handleSubmit}
-                >
-                  Send
-                </a>
+                {localStorage.teamId == this.state.teamId && localStorage.rank == 2 && (
+                  <div>
+                    <Textarea
+                      name="notification"
+                      label="Send Notification"
+                      onChange={this.handleChange}
+                      rows="4"
+                    />
+                    <br></br>
+                    <a
+                      className="btn btn-primary btn-lg "
+                      tabIndex="-1"
+                      role="button"
+                      aria-disabled="false"
+                      onClick={this.handleSubmit}
+                    >
+                      Send
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             <div className="col-8 form-group">
