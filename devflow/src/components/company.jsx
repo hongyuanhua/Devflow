@@ -82,9 +82,9 @@ class Company extends Component {
   };
 
   handleSubmit = (e) => {
-    window.location.reload();
     e.preventDefault();
     this.ceoSendNotify()
+    window.location.reload();
   };
 
 
