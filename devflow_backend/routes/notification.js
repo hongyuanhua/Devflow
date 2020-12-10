@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Notification } = require("../models/Notification.js");
 const { Member } = require("../models/Member.js");
+const { Team } = require("../models/Team.js");
+const { Company } = require("../models/Company.js");
 const { nanoid } = require("nanoid");
 
 router.get("/to/:id", async (req, res) => {
@@ -121,6 +123,130 @@ router.put("/personal", async (req, res) => {
   }
 });
 
+router.put("/team", async (req, res) => {
+  console.log("---Add team message---");
+
+  // get data for this notification
+  const { teamId, message } = req.body;
+  const level = 2;
+  const time = new Date().toString();
+
+  let notifications = [];
+  try {
+    // check the from and to member exists
+    let toTeam = await Team.findById(teamId);
+    if (!toTeam) return res.status(404).send("no such to member");
+
+    // get members in the team
+    let teamMembers = await Member.find({ teamId: teamId });
+    console.log(teamMembers)
+    let teamMemberIds = [];
+    let member;
+    for (member of teamMembers) {
+      teamMemberIds.push(member._id)
+    }
+    console.log("---teamMemberIds---")
+    console.log(teamMemberIds)
+
+    let memberId;
+    for (memberId of teamMemberIds) {
+      let id = nanoid();
+      notifications.push(new Notification({
+        _id: id,
+        from: "",
+        to: memberId,
+        level: level,
+        message: message,
+        time: time,
+      }));
+    }
+
+    let n;
+    for (n of notifications) {
+      await n.save()
+    }
+
+
+    // notification = await new Notification({
+    //   _id: id,
+    //   from: "",
+    //   to: /* TODO */,
+    //   level: level,
+    //   message: message,
+    //   time: time,
+    // }).save();
+    console.log("Send team notification success");
+    return;
+  } catch (err) {
+    console.log(err);
+    console.log("Send team notification failed!");
+    res.status(400).send();
+    return;
+  }
+});
+
+router.put("/company", async (req, res) => {
+  console.log("---Add company message---");
+
+  // get data for this notification
+  const { companyId, message } = req.body;
+  const level = 3;
+  const time = new Date().toString();
+
+  let notifications = [];
+  try {
+    // check the from and to member exists
+    let toCompany = await Company.findById(companyId);
+    if (!toCompany) return res.status(404).send("no such to member");
+
+    // get members in the company
+    let companyMembers = await Member.find({ companyId: companyId });
+    // console.log(companyMembers)
+    let companyMemberIds = [];
+    let member;
+    for (member of companyMembers) {
+      companyMemberIds.push(member._id)
+    }
+    console.log("---companyMemberIds---")
+    console.log(companyMemberIds)
+
+    let memberId;
+    for (memberId of companyMemberIds) {
+      let id = nanoid();
+      notifications.push(new Notification({
+        _id: id,
+        from: "",
+        to: memberId,
+        level: level,
+        message: message,
+        time: time,
+      }));
+    }
+
+    let n;
+    for (n of notifications) {
+      await n.save()
+    }
+
+
+    // notification = await new Notification({
+    //   _id: id,
+    //   from: "",
+    //   to: /* TODO */,
+    //   level: level,
+    //   message: message,
+    //   time: time,
+    // }).save();
+    console.log("Send company notification success");
+    return;
+  } catch (err) {
+    console.log(err);
+    console.log("Send company notification failed!");
+    res.status(400).send();
+    return;
+  }
+});
+
 router.post("/readAll", async (req, res) => {
   console.log("---read all---");
   console.log(req.body);
@@ -164,7 +290,7 @@ router.post("/ceo-send-notification", async (req, res) => {
     }
 
   })
-  Notification.insertMany(results, function(err) {
+  Notification.insertMany(results, function (err) {
     console.log(err)
   })
   res.send('success')

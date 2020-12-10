@@ -20,6 +20,8 @@ import {
 } from "./../services/memberService";
 import Textarea from "./common/textarea.jsx";
 import { ceoPostNotif } from "../services/notificationService";
+import { addCompanyMessage } from "./../services/notificationService";
+
 
 class Company extends Component {
   state = {
@@ -82,8 +84,12 @@ class Company extends Component {
   };
 
   handleSubmit = (e) => {
-    e.preventDefault();
-    this.ceoSendNotify()
+    console.log("this.state.notification: ", this.state.notification);
+    await addCompanyMessage({
+      companyId: this.props.match.params.id,
+      message: this.state.notification,
+    });
+    // this.props.history.push("/personal/" + this.state.data._id);
     window.location.reload();
   };
 

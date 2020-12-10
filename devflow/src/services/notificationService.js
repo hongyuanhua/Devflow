@@ -95,6 +95,36 @@ export const addTeamMessage = (data) => {
     });
 };
 
+export const addCompanyMessage = (data) => {
+  console.log("---In send Company Message")
+  const { companyId, message } = data;
+
+  // Create our request constructor with all the parameters we need
+  const request = new Request(host + port + "/api/notification/company", {
+    method: "put",
+    body: JSON.stringify({
+      companyId: companyId,
+      message: message
+    }),
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Send the request with fetch()
+  fetch(request)
+    .then((res) => {
+      console.log("success send company information");
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("fail send company information");
+      console.log(error);
+    });
+};
+
 export const readAll = async (memberId) => {
   console.log("---read all---")
   // Create our request constructor with all the parameters we need
