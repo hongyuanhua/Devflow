@@ -1,0 +1,24 @@
+{
+  "name": "team34",
+  "version": "1.0.0",
+  "description": "To start the project follow the following instructions: ``` cd devflow npm i ```",
+  "main": "index.js",
+  "scripts": {
+    "install_f": "cd devflow && npm install",
+    "install_b": "cd devflow_backend && npm install",
+    "install_a": "npm run install_f && npm run install_b",
+    "build": "npm run install_a && cd devflow && npm run build",
+    "start": "cd devflow_backend && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csc309-fall-2020/team34.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csc309-fall-2020/team34/issues"
+  },
+  "homepage": "https://github.com/csc309-fall-2020/team34#readme"
+}
