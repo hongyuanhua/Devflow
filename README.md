@@ -1,5 +1,10 @@
 # Devflow
 
+### The deployed app is at this site:
+```
+https://devflowproject.herokuapp.com/
+```
+
 To start the project follow the following instructions:
 ```
 npm run build
