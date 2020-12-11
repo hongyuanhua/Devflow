@@ -21,6 +21,15 @@ export const getMembersByCompanyId = async (id) => {
   const member = await fetch(url);
   return member;
 };
+
+export const getMembersByTeamId = async (id) => {
+  console.log("---getMembersByTeamId---");
+  const url = host + port + "/api/member/team/" + id;
+  // Send the request with fetch()
+  const member = await fetch(url);
+  return member;
+};
+
 export const getMembersByCompanyId2 = async (id) => {
   console.log("---getMembersByCompanyId---");
   const url = host + port + "/api/company/company-members?company_id=" + id;

@@ -30,7 +30,10 @@ class taskList extends Component {
     const member = await boss.json();
     if (member.teamId != "") {
       const task = await getTasksByTeam(member.teamId, memberId);
-      this.setState({ tasks: await task.json() });
+      let teamTasks = await task.json()
+      console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+      console.log(teamTasks)
+      this.setState({ tasks: teamTasks });
     }
     this.setState({
       currentUser: member,

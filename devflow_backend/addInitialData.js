@@ -8,7 +8,7 @@ async function createMembers() {
             rank: 1,
             companyId: "1",
             teamId: "",
-            password: "user",
+            password: "user1",
             isApproved: true,
             profilePic:
                 "https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png",

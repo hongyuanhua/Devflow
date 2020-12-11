@@ -104,14 +104,17 @@ class Company extends Component {
     if (id === "") {
       return null;
     }
-    return this.state.members.find((t) => t._id === id);
+    return this.state.members.find((t) => t._id == id);
   }
 
   getFullNameById = (id) => {
+    if (id == "") return ""
     // console.log("###getFullNameById###")
-    // console.log(id)
     // console.log(this.state.members)
-    return this.getMemberByIdCur(id).firstName + " " + this.getMemberByIdCur(id).lastName;
+    let cur_member = this.getMemberByIdCur(id)
+    // console.log(id)
+    // console.log(cur_member)
+    return cur_member.firstName + " " + cur_member.lastName;
   }
 
   render() {

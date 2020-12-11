@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./team.css";
-import {
-  getMemberById,
-  getFullNameById,
-} from "../services/fakeMemberService";
-
 import { getCompanyNameById } from "../services/fakeCompanyServices";
 
 import { deleteTasks } from "../services/fakeTaskService";
 import { getTasksByTeam } from "../services/taskService";
+import { getAllMembers, getMembersByTeamId } from "../services/memberService";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
@@ -30,6 +26,8 @@ class team extends Component {
       companyId: "",
     },
     tasks: [],
+    members: [],
+    teamMembers: [],
     sortColumn: { path: "name", order: "asc" },
     notification: "",
     teamId: "",
@@ -41,9 +39,32 @@ class team extends Component {
     return name;
   };
   async componentDidMount() {
+    const teamId = this.props.match.params.id;
+
+    const cur_ms = await getAllMembers();
+    // // ("66666666666666666")
+    // (cur_ms)
+    if (cur_ms.status == 200) {
+      let members = await cur_ms.json();
+      this.setState({ members: members });
+      // // ("88888888888888888")
+      // // (members)
+    }
+
+    const n = await getMembersByTeamId(teamId);
+    if (n.status == 200) {
+      let k = await n.json();
+      this.setState({ teamMembers: k });
+    }
 
     const memberId = localStorage.memberId;
-    const teamId = this.props.match.params.id;
+    const task = await getTasksByTeam(teamId, memberId);
+    // ("###getTasksByTeam###")
+    if (task.status == 200) {
+      let tasks = await task.json();
+      // (tasks);
+      this.setState({ tasks: tasks });
+    }
     this.setState({ teamId });
     const team = await getTeamById(teamId);
     let teams;
@@ -51,12 +72,6 @@ class team extends Component {
       teams = await team.json();
       if (!teams) return this.props.history.replace("/not-found");
       this.setState({ data: teams });
-    }
-    const task = await getTasksByTeam(teamId, memberId);
-    if (task.status == 200) {
-      let tasks = await task.json();
-      console.log(tasks);
-      this.setState({ tasks: tasks });
     }
 
     if (localStorage.rank != 0 && localStorage.companyId != teams.companyId) {
@@ -75,7 +90,7 @@ class team extends Component {
     };
   }
   sortstuff() {
-    console.log(this.state.tasks);
+    // (this.state.tasks);
   }
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
@@ -89,12 +104,12 @@ class team extends Component {
 
   handleChange = ({ currentTarget: input }) => {
     this.state.notification = input.value;
-    // console.log(this.state.notification);
+    // // (this.state.notification);
     // this.setState({ state });
   };
 
   handleSubmit = async (e) => {
-    console.log("this.state.notification: ", this.state.notification);
+    // ("this.state.notification: ", this.state.notification);
     await addTeamMessage({
       teamId: this.props.match.params.id,
       message: this.state.notification,
@@ -102,33 +117,56 @@ class team extends Component {
     // this.props.history.push("/personal/" + this.state.data._id);
     window.location.reload();
   };
+
+  getMemberByIdCur = (id) => {
+    if (id === "") {
+      return null;
+    }
+    let cur_member = this.state.members.find((t) => t._id == id);
+    // ("###getMemberByIdCur###")
+    // (id)
+    // (cur_member)
+    return cur_member;
+  }
+
+  getFullNameById = (id) => {
+    // ("###getFullNameById###")
+    // (this.state.members)
+    let cur_member = this.getMemberByIdCur(id)
+    // (id)
+    // (cur_member)
+    return cur_member.firstName + " " + cur_member.lastName;
+  }
+
   render() {
     const organizedTaskData = _.orderBy(
       this.state.tasks,
       [this.state.sortColumn.path],
       [this.state.sortColumn.order]
     );
-    console.log("organizedTaskData");
-    console.log(organizedTaskData);
+    // ("organizedTaskData");
+    // (organizedTaskData);
     for (let t in organizedTaskData) {
+      // ("organizedTaskData[t]")
+      // (organizedTaskData[t])
+      // (organizedTaskData)
       if (organizedTaskData[t].assignedById != "") {
-        organizedTaskData[t].assignedBy = getFullNameById(
+        organizedTaskData[t].assignedBy = this.getFullNameById(
           organizedTaskData[t].assignedById
         );
-        organizedTaskData[t].assignedByPic = getMemberById(
+        organizedTaskData[t].assignedByPic = this.getMemberByIdCur(
           organizedTaskData[t].assignedById
         ).profilePic;
       }
       if (organizedTaskData[t].assignedToId != "") {
-        organizedTaskData[t].assignedTo = getFullNameById(
+        organizedTaskData[t].assignedTo = this.getFullNameById(
           organizedTaskData[t].assignedToId
         );
-        organizedTaskData[t].assignedToPic = getMemberById(
+        organizedTaskData[t].assignedToPic = this.getMemberByIdCur(
           organizedTaskData[t].assignedToId
         ).profilePic;
       }
     }
-    // console.log(organizedTaskData);
     return (
       <React.Fragment>
         <NavBar />
@@ -161,18 +199,17 @@ class team extends Component {
               <div className="row">
                 <h5>Members:</h5>
                 <div className="col">
-                  {this.state.data.members.map((member) => (
+                  {this.state.teamMembers.map((member) => (
                     <p className="mt-4">
                       <Link to={`/personal/${member}`}>
                         <div className="click">
                           <img
-                            src={getMemberById(member).profilePic}
+                            src={member.profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
-                          {console.log(getMemberById(member))}
                           <span style={{ marginLeft: "5px" }}>
-                            {getMemberById(member) != null &&
-                              getMemberById(member).firstName}
+                            {member != null &&
+                              member.firstName}
                           </span>
                         </div>
                       </Link>

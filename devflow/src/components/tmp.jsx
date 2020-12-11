@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { getAllCompany, getCompanyById } from "../services/companyService";
 import { getNotificationByToId } from "../services/notificationService";
-import { getMemberById } from "../services/memberService";
+import { getMemberById, getMembersByTeamId } from "../services/memberService";
 import { getTeamByCompanyId } from "../services/teamService";
 const { nanoid } = require("nanoid");
 
@@ -33,10 +33,10 @@ class Tmp extends Component {
       let member = await m.json();
       this.setState({ member });
     }
-    const n = await getTeamByCompanyId("2");
+    const n = await getMembersByTeamId("1");
     if (n.status == 200) {
       let k = await n.json();
-      this.setState({ teams: k });
+      this.setState({ members: k });
     }
   }
   render() {
@@ -46,7 +46,7 @@ class Tmp extends Component {
     // console.log(await getAllCompany())
     // console.log(await getCompanyById("1"))
     // console.log(this.state.companies);
-    console.log(this.state.company);
+    console.log(this.state.members);
     // console.log(this.state.teams);
     // console.log("checkSession()")
     // console.log(checkSession())
