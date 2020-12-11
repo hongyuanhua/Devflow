@@ -22,7 +22,7 @@ Navigate to the loggin page, loggin with:
 Username: user
 Password: user
 ```
-Then you will login as admin
+Then you will login as user
 
 Navigate to the loggin page, loggin with:
 ```
