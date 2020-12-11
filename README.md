@@ -42,6 +42,17 @@ user1
 testondate
 ```
 
+List of third party libraries:
+```
+bootstrap
+font-awesome
+joi-browser
+uniqid
+nanoid
+nodemon
+uniqid
+```
+
 To check other users, please take a look at our data base at
 ```
 mongodb+srv://team34:team34Password@devflow.oddf0.mongodb.net/devflow
