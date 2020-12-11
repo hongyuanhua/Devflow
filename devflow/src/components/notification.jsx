@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import { readAll } from "../services/notificationService";
-import { getNameById } from "../services/fakeMemberService";
 import { getMemberById } from "../services/memberService";
 import { Link } from "react-router-dom";
 import Comment from "./common/comment.jsx";
 import ListGroup from "./common/listGroup.jsx";
 import { getNotificationByToId } from "./../services/notificationService";
-import { notifications } from "./../services/fakeNotificationServices";
-import { members } from "./../services/fakeMemberService";
 import { config } from "../config";
 
 class Notification extends Component {
