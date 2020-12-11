@@ -4,19 +4,8 @@ import NavBar from "./common/navBar";
 import Form from "./common/form";
 import Joi from "joi-browser";
 import MemberTable from "../components/adminMemberTable";
-import { saveTask } from "../services/fakeTaskService";
-import {
-  getMemberByCompanyId,
-  members,
-  deleteMember,
-  getMemberByCompanyId_NoTeam,
-  saveMemberFromCompany,
-} from "./../services/fakeMemberService";
-// import { getTeamById, saveTeam } from "../services/fakeTeamService";
 import { getTeamById } from "../services/teamService";
 import _ from "lodash";
-import { getCompanies, getCompanyById } from "../services/fakeCompanyServices";
-import { saveCompany } from "./../services/fakeCompanyServices";
 import { addTeam, modifyTeam } from "../services/adminService";
 class ModifyTeam extends Form {
   state = {
