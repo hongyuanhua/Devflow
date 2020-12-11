@@ -1,4 +1,6 @@
 // Set up router
+const path = require("path");
+
 const express = require("express");
 const app = express();
 var cors = require("cors");
@@ -80,6 +82,7 @@ app.use(
 // app.use("/api", sessionChecker);
 
 // Routing
+app.use(express.static(path.join(__dirname, "../devflow/build")));
 app.use("/auth", auth);
 app.use("/api/member", member);
 app.use("/api/company", company);
@@ -87,4 +90,8 @@ app.use("/api/team", team);
 app.use("/api/notification", notification);
 app.use("/api/task", task);
 app.use("/admin", admin);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + './../devflow/build/index.html'))
+})
 
