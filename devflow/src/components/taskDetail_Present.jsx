@@ -3,20 +3,21 @@ import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import "./taskDetail_Present.css";
 import { getMemberById, getAllMembers } from "./../services/memberService";
-import { getTasksById } from "../services/taskService";
+import { getTasksById, updateTask } from "../services/taskService";
 
 class taskDetail_Present extends React.Component {
   state = {
     data: {
       _id: "",
+      teamId: "",
       companyId: "",
       name: "",
       estimatedTime: 0,
       usedTime: 0,
       assignedToId: "",
       assignedById: "",
-      createdById: "",
       taskDetail: "",
+      isFinish: "",
     },
     members: [],
     current: {},
@@ -53,14 +54,15 @@ class taskDetail_Present extends React.Component {
   mapToViewModel(task) {
     return {
       _id: task._id,
+      teamId: task.teamId,
       companyId: task.companyId,
       name: task.name,
       estimatedTime: task.estimatedTime,
       usedTime: task.usedTime,
       assignedToId: task.assignedToId,
       assignedById: task.assignedById,
-      createdById: task.createdById,
       taskDetail: task.taskDetail,
+      isFinish: task.isFinish,
     };
   }
   filterID(id) {
@@ -73,6 +75,17 @@ class taskDetail_Present extends React.Component {
     }
     return member[0].firstName;
   }
+  submitUsedTime() {
+    const inputVal = parseInt(document.getElementById("usedTimeInput").value);
+    if (Number.isInteger(inputVal) && inputVal > -1) {
+      const newData = this.state.data;
+      newData.usedTime = inputVal;
+      console.log(this.state.data);
+      console.log(newData);
+      updateTask(newData);
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -135,6 +148,23 @@ class taskDetail_Present extends React.Component {
                 )}
               </div>
             </div>
+            {this.state.data.assignedToId === this.state.current._id && (
+              <div className="col-3">
+                <input
+                  className="form-control mg-2"
+                  id="usedTimeInput"
+                  type="text"
+                  placeholder="Change used time.."
+                ></input>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => this.submitUsedTime()}
+                >
+                  Submit
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </React.Fragment>
