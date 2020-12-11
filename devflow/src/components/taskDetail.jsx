@@ -132,6 +132,7 @@ class TaskDetail extends Form {
     if (this.state.status == "new") {
       await addTask(this.state.data);
     } else {
+      console.log(this.state.data);
       await updateTask(this.state.data);
     }
   };
@@ -262,15 +263,13 @@ class TaskDetail extends Form {
               </div>
               <br></br>
               <div className="row">
-                <Link to="/taskList">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.handleSave}
-                  >
-                    Save
-                  </button>
-                </Link>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.handleSave}
+                >
+                  Save
+                </button>
               </div>
               <br></br>
               <div className="row">

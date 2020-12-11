@@ -30,17 +30,19 @@ class taskList extends Component {
     const member = await boss.json();
     if (member.teamId != "") {
       const task = await getTasksByTeam(member.teamId, memberId);
-      let teamTasks = await task.json()
-      console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-      console.log(teamTasks)
-      this.setState({ tasks: teamTasks });
+      let teamTasks = await task.json();
+      console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+      console.log(teamTasks);
+      this.setState({
+        tasks: teamTasks,
+        currentUser: member,
+        members: await koo.json(),
+      });
     }
-    this.setState({
-      currentUser: member,
-      members: await koo.json(),
-    });
   }
-
+  findMember(id) {
+    return this.state.members.find((t) => t._id === id);
+  }
   async handleJoin(task) {
     joinTask(task._id, this.state.currentUser._id);
     window.location.reload();
@@ -54,12 +56,10 @@ class taskList extends Component {
     var input, i;
     input = this.state.tasks;
     for (i = 0; i < input.length; i++) {
-      if (input[i].createdById === id) {
-        return this.getMemberByIdIn(input[i].createdById).firstName;
-      } else if (input[i].assignedToId === id) {
-        return this.getMemberByIdIn(input[i].assignedToId).firstName;
+      if (input[i].assignedToId === id) {
+        return this.findMember(input[i].assignedToId).firstName;
       } else if (input[i].assignedById === id) {
-        return this.getMemberByIdIn(input[i].assignedById).firstName;
+        return this.findMember(input[i].assignedById).firstName;
       }
     }
     return "None";
@@ -135,16 +135,18 @@ class taskList extends Component {
     var filter, item, a, i, txtValue, fil, abyValue, assValue, creValue;
     item = document.getElementsByClassName("col-sm-4");
     filter = document.getElementsByClassName("filters");
-    abyValue = this.getMemberByIdIn(filter[0].value).firstName;
-    assValue = this.getMemberByIdIn(filter[1].value).firstName;
-    creValue = this.getMemberByIdIn(filter[2].value).firstName;
+    console.log(filter[0].value);
+    console.log(filter[1].value);
+    abyValue = this.findMember(filter[0].value).firstName;
+    if (filter[1].value !== "DEFAULT") {
+      assValue = this.findMember("1").firstName;
+    }
     for (i = 0; i < item.length; i++) {
       a = item[i];
 
       var uAbyValue, uAssValue, uCreValue;
       uAbyValue = a.childNodes[3].textContent.replace("Assigned By: ", "");
       uAssValue = a.childNodes[4].textContent.replace("Assigned To: ", "");
-      uCreValue = a.childNodes[2].textContent.replace("Created By: ", "");
       item[i].style.display = "none";
       if (
         (filter[0].value == "DEFAULT" || abyValue == uAbyValue) &&
@@ -205,24 +207,6 @@ class taskList extends Component {
                 <select
                   className="form-control filters"
                   onChange={(e) => this.print(e, "assigned_to")}
-                  defaultValue={"DEFAULT"}
-                >
-                  <option value="DEFAULT">Any</option>
-                  <option value="">Empty</option>
-                  {this.state.members.map((member) => (
-                    <option key={member._id} value={member._id}>
-                      {member.firstName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col">
-              <div className="form-group">
-                <label>Created by:</label>
-                <select
-                  className="form-control filters"
-                  onChange={(e) => this.print(e, "created_by")}
                   defaultValue={"DEFAULT"}
                 >
                   <option value="DEFAULT">Any</option>
@@ -308,12 +292,12 @@ class taskList extends Component {
                       <Link to={`/personal/${task.assignedById}`}>
                         {task.assignedById != "" && (
                           <img
-                            src={this.state.currentUser.profilePic}
+                            src={this.findMember(task.assignedById).profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
                         )}
                         <span style={{ marginLeft: "5px" }}>
-                          {this.state.currentUser.firstName}
+                          {this.findMember(task.assignedById).firstName}
                         </span>
                       </Link>
                     </p>
@@ -322,12 +306,11 @@ class taskList extends Component {
                       {task.assignedToId != "" && (
                         <Link to={`/personal/${task.assignedToId}`}>
                           <img
-                            src={this.state.currentUser.profilePic}
+                            src={this.findMember(task.assignedToId).profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
-
                           <span style={{ marginLeft: "5px" }}>
-                            {this.state.currentUser.firstName}
+                            {this.findMember(task.assignedToId).firstName}
                           </span>
                         </Link>
                       )}
