@@ -31,6 +31,17 @@ Password: admin
 ```
 Then you will login as admin
 
+Following are different user you can try, all with password "user":
+```
+daniel
+bill
+tom
+jone
+martin
+user1
+testondate
+```
+
 To check other users, please take a look at our data base at
 ```
 mongodb+srv://team34:team34Password@devflow.oddf0.mongodb.net/devflow
