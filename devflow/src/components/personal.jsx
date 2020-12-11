@@ -1,20 +1,13 @@
 import React, { Component } from "react";
-import { tasks } from "../services/fakeTaskService";
 import NavBar from "./common/navBar";
 import "./personal.css";
-import { getTasks, deleteTasks } from "../services/fakeTaskService";
+import { deleteTasks } from "../services/fakeTaskService";
 import { Link } from "react-router-dom";
 import { getTasksByAssignedTo } from "../services/taskService";
-import { getMemberById } from "../services/memberService";
-import {
-  getMembers,
-  getFullNameById,
-  members,
-} from "../services/fakeMemberService";
+import { getMemberById, getAllMembers } from "../services/memberService";
 import TaskTable from "./taskTable";
 import Textarea from "./common/textarea.jsx";
 import _ from "lodash";
-import { getTaskById, getTaskByMemberId } from "./../services/fakeTaskService";
 import { addPersonalMessage } from "./../services/notificationService";
 
 class Personal extends Component {
@@ -32,11 +25,21 @@ class Personal extends Component {
     },
     memberId: null,
     tasks: [],
+    members: [],
     sortColumn: { path: "name", order: "asc" },
     notification: "",
   };
 
   async componentDidMount() {
+    const cur_ms = await getAllMembers();
+    // console.log("66666666666666666")
+    console.log(cur_ms)
+    if (cur_ms.status == 200) {
+      let members = await cur_ms.json();
+      this.setState({ members: members });
+      // console.log("88888888888888888")
+      // console.log(members)
+    }
     let memberId = localStorage.memberId;
     this.setState({ memberId });
 
@@ -104,6 +107,21 @@ class Personal extends Component {
 
     deleteTasks(task._id);
   };
+
+  getMemberByIdCur = (id) => {
+    if (id === "") {
+      return null;
+    }
+    return this.state.members.find((t) => t._id === id);
+  }
+
+  getFullNameById = (id) => {
+    // console.log("###getFullNameById###")
+    // console.log(id)
+    // console.log(this.state.members)
+    return this.getMemberByIdCur(id).firstName + " " + this.getMemberByIdCur(id).lastName;
+  }
+
   render() {
     const organizedTaskData = _.orderBy(
       this.state.tasks,
@@ -111,13 +129,13 @@ class Personal extends Component {
       [this.state.sortColumn.order]
     );
     for (let t in organizedTaskData) {
-      organizedTaskData[t].assignedBy = getFullNameById(
+      organizedTaskData[t].assignedBy = this.getFullNameById(
         organizedTaskData[t].assignedById
       );
       organizedTaskData[t].assignedByPic = getMemberById(
         organizedTaskData[t].assignedById
       ).profilePic;
-      organizedTaskData[t].assignedTo = getFullNameById(
+      organizedTaskData[t].assignedTo = this.getFullNameById(
         organizedTaskData[t].assignedToId
       );
       organizedTaskData[t].assignedToPic = getMemberById(

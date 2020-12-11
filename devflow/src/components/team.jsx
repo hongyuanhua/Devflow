@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./team.css";
 import {
-  getMembers,
   getMemberById,
   getFullNameById,
-  members,
 } from "../services/fakeMemberService";
 
 import { getCompanyNameById } from "../services/fakeCompanyServices";
 
-import { getTasks, tasks, deleteTasks } from "../services/fakeTaskService";
+import { deleteTasks } from "../services/fakeTaskService";
 import { getTasksByTeam } from "../services/taskService";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";

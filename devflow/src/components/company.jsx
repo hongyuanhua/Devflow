@@ -108,9 +108,9 @@ class Company extends Component {
   }
 
   getFullNameById = (id) => {
-    console.log("###getFullNameById###")
-    console.log(id)
-    console.log(this.state.members)
+    // console.log("###getFullNameById###")
+    // console.log(id)
+    // console.log(this.state.members)
     return this.getMemberByIdCur(id).firstName + " " + this.getMemberByIdCur(id).lastName;
   }
 
