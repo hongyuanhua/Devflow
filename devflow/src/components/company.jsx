@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./personal.css";
-import { getNotificaitons } from "../services/fakeNotificationServices";
-import { getTeamsByCompanyId } from "../services/fakeTeamService.js";
-import {
-  getMemberByCompanyId_NoTeam,
-  getFullNameById,
-} from "../services/fakeMemberService.js";
+import { getFullNameById } from "../services/fakeMemberService.js";
 import { Link } from "react-router-dom";
 import CompanyTable from "./companyTable";
 import MemberTable from "./memberTable";
@@ -83,7 +78,7 @@ class Company extends Component {
     // this.setState({ state });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     console.log("this.state.notification: ", this.state.notification);
     await addCompanyMessage({
       companyId: this.props.match.params.id,
