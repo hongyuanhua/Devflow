@@ -102,8 +102,6 @@ Notification:
 
 ## Routing table:
 
-## If the postman keep "Sending request...", just cancel it. The request has successfully sent, just the postman does not get the reponse.
-
 ### auth.js
 ```
 /auth/login
@@ -282,6 +280,7 @@ result: get all notifications
 requset type: put
 sample request body:
 { "fromId": "10", "toId": "6", "message": "testing" }
+
 result: send a personal noticement from member with id 10 to member with id 6
 
 /api/notification/team
@@ -301,4 +300,94 @@ requset type: post
 sample request body:
 { "memberId": "2" }
 result: read all notification of the member with id memberId by setting the isUnread field of the notification to false
+```
+### admin.js
+```
+/api/admin/getCompany
+requset type: get
+result: get all companies in the database.
+
+/api/admin/deleteCompany
+requset type: delete
+sample request body:
+{"_id":"1"}
+result: delete company by input company id parameter.
+
+/api/admin/getTeam
+requset type: get
+result: get all teams in the database.
+
+/api/admin/deleteTeam
+requset type: delete
+sample request body:
+{"_id":"1"}
+result: delete team by input team id parameter.
+
+/api/admin/getMembers
+requset type: get
+result: get all members in the database.
+
+/api/admin/getPendingMember
+requset type: get
+result: get all pending status(not approved) members in the database.
+
+
+/api/admin/approvePendingMembers
+requset type: post
+sample request body:
+{"_id":"1"}
+result: approve member by using input request body's member id .
+
+/api/admin/deleteMember
+requset type: delete
+sample request body:
+{"_id":"1"}
+result: delete Member by input member id parameter.
+
+/api/admin/getTask
+requset type: get
+result: get all tasks in the database.
+
+/api/admin/deleteTask
+requset type: delete
+sample request body:
+{"_id":"1"}
+result: delete Task by input task id parameter.
+
+/api/admin/addCompany
+requset type: put
+sample request body:
+{ "name": "Tesla", "companyPic": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357" }
+result: add company.
+
+
+/api/admin/modifyCompany
+requset type: post
+sample request body:
+{ "_id":"1","name": "Tesla", "companyPic": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357","bossId":"2" }
+result: modify company by input request body.
+
+/api/admin/addTeam
+requset type: put
+sample request body:
+{ "companyId": "1","teamName":"test 1","leader":"1", "teamPic": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357","quote":"the best of best" }
+result: add team.
+
+/api/admin/modifyTeam
+requset type: post
+sample request body:
+{ "companyId": "2","teamName":"test 2","leader":"2", "teamPic": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357","quote":"the best of worst" }
+result: modify team by input request body.
+
+/api/admin/addMember
+requset type: put
+sample request body:
+{ "firstName": "daniel","lastName":"test 1","userName":"123", "rank": "1","password":"123" ,"profilePic":"https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357" }
+result: add member.
+
+/api/admin/modifyMember
+requset type: post
+sample request body:
+{ "_id":"1","firstName": "daniel","lastName":"test 1","userName":"123", "rank": "1","teamId":"1","companyId":"1","password":"123" ,"profilePic":"https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202011262357" }
+result: modify team by input request body.
 ```
