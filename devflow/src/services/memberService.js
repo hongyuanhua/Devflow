@@ -4,8 +4,8 @@ const { host, port } = backend;
 
 // module.export = { login: login };a
 export const getMemberById = async (id) => {
-  if (! id) {
-    return {status: 'failed'}
+  if (!id) {
+    return { status: 'failed' }
   }
   console.log("---getMemberByToId---");
   // Create our request constructor with all the parameters we need

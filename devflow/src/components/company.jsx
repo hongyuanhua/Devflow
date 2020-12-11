@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./personal.css";
-import { getFullNameById } from "../services/fakeMemberService.js";
 import { Link } from "react-router-dom";
 import CompanyTable from "./companyTable";
 import MemberTable from "./memberTable";
@@ -10,6 +9,7 @@ import { getTeamByCompanyId } from "../services/teamService";
 import { getCompanyById } from "../services/companyService";
 import {
   getMemberById,
+  getAllMembers,
   getMembersByCompanyId,
   getNotTeamMembersByCompanyId,
 } from "./../services/memberService";
@@ -33,12 +33,23 @@ class Company extends Component {
     company: {},
     teams: [],
     boss: {},
+    noTeamMembers: [],
     members: [],
     sortColumn: { path: "teamName", order: "asc" },
     sortColumn2: { path: "firstName", order: "asc" },
     notification: "",
   };
   async componentDidMount() {
+    const cur_ms = await getAllMembers();
+    // console.log("66666666666666666")
+    console.log(cur_ms)
+    if (cur_ms.status == 200) {
+      let members = await cur_ms.json();
+      this.setState({ members: members });
+      // console.log("88888888888888888")
+      // console.log(members)
+    }
+
     let companyId = this.props.match.params.id;
     const team = await getTeamByCompanyId(companyId);
     if (team.status == 200) {
@@ -58,10 +69,11 @@ class Company extends Component {
       this.setState({ boss: member });
     }
 
+
     const memberk = await getNotTeamMembersByCompanyId(companyId);
     if (memberk.status == 200) {
       let member = await memberk.json();
-      this.setState({ members: member });
+      this.setState({ noTeamMembers: member });
     }
   }
   handleSort = (sortColumn) => {
@@ -88,15 +100,23 @@ class Company extends Component {
     window.location.reload();
   };
 
+  getMemberByIdCur = (id) => {
+    if (id === "") {
+      return null;
+    }
+    return this.state.members.find((t) => t._id === id);
+  }
 
-  ceoSendNotify = () => {
-    ceoPostNotif(localStorage.memberId, this.state.members, this.state.notification)
-      .then(e => {
-        console.log(e);
-      })
+  getFullNameById = (id) => {
+    console.log("###getFullNameById###")
+    console.log(id)
+    console.log(this.state.members)
+    return this.getMemberByIdCur(id).firstName + " " + this.getMemberByIdCur(id).lastName;
   }
 
   render() {
+    // console.log("777777777777777777")
+    // console.log(this.state.members)
     // console.log("this.state.teams", this.state.teams);
     // console.log(this.props.match.params.id);
     const organizedTeamData = _.orderBy(
@@ -107,16 +127,16 @@ class Company extends Component {
     // console.log("organizedTeamData", organizedTeamData);
     for (let t in organizedTeamData) {
       // console.log(t);
-      organizedTeamData[t].leaderName = getFullNameById(
+      organizedTeamData[t].leaderName = this.getFullNameById(
         organizedTeamData[t].leader
       );
-      organizedTeamData[t].leaderPic = getMemberById(
+      organizedTeamData[t].leaderPic = this.getMemberByIdCur(
         organizedTeamData[t].leader
       ).profilePic;
     }
 
     const organizedMemberData = _.orderBy(
-      this.state.members,
+      this.state.noTeamMembers,
       [this.state.sortColumn2.path],
       [this.state.sortColumn2.order]
     );
@@ -172,7 +192,7 @@ class Company extends Component {
               />
               <h2>Employees not in team</h2>
               <p>
-                There are currently {this.state.members.length} employees in
+                There are currently {this.state.noTeamMembers.length} employees in
                 your company has not been assigned in a team
               </p>
               <MemberTable
