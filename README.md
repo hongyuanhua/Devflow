@@ -1,16 +1,25 @@
 # Devflow
 
+## Usage
+
+---
+
+Welcome to use DevFlow. We are here to help you manage your company, your team and assign the task to your team members.
+
 ### The deployed app is at this site:
+
 ```
 https://devflowproject.herokuapp.com/
 ```
 
 To start the project follow the following instructions:
+
 ```
 npm run build
 ```
 
-After that,  run:
+After that, run:
+
 ```
 npm run start
 ```
@@ -18,20 +27,32 @@ npm run start
 You will be at the intro page.
 
 Navigate to the loggin page, loggin with:
+
 ```
 Username: user
 Password: user
 ```
+
+Navigate to the CEO page, loggin with:
+
+```
+Username: bill
+Password: user
+```
+
 Then you will login as user
 
 Navigate to the loggin page, loggin with:
+
 ```
 Username: admin
 Password: admin
 ```
+
 Then you will login as admin
 
 Following are different user you can try, all with password "user":
+
 ```
 daniel
 bill
@@ -43,6 +64,7 @@ testondate
 ```
 
 List of third party libraries:
+
 ```
 bootstrap
 font-awesome
@@ -54,10 +76,71 @@ uniqid
 ```
 
 To check other users, please take a look at our data base at
+
 ```
 mongodb+srv://team34:team34Password@devflow.oddf0.mongodb.net/devflow
 ```
+
+Firstly you will see the main page of DevFlow, by clicking on the Enter button, you will enter the Login Page.
+
+Registration/Login Page:
+
+- If you are a new user for DevFlow, please clicking the Register Button to enter the Register Page.
+  - By inputting your company ID, employee ID, first name, last name and password, then clicking on the Register button, you will be successful to register your account.
+- If you already have an account, please enter your username and password. It will lead you to the Tasklist Page by clicking on the Login button.
+- Notice: if you are the CEO of this company, you will enter the CEO Page.
+
+Tasklist Page:
+
+- On the top left corner, you will see your company name, team and your name.
+  - By clicking the company name, you will enter the Company Page.
+  - By clicking the team, you will enter your Team Page.
+  - By clicking name, you will enter your Personal Page.
+- In the main area, you can search for the tasks.
+  - You can search the tasks by filters such as Names/Used Time/ID/Group ID/Estimated Time.
+- On the top right corner, you can log out or checking the notifications.
+- You can always click our logo, DevFlow, to come back into the Tasklist Page.
+
+Company Page:
+
+- On the left side of this page, you will see the logo and the company CEO. (If you are the CEO of this company. There will be a notification box which can be used to send the announcement to all the members)
+- For Teams, you can check team and leader. Send notification to any team members. Clicking on the Teams, you will enter the Team Page.
+
+Team Page:
+
+- You can see all the members of your team and all tasks.
+  - you can delete the task once you complete it.
+
+Personal Page:
+
+- You can send notifications to anyone include yourself as a remember. Later you can go back to your Tasklist Page to see the notification.
+
+Notification Page:
+
+- On the left, you can see all types of notifications such as Unread, System and Non-system.
+  - By clicking unread, you can see the notification from your colleagues.
+    - By clicking the Read All button, all these unread notifications will be sent into the Non-System.
+  - By clicking Non-system, you can check all the old notifications.
+
+CEO Page:
+
+- As the CEO of your company, you can highly manage your company.
+  - For Teams, you can check all members in each team and add/modify/delete the teams.
+  - For Members, you can check to add/modify/profile(checking staff's personal page)/delete any members.
+  - For Tasks, you are allowed to add/modify/delete any tasks.
+- By clicking the company, you can send notifications to all the staff in your company.
+
+Admin Page:
+
+- As an administrator, you are allowed to manage the back end of all of the companies. On the left side, you can see Companies, Teams, Members, Tasks and Pending Approval.
+  - By clicking Companies, you can add/modify/delete any companies.
+  - By clicking Teams, you can add/modify/delete any teams from any companies.
+  - By clicking Members, you can add/modify/profile(checking staff's personal page)/delete any members.
+  - By clicking Tasks, you can modify/delete tasks for any company.
+  - By clicking Pending Approval, you can confirm new users by approval.
+
 ## Models
+
 ```
 Companies:
 	{
@@ -69,7 +152,7 @@ Companies:
         "companyPic": url :string
 	"isFinish": true or false:string
         }
-	
+
 Teams:
 	{
         "members": list of members in the team :list,
@@ -93,7 +176,7 @@ Teams:
         "assignedById": the member id that assign the task to :string,
         "taskDetail": task details :string,
     },
-    
+
 Members:{
         "rank": the rank of the member :string,
         "teamId": the team Id of the member :string,
@@ -121,14 +204,14 @@ Notification:
 
 ```
 
-
 ## Routing table:
 
 ### auth.js
+
 ```
 /auth/login
 requset type: post
-sample request body: 
+sample request body:
 { "data": { "userName": "user", "password": "user" } }
 result: the login user data.
 
@@ -146,7 +229,9 @@ result: if it success it will return status 200 with current user's memberId, el
 requset type: post
 result: destroy the session.
 ```
+
 ### member.js
+
 ```
 /api/member/all
 requset type: get
@@ -175,6 +260,7 @@ result: get all members from companies that don't have team by input parameter c
 ```
 
 ### company.js
+
 ```
 /api/compay/all
 requset type: get
@@ -186,7 +272,9 @@ requset type: get
 sample request body: None
 result: get data of with the id id
 ```
+
 ### tasks.js
+
 ```
 /api/task/team/:teamId/:memberId
 requset type: get
@@ -207,7 +295,7 @@ Example return:
         "__v": 0
     }
    ]
-   
+
 /api/task/all
 requset type: get
 result: get all tasks in the data base.
@@ -222,19 +310,19 @@ result: get all tasks from a company by input parameter company id.
 
 /api/task/finish
 request type:post
-sample request body: 
+sample request body:
 { "data": { "taskId": "1"} }
 result: it will change the finish attribute of the task.
 
 /api/task/join
 request type:post
-sample request body: 
+sample request body:
 { "data": { "taskId": "1", "memberId","1"}}
 result: it will change the assignedToId attribute of the task into memberId in the request body.
 
 /api/task/join
 request type:put
-sample request body: 
+sample request body:
    {data: {
         "teamId": "1",
         "companyId": "1",
@@ -250,7 +338,7 @@ result: it will add the task into the data base with the input attributes and ge
 
 /api/task/update
 requset type: post
-sample request body: 
+sample request body:
    {data: {
    	"id":"1",
        "teamId": "1",
@@ -264,7 +352,9 @@ sample request body:
     }}
 result: update all task's attributes by input request body.
 ```
+
 ### team.js
+
 ```
 /api/team/all
 requset type: get
@@ -281,6 +371,7 @@ result: result: get all teams within a company by input parameter company id.
 ```
 
 ### notification.js
+
 ```
 /api/notification/to/:id
 requset type: get
@@ -323,7 +414,9 @@ sample request body:
 { "memberId": "2" }
 result: read all notification of the member with id memberId by setting the isUnread field of the notification to false
 ```
+
 ### admin.js
+
 ```
 /api/admin/getCompany
 requset type: get
