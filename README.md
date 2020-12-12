@@ -140,9 +140,8 @@ Firstly you will see the main page of DevFlow, by clicking on the Enter button, 
   - By clicking Pending Approval, you can confirm new users by approval.
 
 ## Models
-
 ```
-Companies:
+Company:
 	{
         "members": list of members in the company :list,
         "teams": list of team in the company :list,
@@ -153,7 +152,7 @@ Companies:
 	"isFinish": true or false:string
         }
 
-Teams:
+Team:
 	{
         "members": list of members in the team :list,
         "tasks": list of tasks in the team :list,
@@ -177,7 +176,7 @@ Teams:
         "taskDetail": task details :string,
     },
 
-Members:{
+Member:{
         "rank": the rank of the member :string,
         "teamId": the team Id of the member :string,
         "profilePic": the profile picture of the member :string
