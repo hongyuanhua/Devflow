@@ -70,24 +70,24 @@ router.get("/company/:id", async (req, res) => {
     })
     .catch((err) => res.status(500).send("Server err"));
 });
-// router.get("/toMember/:memberId", async (req, res) => {
-//   console.log("--In get task by member id--");
-//   const memberId = req.params.memberId;
+router.get("/toMember/:memberId", async (req, res) => {
+  console.log("--In get task by member id--");
+  const memberId = req.params.memberId;
 
-//   // check if memeber is from the same company as the team
-//   let member = await Member.findById(memberId);
-//   if (!member) {
-//     return res.status(400).send("No member with such id");
-//   }
+  // check if memeber is from the same company as the team
+  let member = await Member.findById(memberId);
+  if (!member) {
+    return res.status(400).send("No member with such id");
+  }
 
-//   // they are from same company and able to see the tasks fo the group
-//   Task.find({ assignedToId: memberId })
-//     .then((tasks) => {
-//       console.log(tasks);
-//       res.status(200).send(tasks);
-//     })
-//     .catch((err) => res.status(500).send("Server err"));
-// });
+  // they are from same company and able to see the tasks fo the group
+  Task.find({ assignedToId: memberId })
+    .then((tasks) => {
+      console.log(tasks);
+      res.status(200).send(tasks);
+    })
+    .catch((err) => res.status(500).send("Server err"));
+});
 router.post("/finish", async (req, res) => {
   console.log("---join task---");
   console.log(req.body);

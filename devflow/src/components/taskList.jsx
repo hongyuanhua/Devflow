@@ -1,7 +1,11 @@
 import React, { Component, Fragment } from "react";
 import "./taskList.css";
 import { getTasksByTeam, joinTask, finishTask } from "../services/taskService";
-import { getAllMembers, getMemberById } from "../services/memberService";
+import {
+  getAllMembers,
+  getMemberById,
+  getMembersByTeamId,
+} from "../services/memberService";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./common/navBar";
@@ -21,27 +25,41 @@ class taskList extends Component {
     if (localStorage.rank == 0) {
       this.props.history.push("/admin");
     }
-    if (localStorage.rank == 1) {
+    else if (localStorage.rank == 1) {
       this.props.history.push("/ceo/" + localStorage.companyId);
     }
+    else if (localStorage.teamId == "") {
+      this.props.history.push("/company/" + localStorage.companyId);
+    }
     const memberId = localStorage.memberId;
-    const koo = await getAllMembers();
+    const teamId = localStorage.teamId;
+    const koo = await getMembersByTeamId(teamId);
     const boss = await getMemberById(memberId);
     const member = await boss.json();
     if (member.teamId != "") {
       const task = await getTasksByTeam(member.teamId, memberId);
       let teamTasks = await task.json();
-      console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-      console.log(teamTasks);
+      let team = await koo.json();
       this.setState({
         tasks: teamTasks,
         currentUser: member,
-        members: await koo.json(),
+        members: team,
       });
     }
   }
   findMember(id) {
+    console.log(id);
+    console.log(this.state.tasks);
+    console.log(this.state.members);
+    console.log(this.state.members.find((t) => t._id === id));
     return this.state.members.find((t) => t._id === id);
+  }
+  findMemberFirstName(id) {
+    if (this.findMember(id) == null) {
+      return "";
+    } else {
+      return this.findMember(id).firstName;
+    }
   }
   async handleJoin(task) {
     joinTask(task._id, this.state.currentUser._id);
@@ -52,18 +70,6 @@ class taskList extends Component {
     window.location.reload();
   }
 
-  getCurrentGID = (id) => {
-    var input, i;
-    input = this.state.tasks;
-    for (i = 0; i < input.length; i++) {
-      if (input[i].assignedToId === id) {
-        return this.findMember(input[i].assignedToId).firstName;
-      } else if (input[i].assignedById === id) {
-        return this.findMember(input[i].assignedById).firstName;
-      }
-    }
-    return "None";
-  };
   getAssignedTask = (id) => {
     var input, i, c;
     c = 0;
@@ -82,7 +88,7 @@ class taskList extends Component {
     item = document.getElementsByClassName("col-sm-4");
     for (i = 0; i < item.length; i++) {
       a = item[i];
-      txtValue = a.children[0].textContent + a.children[1].textContent;
+      txtValue = a.children[0].textContent;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
         item[i].style.display = "";
       } else {
@@ -113,45 +119,22 @@ class taskList extends Component {
     b.push(k);
     this.setState({ b });
   }
-  sortCategory = (path) => {
-    const taskss = this.state.tasks.sort(function (a, b) {
-      if (path === "usedTime") {
-        return a.usedTime - b.usedTime;
-      } else if (path === "name") {
-        return ("" + a.name).localeCompare(b.name);
-      } else if (path === "id") {
-        return ("" + a.assignedToId).localeCompare(b.assignedToId);
-      } else if (path == "Group ID") {
-        return ("" + a.teamId).localeCompare(b.teamId);
-      } else if (path == "Estimated Time") {
-        return a.estimatedTime - b.estimatedTime;
-      }
-    });
-    const task = taskss.reverse();
-    this.setState({ task });
-  };
   print = (event, hi) => {
-    var k;
-    var filter, item, a, i, txtValue, fil, abyValue, assValue, creValue;
+    var filter, item, a, i, txtValue, fil, abyValue, assValue;
     item = document.getElementsByClassName("col-sm-4");
     filter = document.getElementsByClassName("filters");
-    console.log(filter[0].value);
-    console.log(filter[1].value);
-    abyValue = this.findMember(filter[0].value).firstName;
-    if (filter[1].value !== "DEFAULT") {
-      assValue = this.findMember("1").firstName;
-    }
+    abyValue = this.findMemberFirstName(filter[0].value);
+    assValue = this.findMemberFirstName(filter[1].value);
     for (i = 0; i < item.length; i++) {
       a = item[i];
 
-      var uAbyValue, uAssValue, uCreValue;
-      uAbyValue = a.childNodes[3].textContent.replace("Assigned By: ", "");
-      uAssValue = a.childNodes[4].textContent.replace("Assigned To: ", "");
+      var uAbyValue, uAssValue;
+      uAbyValue = a.childNodes[2].textContent.replace("Assigned By: ", "");
+      uAssValue = a.childNodes[3].textContent.replace("Assigned To: ", "");
       item[i].style.display = "none";
       if (
         (filter[0].value == "DEFAULT" || abyValue == uAbyValue) &&
-        (filter[1].value == "DEFAULT" || assValue == uAssValue) &&
-        (filter[2].value == "DEFAULT" || abyValue == uAssValue)
+        (filter[1].value == "DEFAULT" || assValue == uAssValue)
       ) {
         item[i].style.display = "";
       }
@@ -180,7 +163,7 @@ class taskList extends Component {
             onKeyUp={() =>
               this.onKeyUpValue(document.getElementById("myInput"))
             }
-            placeholder="Search Group ID or Task Title.."
+            placeholder="Search Task Title.."
           ></input>
           <div className="row">
             <div className="col">
@@ -221,44 +204,6 @@ class taskList extends Component {
             </div>
           </div>
 
-          <span>Sort by(DEC order): </span>
-          <button
-            type="button"
-            onClick={() => this.sortCategory("name")}
-            className="btn btn-outline-secondary mr-1"
-          >
-            Names
-          </button>
-          <button
-            type="button"
-            onClick={() => this.sortCategory("usedTime")}
-            className="btn btn-outline-secondary mr-1"
-          >
-            Used Time
-          </button>
-          <button
-            type="button"
-            onClick={() => this.sortCategory("id")}
-            className="btn btn-outline-secondary mr-1"
-          >
-            ID
-          </button>
-
-          <button
-            type="button"
-            onClick={() => this.sortCategory("Group ID")}
-            className="btn btn-outline-secondary mr-1"
-          >
-            Group ID
-          </button>
-          <button
-            type="button"
-            onClick={() => this.sortCategory("Estimated Time")}
-            className="btn btn-outline-secondary mr-1"
-          >
-            Estimated Time
-          </button>
-          {console.log(this.state)}
           {this.state.currentUser.rank < 3 && (
             <Link to="/taskDetail/new">
               <button className="float-right btn btn-outline-primary">

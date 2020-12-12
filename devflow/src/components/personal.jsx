@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./personal.css";
-import { deleteTasks } from "../services/fakeTaskService";
 import { Link } from "react-router-dom";
 import { getTasksByAssignedTo } from "../services/taskService";
 import { getMemberById, getAllMembers } from "../services/memberService";
@@ -33,7 +32,7 @@ class Personal extends Component {
   async componentDidMount() {
     const cur_ms = await getAllMembers();
     // console.log("66666666666666666")
-    console.log(cur_ms)
+    console.log(cur_ms);
     if (cur_ms.status == 200) {
       let members = await cur_ms.json();
       this.setState({ members: members });
@@ -101,26 +100,24 @@ class Personal extends Component {
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
   };
-  handleDelete = (task) => {
-    const tasks = this.state.tasks.filter((t) => t._id !== task._id);
-    this.setState({ tasks });
-
-    deleteTasks(task._id);
-  };
 
   getMemberByIdCur = (id) => {
     if (id === "") {
       return null;
     }
     return this.state.members.find((t) => t._id === id);
-  }
+  };
 
   getFullNameById = (id) => {
     // console.log("###getFullNameById###")
     // console.log(id)
     // console.log(this.state.members)
-    return this.getMemberByIdCur(id).firstName + " " + this.getMemberByIdCur(id).lastName;
-  }
+    return (
+      this.getMemberByIdCur(id).firstName +
+      " " +
+      this.getMemberByIdCur(id).lastName
+    );
+  };
 
   render() {
     const organizedTaskData = _.orderBy(

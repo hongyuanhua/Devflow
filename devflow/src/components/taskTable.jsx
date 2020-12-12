@@ -8,7 +8,7 @@ class TaskTable extends Component {
       path: "name",
       label: "Name",
       content: (task) => (
-        <Link to={`/taskDetail/${task._id}`}>{task.name}</Link>
+        <Link to={`/taskDetail_Present/${task._id}`}>{task.name}</Link>
       ),
     },
     {
@@ -44,6 +44,10 @@ class TaskTable extends Component {
     {
       path: "usedTime",
       label: "Time Used",
+    },
+    {
+      path: "isFinish",
+      label: "Is Finish",
     },
   ];
 

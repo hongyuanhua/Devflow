@@ -3,7 +3,6 @@ import NavBar from "./common/navBar";
 import { Link } from "react-router-dom";
 import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
-// import { deleteCompany, getCompanies } from "../services/fakeCompanyServices";
 import {
   getAllCompany,
   deleteCompany,
@@ -16,11 +15,6 @@ import {
   getAllTask,
   deleteTask,
 } from "../services/adminService";
-// import { deleteMember, getMembers } from "../services/fakeMemberService";
-// import { getNotificaitons } from "../services/fakeNotificationServices";
-// import { deleteTasks, getTasks } from "../services/fakeTaskService";
-// import { deleteTeam, getTeams } from "../services/fakeTeamService";
-import { companies } from "../services/fakeCompanyServices";
 import CompaniesTable from "../components/adminCompanyTable";
 import TeamTable from "../components/adminTeamTable";
 import MemberTable from "../components/adminMemberTable";

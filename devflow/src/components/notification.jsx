@@ -66,22 +66,29 @@ class Notification extends Component {
     this.setState({ selectedNotificationType: curType });
   };
 
+  handleClick = async () => {
+    await readAll(this.state.userId);
+    this.setState({ selectedNotificationType: "All" });
+    window.location.reload();
+    this.props.history.push("/notification/" + this.state.userId);
+  };
+
   getFiltered = () => {
     const select_type = this.state.selectedNotificationType;
 
     let filtered = this.state.data.filter((n) => {
       // return true
-      if (select_type === "" || select_type === "All") {
-        return true;
-      }
       if (select_type === "Unread") {
         return n.isUnread;
       }
-      if (select_type === "System") {
+      else if (select_type === "System") {
         return n.level === "1";
       }
-      if (select_type === "Non-System") {
+      else if (select_type === "Non-System") {
         return n.from !== "System";
+      }
+      else {
+        return true;
       }
     });
 
@@ -89,6 +96,8 @@ class Notification extends Component {
   };
 
   render() {
+    console.log("this.state.selectedNotificationType")
+    console.log(this.state.selectedNotificationType)
     let filtered = this.getFiltered();
     console.log("After filted");
     console.log(filtered);
@@ -107,7 +116,18 @@ class Notification extends Component {
             />
           </div>
           <div className="col">
-            <h1>Notifications</h1>
+            <div className="row">
+
+              <h1>Notifications</h1>
+              {this.state.selectedNotificationType === "Unread" && (
+                <button className="btn btn-primary btn-large float-left"
+                  onClick={() => this.handleClick()}
+                >
+                  Read All
+                </button>
+              )}
+            </div>
+
             <div className="list-group">
               {filtered.map((n) => (
                 <Comment
@@ -119,6 +139,7 @@ class Notification extends Component {
                 />
               ))}
             </div>
+
           </div>
         </div>
       </React.Fragment>

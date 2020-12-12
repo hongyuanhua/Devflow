@@ -94,7 +94,7 @@ class NavBar extends Component {
             </button>
           </Link>
         )}
-        {this.state.memberId != "" && (
+        {this.state.rank != 0 && this.state.memberId != "" && (
           <Link to={"/personal/" + this.state.memberId} className={"mx-2"}>
             <button className="btn btn-sm btn-outline-success" type="button">
               {this.state.memberName}

@@ -12,7 +12,10 @@ import MemberTable from "../components/adminMemberTable";
 import TaskTable from "../components/adminTasksTable";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getMembersByCompanyId2 } from "../services/memberService";
+import {
+  getMembersByCompanyId2,
+  getMembersByCompanyId,
+} from "../services/memberService";
 class ceo extends Component {
   state = {
     company: {},
@@ -39,22 +42,25 @@ class ceo extends Component {
     const task = await getTasksByCompanyId(companyId);
     this.setState({ tasks: await task.json() });
     console.log(this.state.tasks);
-    const tasks = getMembersByCompanyId2(companyId)
-      .then((result) => result.json())
-      .then((data) => {
-        this.setState({
-          members: data.members,
-        });
-      });
+    const members = await getMembersByCompanyId(curCompanyId);
+    // const tasks = getMembersByCompanyId2(companyId)
+    //   .then((result) => result.json())
+    //   .then((data) => {
+    //     this.setState({
+    //       members: data.members,
+    //     });
+    //   });
     const companyP = await getCompanyById(companyId);
     const teamP = await getTeamByCompanyId(companyId);
     const company = await companyP.json();
     const team = await teamP.json();
+    const member = await members.json();
     console.log(company);
     if (!company) return this.props.history.replace("/not-found");
     this.setState({
       company: company,
       teams: team,
+      members: member,
     });
   }
 

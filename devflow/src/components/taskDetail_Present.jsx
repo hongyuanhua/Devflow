@@ -138,33 +138,36 @@ class taskDetail_Present extends React.Component {
               </div>
               <br></br>
               {console.log(this.state.current.rank)}
-              <div className="row">
-                {this.state.current.rank < 3 && (
-                  <Link to={`/taskDetail/${this.state.data._id}`}>
-                    <button type="button" className="btn btn-primary">
-                      Edit
-                    </button>
-                  </Link>
-                )}
-              </div>
+              {this.state.isFinish === "false" && (
+                <div className="row">
+                  {this.state.current.rank < 3 && (
+                    <Link to={`/taskDetail/${this.state.data._id}`}>
+                      <button type="button" className="btn btn-primary">
+                        Edit
+                      </button>
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
-            {this.state.data.assignedToId === this.state.current._id && (
-              <div className="col-3">
-                <input
-                  className="form-control mg-2"
-                  id="usedTimeInput"
-                  type="text"
-                  placeholder="Change used time.."
-                ></input>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => this.submitUsedTime()}
-                >
-                  Submit
-                </button>
-              </div>
-            )}
+            {this.state.data.assignedToId === this.state.current._id &&
+              this.state.isFinish === "false" && (
+                <div className="col-3">
+                  <input
+                    className="form-control mg-2"
+                    id="usedTimeInput"
+                    type="text"
+                    placeholder="Change used time.."
+                  ></input>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => this.submitUsedTime()}
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </React.Fragment>

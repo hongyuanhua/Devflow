@@ -19,8 +19,12 @@ export const checkSession = (app) => {
 
 export const login = async (userName, password) => {
   // Create our request constructor with all the parameters we need
+  console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
+  console.log("host: ", host)
+  console.log("port: ", port)
 
-  const request = new Request(host + port + "/auth/login", {
+  const url = process.env.NODE_ENV === 'development' ? host + port + "/auth/login" : host + "/auth/login"
+  const request = new Request(url, {
     method: "post",
     body: JSON.stringify({
       data: {

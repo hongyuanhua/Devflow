@@ -105,6 +105,13 @@ router.post("/login", async (req, res) => {
         res.status(400).send("Invalid login fields");
         return;
     }
+
+    if (!member.isApproved) {
+        console.log("not approved user");
+        res.status(401).send("User not approved.");
+        return;
+    }
+
     req.session.memberId = member._id;
     await req.session.save();
     console.log("req.session")

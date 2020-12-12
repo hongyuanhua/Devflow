@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import NavBar from "./common/navBar";
 import "./team.css";
-import { getCompanyNameById } from "../services/fakeCompanyServices";
-
-import { deleteTasks } from "../services/fakeTaskService";
+import { getCompanyById } from "../services/companyService";
 import { getTasksByTeam } from "../services/taskService";
 import { getAllMembers, getMembersByTeamId } from "../services/memberService";
 import { Link } from "react-router-dom";
-import { isCompositeComponent } from "react-dom/test-utils";
 import _ from "lodash";
 import { getTeamById } from "../services/teamService";
 import TeamTable from "./teamTable";
 import Textarea from "./common/textarea.jsx";
 import { addTeamMessage } from "./../services/notificationService";
+import { deleteTask } from "./../services/adminService";
 
 class team extends Component {
   state = {
@@ -25,6 +23,7 @@ class team extends Component {
       teamPic: "",
       companyId: "",
     },
+    company: {},
     tasks: [],
     members: [],
     teamMembers: [],
@@ -40,7 +39,6 @@ class team extends Component {
   };
   async componentDidMount() {
     const teamId = this.props.match.params.id;
-
     const cur_ms = await getAllMembers();
     // // ("66666666666666666")
     // (cur_ms)
@@ -56,15 +54,12 @@ class team extends Component {
       let k = await n.json();
       this.setState({ teamMembers: k });
     }
-
     const memberId = localStorage.memberId;
+    const companyId = localStorage.companyId;
     const task = await getTasksByTeam(teamId, memberId);
-    // ("###getTasksByTeam###")
-    if (task.status == 200) {
-      let tasks = await task.json();
-      // (tasks);
-      this.setState({ tasks: tasks });
-    }
+    const company = await getCompanyById(companyId);
+    let tasks = await task.json();
+    this.setState({ tasks: tasks, company: await company.json() });
     this.setState({ teamId });
     const team = await getTeamById(teamId);
     let teams;
@@ -99,7 +94,7 @@ class team extends Component {
     const tasks = this.state.tasks.filter((t) => t._id !== task._id);
     this.setState({ tasks });
 
-    deleteTasks(task._id);
+    deleteTask(task._id);
   };
 
   handleChange = ({ currentTarget: input }) => {
@@ -127,16 +122,16 @@ class team extends Component {
     // (id)
     // (cur_member)
     return cur_member;
-  }
+  };
 
   getFullNameById = (id) => {
     // ("###getFullNameById###")
     // (this.state.members)
-    let cur_member = this.getMemberByIdCur(id)
+    let cur_member = this.getMemberByIdCur(id);
     // (id)
     // (cur_member)
     return cur_member.firstName + " " + cur_member.lastName;
-  }
+  };
 
   render() {
     const organizedTaskData = _.orderBy(
@@ -191,7 +186,7 @@ class team extends Component {
 
                 <div className="col">
                   <Link to={`/company/${this.state.data.companyId}`}>
-                    <h3>{getCompanyNameById(this.state.data.companyId)}</h3>
+                    <h3>{this.state.company.name}</h3>
                   </Link>
                 </div>
               </div>
@@ -201,41 +196,41 @@ class team extends Component {
                 <div className="col">
                   {this.state.teamMembers.map((member) => (
                     <p className="mt-4">
-                      <Link to={`/personal/${member}`}>
+                      <Link to={`/personal/${member._id}`}>
                         <div className="click">
                           <img
                             src={member.profilePic}
                             style={{ borderRadius: "50%", width: "20px" }}
                           />
                           <span style={{ marginLeft: "5px" }}>
-                            {member != null &&
-                              member.firstName}
+                            {member != null && member.firstName}
                           </span>
                         </div>
                       </Link>
                     </p>
                   ))}
                 </div>
-                {localStorage.teamId == this.state.teamId && localStorage.rank == 2 && (
-                  <div>
-                    <Textarea
-                      name="notification"
-                      label="Send Notification"
-                      onChange={this.handleChange}
-                      rows="4"
-                    />
-                    <br></br>
-                    <a
-                      className="btn btn-primary btn-lg "
-                      tabIndex="-1"
-                      role="button"
-                      aria-disabled="false"
-                      onClick={this.handleSubmit}
-                    >
-                      Send
-                    </a>
-                  </div>
-                )}
+                {localStorage.teamId == this.state.teamId &&
+                  localStorage.rank == 2 && (
+                    <div>
+                      <Textarea
+                        name="notification"
+                        label="Send Notification"
+                        onChange={this.handleChange}
+                        rows="4"
+                      />
+                      <br></br>
+                      <a
+                        className="btn btn-primary btn-lg "
+                        tabIndex="-1"
+                        role="button"
+                        aria-disabled="false"
+                        onClick={this.handleSubmit}
+                      >
+                        Send
+                      </a>
+                    </div>
+                  )}
               </div>
             </div>
             <div className="col-8 form-group">

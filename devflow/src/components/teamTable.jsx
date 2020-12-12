@@ -50,6 +50,10 @@ class teamTable extends Component {
       label: "Estimate Time",
     },
     {
+      path: "isFinish",
+      label: "Finish",
+    },
+    {
       key: "delete",
       content: (task) => (
         <button

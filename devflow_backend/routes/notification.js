@@ -19,42 +19,42 @@ router.get("/to/:id", async (req, res) => {
     .catch((err) => res.status(500).send("Server err"));
 });
 
-router.get("/company/:id", async (req, res) => {
-  console.log("---GetCompanyNotificationByToId---");
-  const memberId = req.params.id;
-  Notification.find({ level: "2", to: memberId })
-    .then((notifications) => {
-      if (!notifications) {
-        return res.status(404).send("No such notifications");
-      }
-      res.send(notifications);
-    })
-    .catch((err) => res.status(500).send("Server err"));
-});
-router.get("/team/:id", async (req, res) => {
-  console.log("---GetTeamNotificationByToId---");
-  const memberId = req.params.id;
-  Notification.find({ level: "3", to: memberId })
-    .then((notifications) => {
-      if (!notifications) {
-        return res.status(404).send("No such notifications");
-      }
-      res.send(notifications);
-    })
-    .catch((err) => res.status(500).send("Server err"));
-});
-router.get("/system/:id", async (req, res) => {
-  console.log("---GetSystemNotificationByToId---");
-  const memberId = req.params.id;
-  Notification.find({ level: "1", to: memberId })
-    .then((notifications) => {
-      if (!notifications) {
-        return res.status(404).send("No such notifications");
-      }
-      res.send(notifications);
-    })
-    .catch((err) => res.status(500).send("Server err"));
-});
+// router.get("/company/:id", async (req, res) => {
+//   console.log("---GetCompanyNotificationByToId---");
+//   const memberId = req.params.id;
+//   Notification.find({ level: "2", to: memberId })
+//     .then((notifications) => {
+//       if (!notifications) {
+//         return res.status(404).send("No such notifications");
+//       }
+//       res.send(notifications);
+//     })
+//     .catch((err) => res.status(500).send("Server err"));
+// });
+// router.get("/team/:id", async (req, res) => {
+//   console.log("---GetTeamNotificationByToId---");
+//   const memberId = req.params.id;
+//   Notification.find({ level: "3", to: memberId })
+//     .then((notifications) => {
+//       if (!notifications) {
+//         return res.status(404).send("No such notifications");
+//       }
+//       res.send(notifications);
+//     })
+//     .catch((err) => res.status(500).send("Server err"));
+// });
+// router.get("/system/:id", async (req, res) => {
+//   console.log("---GetSystemNotificationByToId---");
+//   const memberId = req.params.id;
+//   Notification.find({ level: "1", to: memberId })
+//     .then((notifications) => {
+//       if (!notifications) {
+//         return res.status(404).send("No such notifications");
+//       }
+//       res.send(notifications);
+//     })
+//     .catch((err) => res.status(500).send("Server err"));
+// });
 router.get("/from/:id", async (req, res) => {
   console.log("---GetNotificationByFromId---");
   const memberId = req.params.id;
@@ -128,7 +128,7 @@ router.put("/team", async (req, res) => {
 
   // get data for this notification
   const { teamId, message } = req.body;
-  const level = 2;
+  const level = 3;
   const time = new Date().toString();
 
   let notifications = [];
@@ -190,7 +190,7 @@ router.put("/company", async (req, res) => {
 
   // get data for this notification
   const { companyId, message } = req.body;
-  const level = 3;
+  const level = 2;
   const time = new Date().toString();
 
   let notifications = [];

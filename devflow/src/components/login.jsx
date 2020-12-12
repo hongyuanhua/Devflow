@@ -45,7 +45,7 @@ class Login extends Form {
         localStorage.setItem("rank", member.rank);
         this.props.history.push("/taskList");
       }
-      checkSession();
+      // checkSession();
     } catch (error) {
       console.log(error);
     }
