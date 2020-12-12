@@ -120,7 +120,7 @@ class Notification extends Component {
 
               <h1>Notifications</h1>
               {this.state.selectedNotificationType === "Unread" && (
-                <button className="btn btn-primary btn-large float-left"
+                <button className="btn btn-primary btn-large float-left mx-3"
                   onClick={() => this.handleClick()}
                 >
                   Read All
