@@ -83,14 +83,14 @@ mongodb+srv://team34:team34Password@devflow.oddf0.mongodb.net/devflow
 
 Firstly you will see the main page of DevFlow, by clicking on the Enter button, you will enter the Login Page.
 
-Registration/Login Page:
+### Registration/Login Page:
 
 - If you are a new user for DevFlow, please clicking the Register Button to enter the Register Page.
   - By inputting your company ID, employee ID, first name, last name and password, then clicking on the Register button, you will be successful to register your account.
 - If you already have an account, please enter your username and password. It will lead you to the Tasklist Page by clicking on the Login button.
 - Notice: if you are the CEO of this company, you will enter the CEO Page.if you are admin of the system, you will be enter to the admin page.
 
-Tasklist Page:
+### Tasklist Page:
 
 - On the top left corner, you will see your company name, team and your name.
   - By clicking the company name, you will enter the Company Page.
@@ -101,28 +101,28 @@ Tasklist Page:
 - On the top right corner, you can log out or checking the notifications.
 - You can always click our logo, DevFlow, to come back into the Tasklist Page.
 
-Company Page:
+### Company Page:
 
 - On the left side of this page, you will see the logo and the company CEO. (If you are the CEO of this company. There will be a notification box which can be used to send the announcement to all the members)
 - For Teams, you can check team and leader. Send notification to any team members. Clicking on the Teams, you will enter the Team Page.
 
-Team Page:
+### Team Page:
 
 - You can see all the members of your team and all tasks.
   - you can delete the task once you complete it.
 
-Personal Page:
+### Personal Page:
 
 - You can send notifications to anyone include yourself as a remember. Later you can go back to your Tasklist Page to see the notification.
 
-Notification Page:
+### Notification Page:
 
 - On the left, you can see all types of notifications such as Unread, System and Non-system.
   - By clicking unread, you can see the notification from your colleagues.
     - By clicking the Read All button, all these unread notifications will be sent into the Non-System.
   - By clicking Non-system, you can check all the old notifications.
 
-CEO Page:
+### CEO Page:
 
 - As the CEO of your company, you can highly manage your company.
   - For Teams, you can check all members in each team and add/modify/delete the teams.
@@ -130,7 +130,7 @@ CEO Page:
   - For Tasks, you are allowed to add/modify/delete any tasks.
 - By clicking the company, you can send notifications to all the staff in your company.
 
-Admin Page:
+### Admin Page:
 
 - As an administrator, you are allowed to manage the back end of all of the companies. On the left side, you can see Companies, Teams, Members, Tasks and Pending Approval.
   - By clicking Companies, you can add/modify/delete any companies.
