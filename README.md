@@ -88,7 +88,7 @@ Registration/Login Page:
 - If you are a new user for DevFlow, please clicking the Register Button to enter the Register Page.
   - By inputting your company ID, employee ID, first name, last name and password, then clicking on the Register button, you will be successful to register your account.
 - If you already have an account, please enter your username and password. It will lead you to the Tasklist Page by clicking on the Login button.
-- Notice: if you are the CEO of this company, you will enter the CEO Page.
+- Notice: if you are the CEO of this company, you will enter the CEO Page.if you are admin of the system, you will be enter to the admin page.
 
 Tasklist Page:
 
